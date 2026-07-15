@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+@theme {
+  /* Fanaar brand palette — warm textile neutrals + clay accent */
+  --color-ivory: #faf8f4;
+  --color-sand: #ece5da;
+  --color-ink: #1b1815;
+  --color-clay: #a9674b;
+  --color-clay-deep: #8a5138;
+}
+
+body {
+  background-color: var(--color-ivory);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
