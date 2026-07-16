@@ -28,7 +28,7 @@ function usePrefersReducedMotion() {
 }
 
 /**
- * Cinematic carousel for the four process steps: a dark stage where slides
+ * Cinematic carousel for the four process steps: a light stage where slides
  * push in with a ken-burns settle and staggered copy. Auto-advances while on
  * screen (progress shown in the step rail), pauses on hover, and hands over
  * control permanently once the visitor navigates — arrows, step rail, swipe
@@ -99,7 +99,7 @@ export default function ProcessCarousel({ steps }: { steps: ProcessStep[] }) {
         touchX.current = null;
         if (Math.abs(dx) > 48) go(index + (dx < 0 ? 1 : -1));
       }}
-      className="relative overflow-hidden rounded-[2rem] bg-ink text-ivory shadow-2xl ring-1 ring-ink/10 outline-none focus-visible:ring-2 focus-visible:ring-clay"
+      className="relative overflow-hidden rounded-[2rem] bg-white text-ink shadow-xl shadow-ink/5 ring-1 ring-ink/5 outline-none focus-visible:ring-2 focus-visible:ring-clay"
     >
       {/* Slides — stacked in one grid cell so the panel sizes to the tallest */}
       <div className="grid" aria-live="polite">
@@ -141,19 +141,19 @@ export default function ProcessCarousel({ steps }: { steps: ProcessStep[] }) {
                       className="object-cover"
                     />
                   ) : (
-                    <ProcessPlaceholder id={step.id} tone="dark" />
+                    <ProcessPlaceholder id={step.id} tone="light" />
                   )}
                 </div>
-                {/* blend the visual into the ink stage */}
-                <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-ink to-transparent lg:hidden" />
-                <div className="absolute inset-y-0 right-0 hidden w-44 bg-gradient-to-r from-transparent to-ink lg:block" />
+                {/* blend the visual into the light stage */}
+                <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white to-transparent lg:hidden" />
+                <div className="absolute inset-y-0 right-0 hidden w-44 bg-gradient-to-r from-transparent to-white lg:block" />
               </div>
 
               {/* Text side */}
               <div className="relative px-7 pt-8 pb-12 sm:px-10 lg:flex lg:flex-col lg:justify-center lg:px-14 lg:py-16">
                 <span
                   aria-hidden
-                  className="pointer-events-none absolute -top-3 right-5 font-display text-[8rem] leading-none text-ivory/[0.05] select-none lg:top-4 lg:text-[11rem]"
+                  className="pointer-events-none absolute -top-3 right-5 font-display text-[8rem] leading-none text-ink/[0.04] select-none lg:top-4 lg:text-[11rem]"
                 >
                   {step.step}
                 </span>
@@ -166,13 +166,13 @@ export default function ProcessCarousel({ steps }: { steps: ProcessStep[] }) {
                     Step {step.step} / {total}
                   </p>
                   <h3
-                    className={`mt-4 font-display text-3xl text-ivory md:text-4xl ${childClass}`}
+                    className={`mt-4 font-display text-3xl text-ink md:text-4xl ${childClass}`}
                     style={childDelay(1)}
                   >
                     {step.title}
                   </h3>
                   <p
-                    className={`mt-4 max-w-md leading-relaxed text-stone-400 ${childClass}`}
+                    className={`mt-4 max-w-md leading-relaxed text-stone-600 ${childClass}`}
                     style={childDelay(2)}
                   >
                     {step.description}
@@ -181,7 +181,7 @@ export default function ProcessCarousel({ steps }: { steps: ProcessStep[] }) {
                     {step.points.map((point) => (
                       <li
                         key={point}
-                        className="flex items-center gap-3 text-sm text-stone-300"
+                        className="flex items-center gap-3 text-sm text-stone-700"
                       >
                         <span aria-hidden className="h-1.5 w-1.5 rotate-45 bg-clay" />
                         {point}
@@ -196,13 +196,13 @@ export default function ProcessCarousel({ steps }: { steps: ProcessStep[] }) {
       </div>
 
       {/* Control bar */}
-      <div className="relative z-20 flex flex-col gap-6 border-t border-ivory/10 px-7 py-6 sm:flex-row sm:items-center sm:justify-between lg:px-14">
+      <div className="relative z-20 flex flex-col gap-6 border-t border-ink/10 px-7 py-6 sm:flex-row sm:items-center sm:justify-between lg:px-14">
         <div className="flex items-center gap-3">
           <button
             type="button"
             onClick={() => go(index - 1)}
             aria-label="Previous step"
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-ivory/20 text-ivory transition-colors hover:border-clay hover:text-clay focus-visible:ring-2 focus-visible:ring-clay focus-visible:outline-none"
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-ink/15 text-ink transition-colors hover:border-clay hover:text-clay focus-visible:ring-2 focus-visible:ring-clay focus-visible:outline-none"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="h-5 w-5">
               <path d="M19 12H5" />
@@ -213,7 +213,7 @@ export default function ProcessCarousel({ steps }: { steps: ProcessStep[] }) {
             type="button"
             onClick={() => go(index + 1)}
             aria-label="Next step"
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-ivory/20 text-ivory transition-colors hover:border-clay hover:text-clay focus-visible:ring-2 focus-visible:ring-clay focus-visible:outline-none"
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-ink/15 text-ink transition-colors hover:border-clay hover:text-clay focus-visible:ring-2 focus-visible:ring-clay focus-visible:outline-none"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="h-5 w-5">
               <path d="M5 12h14" />
@@ -237,13 +237,13 @@ export default function ProcessCarousel({ steps }: { steps: ProcessStep[] }) {
               >
                 <span
                   className={`text-[10px] tracking-[0.2em] whitespace-nowrap uppercase transition-colors ${
-                    active ? "text-clay" : "text-stone-500 group-hover/step:text-stone-300"
+                    active ? "text-clay" : "text-stone-400 group-hover/step:text-stone-600"
                   }`}
                 >
                   <span className="font-display">{step.step}</span>
                   <span className="ml-2 hidden xl:inline">{step.title}</span>
                 </span>
-                <span className="relative block h-px w-12 overflow-hidden bg-ivory/15 sm:w-16">
+                <span className="relative block h-px w-12 overflow-hidden bg-ink/10 sm:w-16">
                   {active && (
                     <span
                       key={`${index}-${playing ? "play" : "hold"}`}
