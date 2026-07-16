@@ -34,8 +34,10 @@ src/
   components/
     site/                           # Public site components (hero, process)
     admin/                          # Admin components (sidebar, uploader)
-  content/
-    process.ts                      # Copy + image slots for the process section
+  content/                          # Landing-page copy, nav items, image slots
+    process.ts                      #   process section
+    categories.ts                   #   category cards
+    navigation.ts                   #   navbar links
   lib/
     constants.ts                    # Upload limits, allowed types, helpers
     storage/                        # ← media storage abstraction
@@ -81,6 +83,8 @@ knows where files live:
 - [x] Homepage hero section (video)
 - [x] Homepage process section — sourcing, lab testing, production,
       feedback & value return (owner's four photos pending)
+- [x] Homepage category cards + transparent hero navbar (logo image and
+      real category pages pending)
 - [x] Admin: upload / replace / remove hero video
 - [x] Supabase-ready storage layer + schema
 - [ ] Supabase integration (keys pending)

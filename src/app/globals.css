@@ -21,6 +21,13 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/* Gentle scrolling for the navbar's in-page anchors */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
 /* Fill animation for the process-carousel step rail (see process-carousel.tsx) */
 @keyframes carousel-progress {
   from {
