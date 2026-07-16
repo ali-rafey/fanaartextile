@@ -2,6 +2,8 @@
 
 Next.js 16 App Router · TypeScript · Tailwind v4 · React 19. Sells premium
 lounge/loungewear fabric. Public site at `/`, admin portal at `/admin`.
+Brand ambition: an emerging leader in global textiles — voice is premium,
+confident, craft-led.
 
 ## Commands
 
@@ -19,7 +21,12 @@ lounge/loungewear fabric. Public site at `/`, admin portal at `/admin`.
 - Supabase clients live in `src/lib/supabase/` (browser / server / admin).
   The admin (service-role) client is `server-only`.
 - Brand palette is defined in `src/app/globals.css` (`@theme`): ivory, sand,
-  ink, clay, clay-deep.
+  ink, clay, clay-deep. Headline serif is Fraunces via the `font-display`
+  utility (loaded with next/font in `app/layout.tsx`).
+- Homepage section copy lives in `src/content/` (e.g. `process.ts`). Process
+  photos go in `public/images/process/`; wire one in by setting that step's
+  `image` path — placeholders render until then. Scroll-reveal animation is
+  `src/components/site/reveal.tsx`.
 
 ## Project rules
 

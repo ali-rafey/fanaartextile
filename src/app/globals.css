@@ -9,6 +9,11 @@
   --color-clay-deep: #8a5138;
 }
 
+@theme inline {
+  /* Headline serif (loaded via next/font in app/layout.tsx) */
+  --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
+}
+
 body {
   background-color: var(--color-ivory);
   color: var(--color-ink);

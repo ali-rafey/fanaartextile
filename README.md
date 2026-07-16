@@ -24,7 +24,7 @@ npm run dev        # http://localhost:3000
 ```
 src/
   app/
-    page.tsx                        # Homepage (hero section)
+    page.tsx                        # Homepage (hero + process section)
     admin/                          # Admin portal
       page.tsx                      #   Dashboard
       hero/page.tsx                 #   Hero video management
@@ -32,8 +32,10 @@ src/
       admin/hero-video/route.ts     # GET/POST/DELETE hero video (admin)
       hero-video/[filename]/route.ts# Streams local video w/ Range support
   components/
-    site/                           # Public site components (hero)
+    site/                           # Public site components (hero, process)
     admin/                          # Admin components (sidebar, uploader)
+  content/
+    process.ts                      # Copy + image slots for the process section
   lib/
     constants.ts                    # Upload limits, allowed types, helpers
     storage/                        # ← media storage abstraction
@@ -41,6 +43,8 @@ src/
       local.ts                      #   filesystem driver (default)
       supabase.ts                   #   Supabase driver (ready, needs keys)
     supabase/                       # Supabase clients (browser/server/admin)
+public/
+  images/process/                   # The four process photos land here
 supabase/
   schema.sql                        # Run once when integrating Supabase
 var/                                # gitignored — local uploads + manifests
@@ -75,6 +79,8 @@ knows where files live:
 ## Roadmap
 
 - [x] Homepage hero section (video)
+- [x] Homepage process section — sourcing, lab testing, production,
+      feedback & value return (owner's four photos pending)
 - [x] Admin: upload / replace / remove hero video
 - [x] Supabase-ready storage layer + schema
 - [ ] Supabase integration (keys pending)
