@@ -9,6 +9,9 @@ import type { HeroVideoMeta, StorageDriver } from "./types";
  * Layout:
  *   storage bucket `site-assets`, object `hero/hero-<ts>.<ext>`  — the video
  *   table `site_settings`, row key `hero_video`                  — metadata
+ *
+ * Files are uploaded verbatim — Supabase storage does not transcode, so the
+ * served video is bit-identical to what the admin selected.
  */
 export const SITE_ASSETS_BUCKET = "site-assets";
 const HERO_SETTINGS_KEY = "hero_video";
@@ -44,6 +47,9 @@ function toMeta(value: StoredHeroValue): HeroVideoMeta {
     mimeType: value.mimeType,
     size: value.size,
     uploadedAt: value.uploadedAt,
+    width: value.width,
+    height: value.height,
+    durationSec: value.durationSec,
   };
 }
 
@@ -53,25 +59,33 @@ export const supabaseDriver: StorageDriver = {
     return value ? toMeta(value) : null;
   },
 
-  async saveHeroVideo(file) {
+  async saveHeroVideo(upload) {
     const supabase = getSupabaseAdminClient();
     const previous = await readStoredValue();
 
-    const fileName = `hero-${Date.now()}.${safeExtension(file.name)}`;
+    const fileName = `hero-${Date.now()}.${safeExtension(upload.originalName)}`;
     const objectPath = `hero/${fileName}`;
+
+    // The storage SDK wants a sized body, so the stream is collected here.
+    // Large masters should move to direct-to-Supabase signed URL uploads
+    // (see README roadmap) so bytes bypass this server entirely.
+    const blob = await new Response(upload.body).blob();
 
     const { error: uploadError } = await supabase.storage
       .from(SITE_ASSETS_BUCKET)
-      .upload(objectPath, file, { contentType: file.type || "video/mp4" });
+      .upload(objectPath, blob, { contentType: upload.mimeType });
     if (uploadError) throw new Error(`Failed to upload hero video: ${uploadError.message}`);
 
     const value: StoredHeroValue = {
       path: objectPath,
       fileName,
-      originalName: file.name,
-      mimeType: file.type || "video/mp4",
-      size: file.size,
+      originalName: upload.originalName,
+      mimeType: upload.mimeType,
+      size: blob.size,
       uploadedAt: new Date().toISOString(),
+      width: upload.width,
+      height: upload.height,
+      durationSec: upload.durationSec,
     };
 
     const { error: upsertError } = await supabase

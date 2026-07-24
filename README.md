@@ -55,11 +55,35 @@ var/                                # gitignored — local uploads + manifests
 ## How the hero video works
 
 1. Admin uploads a video at `/admin/hero` (drag & drop or file picker, with progress).
-2. `POST /api/admin/hero-video` validates it (MP4/WebM/OGV/MOV, ≤ 200MB — see
-   `src/lib/constants.ts`) and hands it to the active **storage driver**.
+   The browser first reads the file's true pixel dimensions and sends them along.
+2. The file is `POST`ed to `/api/admin/hero-video` as the **raw request body**
+   (not multipart), so the server streams it straight to storage instead of
+   buffering it in memory — that is what makes large HD/4K masters practical.
+   Validated for type (MP4/WebM/OGV/MOV) and size (see `src/lib/constants.ts`).
 3. The homepage hero (`src/components/site/hero.tsx`) reads the current video
    from the same driver and plays it full-screen (autoplay, muted, looped).
    `revalidatePath("/")` keeps the statically rendered homepage fresh.
+
+### Video quality guarantees
+
+**Nothing is ever transcoded, compressed or resized.** The bytes served to
+visitors are bit-identical to the file the admin selected — verify any time with:
+
+```bash
+shasum -a 256 var/uploads/hero/<file>
+curl -s http://localhost:3000/api/hero-video/<file> | shasum -a 256
+```
+
+If the hero looks soft, the cause is almost always **source resolution**, not the
+pipeline: the hero fills the viewport, so on a 1440px-wide retina screen it is
+painted across ~2880 physical pixels. A 720×400 clip is upscaled ~4×; a 1080p
+master ~1.5×; a 4K master is downscaled and stays crisp. The admin shows each
+upload's resolution (e.g. `1920×1080 (Full HD)`) and warns when it is below
+`RECOMMENDED_MIN_HERO_HEIGHT` (1080p), so quality is never a guess.
+
+Upload ceiling is `MAX_HERO_VIDEO_MB` (1024MB by default) — override with
+`NEXT_PUBLIC_MAX_HERO_VIDEO_MB`. Keep it generous so masters never need
+pre-compressing.
 
 Storage is abstracted behind `StorageDriver` (`src/lib/storage`). The app never
 knows where files live:

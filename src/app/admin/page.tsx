@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { formatBytes } from "@/lib/constants";
+import { describeResolution, formatBytes } from "@/lib/constants";
 import { getStorage } from "@/lib/storage";
 
 // Always reflect the latest uploaded content in the admin.
@@ -40,7 +40,13 @@ export default async function AdminDashboardPage() {
           </div>
           <p className="mt-2 truncate text-sm text-stone-500">
             {heroVideo
-              ? `${heroVideo.originalName} · ${formatBytes(heroVideo.size)}`
+              ? [
+                  heroVideo.originalName,
+                  describeResolution(heroVideo.width, heroVideo.height),
+                  formatBytes(heroVideo.size),
+                ]
+                  .filter(Boolean)
+                  .join(" · ")
               : "Upload the full-screen video for the homepage."}
           </p>
           <p className="mt-4 text-sm font-medium text-clay group-hover:text-clay-deep">

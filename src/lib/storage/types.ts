@@ -10,6 +10,24 @@ export interface HeroVideoMeta {
   size: number;
   /** ISO timestamp of the upload. */
   uploadedAt: string;
+  /** Native pixel dimensions, measured in the browser before upload. */
+  width?: number;
+  height?: number;
+  durationSec?: number;
+}
+
+/**
+ * An incoming hero video. The body is a stream so large HD masters are
+ * written straight to storage instead of being buffered in memory.
+ */
+export interface HeroVideoUpload {
+  body: ReadableStream<Uint8Array>;
+  originalName: string;
+  mimeType: string;
+  size: number;
+  width?: number;
+  height?: number;
+  durationSec?: number;
 }
 
 /**
@@ -17,9 +35,12 @@ export interface HeroVideoMeta {
  * live. `local` (filesystem) is the default today; `supabase` takes over once
  * the Supabase project keys land in .env.local. Selected in storage/index.ts
  * via the STORAGE_DRIVER env var.
+ *
+ * Drivers store the uploaded bytes verbatim — no transcoding, resizing or
+ * re-encoding ever happens, so playback quality equals the source file.
  */
 export interface StorageDriver {
   getHeroVideo(): Promise<HeroVideoMeta | null>;
-  saveHeroVideo(file: File): Promise<HeroVideoMeta>;
+  saveHeroVideo(upload: HeroVideoUpload): Promise<HeroVideoMeta>;
   deleteHeroVideo(): Promise<void>;
 }

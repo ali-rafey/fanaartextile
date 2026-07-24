@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import {
   MAX_HERO_VIDEO_BYTES,
   MAX_HERO_VIDEO_MB,
+  RECOMMENDED_MIN_HERO_HEIGHT,
+  describeResolution,
   formatBytes,
   isAllowedVideoFile,
 } from "@/lib/constants";
@@ -12,9 +14,37 @@ import type { HeroVideoMeta } from "@/lib/storage/types";
 
 type Status =
   | { kind: "idle" }
+  | { kind: "reading" }
   | { kind: "uploading"; progress: number }
   | { kind: "success"; message: string }
   | { kind: "error"; message: string };
+
+type Probe = { width: number; height: number; durationSec: number };
+
+/**
+ * Reads the video's true pixel dimensions in the browser before uploading,
+ * so the admin can see exactly what resolution is going live.
+ */
+function probeVideo(file: File): Promise<Probe | null> {
+  return new Promise((resolve) => {
+    const url = URL.createObjectURL(file);
+    const probe = document.createElement("video");
+    probe.preload = "metadata";
+    probe.muted = true;
+    const done = (result: Probe | null) => {
+      URL.revokeObjectURL(url);
+      resolve(result);
+    };
+    probe.onloadedmetadata = () =>
+      done({
+        width: probe.videoWidth,
+        height: probe.videoHeight,
+        durationSec: Number.isFinite(probe.duration) ? probe.duration : 0,
+      });
+    probe.onerror = () => done(null);
+    probe.src = url;
+  });
+}
 
 export default function HeroVideoManager({
   initialVideo,
@@ -27,10 +57,10 @@ export default function HeroVideoManager({
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
-  const uploading = status.kind === "uploading";
+  const busy = status.kind === "uploading" || status.kind === "reading";
 
   const upload = useCallback(
-    (file: File) => {
+    async (file: File) => {
       if (!isAllowedVideoFile(file.name, file.type)) {
         setStatus({
           kind: "error",
@@ -46,11 +76,22 @@ export default function HeroVideoManager({
         return;
       }
 
+      setStatus({ kind: "reading" });
+      const probe = await probeVideo(file);
+
       setStatus({ kind: "uploading", progress: 0 });
 
-      // XMLHttpRequest instead of fetch so we get upload progress events.
+      // The file goes up as the raw request body (XHR still reports progress),
+      // so the server can stream it to storage without buffering it in memory.
       const xhr = new XMLHttpRequest();
       xhr.open("POST", "/api/admin/hero-video");
+      xhr.setRequestHeader("Content-Type", file.type || "application/octet-stream");
+      xhr.setRequestHeader("X-File-Name", encodeURIComponent(file.name));
+      if (probe) {
+        xhr.setRequestHeader("X-Video-Width", String(probe.width));
+        xhr.setRequestHeader("X-Video-Height", String(probe.height));
+        xhr.setRequestHeader("X-Video-Duration", String(Math.round(probe.durationSec)));
+      }
       xhr.upload.onprogress = (event) => {
         if (event.lengthComputable) {
           setStatus({ kind: "uploading", progress: event.loaded / event.total });
@@ -61,9 +102,13 @@ export default function HeroVideoManager({
           const body = JSON.parse(xhr.responseText);
           if (xhr.status >= 200 && xhr.status < 300) {
             setVideo(body.video);
+            const shortfall =
+              body.video?.height && body.video.height < RECOMMENDED_MIN_HERO_HEIGHT;
             setStatus({
               kind: "success",
-              message: "Hero video updated — it is now live on the homepage.",
+              message: shortfall
+                ? "Uploaded and live — but see the resolution note below."
+                : "Hero video updated — it is now live on the homepage.",
             });
             router.refresh();
           } else {
@@ -79,9 +124,7 @@ export default function HeroVideoManager({
       xhr.onerror = () =>
         setStatus({ kind: "error", message: "Network error during upload — try again." });
 
-      const formData = new FormData();
-      formData.append("file", file);
-      xhr.send(formData);
+      xhr.send(file);
     },
     [router]
   );
@@ -107,6 +150,9 @@ export default function HeroVideoManager({
 
   const openFilePicker = () => inputRef.current?.click();
 
+  const resolution = describeResolution(video?.width, video?.height);
+  const lowResolution = !!video?.height && video.height < RECOMMENDED_MIN_HERO_HEIGHT;
+
   return (
     <div className="mt-8 space-y-6">
       {video && (
@@ -127,11 +173,17 @@ export default function HeroVideoManager({
             className="mt-4 aspect-video w-full rounded-lg bg-ink object-contain"
           />
 
-          <dl className="mt-4 grid grid-cols-1 gap-x-6 gap-y-2 text-sm sm:grid-cols-3">
-            <div>
+          <dl className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 text-sm sm:grid-cols-4">
+            <div className="col-span-2 sm:col-span-1">
               <dt className="text-stone-400">File</dt>
               <dd className="truncate text-stone-700" title={video.originalName}>
                 {video.originalName}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-stone-400">Resolution</dt>
+              <dd className={lowResolution ? "font-medium text-amber-700" : "text-stone-700"}>
+                {resolution ?? "—"}
               </dd>
             </div>
             <div>
@@ -141,16 +193,26 @@ export default function HeroVideoManager({
             <div>
               <dt className="text-stone-400">Uploaded</dt>
               <dd className="text-stone-700" suppressHydrationWarning>
-                {new Date(video.uploadedAt).toLocaleString()}
+                {new Date(video.uploadedAt).toLocaleDateString()}
               </dd>
             </div>
           </dl>
+
+          {lowResolution && (
+            <p className="mt-4 rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-800">
+              <strong className="font-medium">This video is below Full HD.</strong> It plays at
+              its original quality — nothing is compressed on upload — but at{" "}
+              {video.width}×{video.height} it gets stretched to fill a full-screen hero, so it
+              looks soft on larger displays. Re-upload a {RECOMMENDED_MIN_HERO_HEIGHT}p or 4K
+              master for a crisp result.
+            </p>
+          )}
 
           <div className="mt-5 flex gap-3">
             <button
               type="button"
               onClick={openFilePicker}
-              disabled={uploading}
+              disabled={busy}
               className="rounded-lg bg-clay px-4 py-2 text-sm font-medium text-ivory transition-colors hover:bg-clay-deep disabled:cursor-not-allowed disabled:opacity-50"
             >
               Replace video
@@ -158,7 +220,7 @@ export default function HeroVideoManager({
             <button
               type="button"
               onClick={removeVideo}
-              disabled={uploading}
+              disabled={busy}
               className="rounded-lg border border-red-200 px-4 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Remove
@@ -177,7 +239,7 @@ export default function HeroVideoManager({
           event.preventDefault();
           setDragging(false);
           const file = event.dataTransfer.files?.[0];
-          if (file && !uploading) upload(file);
+          if (file && !busy) upload(file);
         }}
         className={`rounded-xl border-2 border-dashed p-10 text-center transition-colors ${
           dragging ? "border-clay bg-clay/5" : "border-stone-300 bg-white"
@@ -205,17 +267,22 @@ export default function HeroVideoManager({
           <button
             type="button"
             onClick={openFilePicker}
-            disabled={uploading}
+            disabled={busy}
             className="font-medium text-clay underline underline-offset-2 hover:text-clay-deep disabled:cursor-not-allowed disabled:opacity-50"
           >
             browse files
           </button>
         </p>
         <p className="mt-2 text-xs text-stone-400">
-          MP4, WebM or MOV · up to {MAX_HERO_VIDEO_MB}MB
+          MP4, WebM or MOV · up to {MAX_HERO_VIDEO_MB}MB · uploaded at full quality, never
+          compressed
         </p>
 
-        {uploading && status.kind === "uploading" && (
+        {status.kind === "reading" && (
+          <p className="mt-6 text-xs text-stone-500">Reading video…</p>
+        )}
+
+        {status.kind === "uploading" && (
           <div className="mx-auto mt-6 max-w-sm">
             <div className="h-2 overflow-hidden rounded-full bg-stone-200">
               <div

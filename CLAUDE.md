@@ -15,9 +15,16 @@ confident, craft-led.
   touch the filesystem or Supabase storage directly from routes/components.
   Driver picked by `STORAGE_DRIVER` env: `local` (default, writes to `var/`)
   or `supabase` (needs keys in `.env.local` + `supabase/schema.sql` run once).
-- Hero video: admin uploads via `POST /api/admin/hero-video`; local files are
-  streamed with Range support from `/api/hero-video/[filename]`; homepage is
-  static and refreshed with `revalidatePath("/")` after mutations.
+- Hero video: admin uploads via `POST /api/admin/hero-video` — the file is the
+  **raw request body** (headers carry `X-File-Name` and the browser-measured
+  `X-Video-Width/Height/Duration`) and is streamed to storage, never buffered.
+  Local files are streamed back with Range support from
+  `/api/hero-video/[filename]`; homepage is static and refreshed with
+  `revalidatePath("/")` after mutations.
+- **Never transcode, compress or resize uploaded media** — the storage layer
+  keeps bytes verbatim so playback matches the source exactly. Soft-looking
+  hero video means a low-resolution source being upscaled to full screen, not a
+  pipeline fault; the admin surfaces resolution and warns below 1080p.
 - Supabase clients live in `src/lib/supabase/` (browser / server / admin).
   The admin (service-role) client is `server-only`.
 - Brand palette is defined in `src/app/globals.css` (`@theme`): ivory, sand,
