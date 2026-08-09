@@ -1,6 +1,10 @@
-# Fanaar
+# Fanaar Textile
 
-Storefront + admin portal for **Fanaar**, a premium lounge-fabric brand.
+**The passion of textile.**
+
+Premium lounge & loungewear fabric — sourced, tested and finished to a single standard.
+
+<sub>The rest of this file is the technical readme for the storefront + admin portal.</sub>
 
 ## Stack
 
