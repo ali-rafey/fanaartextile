@@ -13,13 +13,13 @@ export interface NavItem {
 }
 
 export const NAV_LEFT: NavItem[] = [
-  { label: "Fabrics", href: "#categories" },
-  { label: "Threads", href: "#categories" },
-  { label: "Blogs", href: "#" },
+  { label: "Fabrics", href: "/#categories" },
+  { label: "Threads", href: "/threads" },
+  { label: "Blogs", href: "/blogs" },
 ];
 
 export const NAV_RIGHT: NavItem[] = [
-  { label: "About Us", href: "#process" },
-  { label: "Contact Us", href: "#" },
-  { label: "Feedback", href: "#" },
+  { label: "About Us", href: "/about" },
+  { label: "Contact Us", href: "/contact" },
+  { label: "Feedback", href: "/feedback" },
 ];

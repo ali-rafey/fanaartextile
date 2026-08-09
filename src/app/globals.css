@@ -4,9 +4,15 @@
   /* Fanaar brand palette — warm textile neutrals + clay accent */
   --color-ivory: #faf8f4;
   --color-sand: #ece5da;
+  --color-greige: #e3ddd2;
   --color-ink: #1b1815;
   --color-clay: #a9674b;
   --color-clay-deep: #8a5138;
+
+  /* Shared "buttery" easing — long, soft deceleration for every transition.
+     Exposed as `ease-lux` / `ease-glide` utilities (Tailwind v4 --ease-*). */
+  --ease-lux: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-glide: cubic-bezier(0.65, 0, 0.35, 1);
 }
 
 @theme inline {

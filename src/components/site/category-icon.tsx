@@ -1,8 +1,8 @@
 import type { CategoryId } from "@/content/categories";
 
 /**
- * Minimal line icons for the category placeholders (fabric layers from
- * Lucide (ISC), shirt from Lucide, thread spool hand-drawn to match).
+ * Minimal line icons for the fabric-family placeholders — only shown until real
+ * photography is wired into content/categories.ts.
  */
 export default function CategoryIcon({
   id,
@@ -16,36 +16,69 @@ export default function CategoryIcon({
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.5"
+      strokeWidth="1.4"
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden
       className={className}
     >
-      {id === "fabrics" && (
-        // stacked layers — folded fabric
+      {id === "cotton" && (
+        // cotton boll — a cluster of soft bolls on a stem
         <>
-          <path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z" />
-          <path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65" />
-          <path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65" />
+          <circle cx="12" cy="7.5" r="3.1" />
+          <circle cx="7.8" cy="12.4" r="3.1" />
+          <circle cx="16.2" cy="12.4" r="3.1" />
+          <circle cx="12" cy="15.2" r="2.9" />
+          <path d="M12 18.1V21" />
         </>
       )}
-      {id === "threads" && (
-        // thread spool with a loose tail
+      {id === "linen" && (
+        // basket weave — the plain over-under of a linen ground
         <>
-          <path d="M8 4h8" />
-          <path d="M8 20h8" />
-          <path d="M9.5 4v16" />
-          <path d="M14.5 4v16" />
-          <path d="M9.5 8.5h5" />
-          <path d="M9.5 12h5" />
-          <path d="M9.5 15.5h5" />
-          <path d="M14.5 18c2.5.5 4 1.5 5.5 3" />
+          <rect x="4" y="4" width="16" height="16" rx="1.5" />
+          <path d="M9 4v16M15 4v16M4 9h16M4 15h16" />
         </>
       )}
-      {id === "loungewear" && (
-        // shirt — finished garments
-        <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z" />
+      {id === "modal" && (
+        // fluid drape — soft vertical waves
+        <>
+          <path d="M7 3q2.4 3 0 6t0 6t0 6" />
+          <path d="M12 3q2.4 3 0 6t0 6t0 6" />
+          <path d="M17 3q2.4 3 0 6t0 6t0 6" />
+        </>
+      )}
+      {id === "bamboo" && (
+        // bamboo stalk — segmented cane with a pair of leaves
+        <>
+          <path d="M12 3v18" />
+          <path d="M9 7.5h6M9 12h6M9 16.5h6" />
+          <path d="M12 9.5c2.2-.4 3.8-2 3.8-2M12 14c-2.2-.4-3.8-2-3.8-2" />
+        </>
+      )}
+      {id === "polyester" && (
+        // continuous synthetic filaments
+        <>
+          <path d="M3 8.5q2.25-3 4.5 0t4.5 0t4.5 0t4.5 0" />
+          <path d="M3 13q2.25-3 4.5 0t4.5 0t4.5 0t4.5 0" />
+          <path d="M3 17.5q2.25-3 4.5 0t4.5 0t4.5 0t4.5 0" />
+        </>
+      )}
+      {id === "wool" && (
+        // ball of wool — wound strands
+        <>
+          <circle cx="12" cy="12" r="8.2" />
+          <path d="M5.1 7.7c3.4.9 8.1 4.1 11.2 8.6" />
+          <path d="M8.2 4.4c.8 3.3 3.6 8.2 6.6 11.1" />
+          <path d="M4.2 12.6c3.3-.7 8.4-.2 12.6 2.4" />
+        </>
+      )}
+      {id === "silk" && (
+        // flowing ribbon — the lustre and movement of silk
+        <>
+          <path d="M4 8.5c4-4 8 4 16 0" />
+          <path d="M4 13c4-4 8 4 16 0" />
+          <path d="M4 17.5c4-4 8 4 16 0" />
+        </>
       )}
     </svg>
   );

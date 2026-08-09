@@ -5,19 +5,19 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { NAV_LEFT, NAV_RIGHT } from "@/content/navigation";
 
-const desktopLink =
-  "relative text-xs whitespace-nowrap uppercase tracking-[0.18em] text-ivory/85 transition-colors hover:text-ivory " +
-  "after:absolute after:-bottom-1.5 after:left-0 after:h-px after:w-0 after:bg-ivory/80 " +
+const link =
+  "relative text-xs whitespace-nowrap uppercase tracking-[0.18em] text-ink/70 transition-colors hover:text-ink " +
+  "after:absolute after:-bottom-1.5 after:left-0 after:h-px after:w-0 after:bg-clay " +
   "after:transition-[width] after:duration-300 hover:after:w-full";
 
 /**
- * Transparent primary navbar floating over the hero video: three links left
- * (Fabrics / Threads / Blogs), the Fanaar mark centered, three links right
- * (About Us / Contact Us / Feedback). On wide screens it sits inset 20% from
- * each side and ~7.5% from the top per the brand spec; below that it
- * collapses to a centered mark with a menu button opening a full overlay.
+ * Light interior-page header — the counterpart to the transparent hero navbar
+ * on the homepage. Dark ink links on a translucent ivory bar that sticks to
+ * the top and blurs the content scrolling beneath it. Same three-left /
+ * mark-centre / three-right layout, collapsing to a mark + menu button below
+ * xl. Interior pages render this; the homepage keeps its own SiteNavbar.
  */
-export default function SiteNavbar() {
+export default function SiteHeader() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -34,40 +34,35 @@ export default function SiteNavbar() {
   }, [open]);
 
   return (
-    <>
-      <nav
-        aria-label="Primary"
-        className="absolute inset-x-6 top-7 z-20 [text-shadow:0_1px_14px_rgba(27,24,21,0.45)] xl:inset-x-[20%] xl:top-[7.5%]"
-      >
+    <header className="sticky top-0 z-40 border-b border-ink/10 bg-ivory/85 backdrop-blur-md">
+      <nav aria-label="Primary" className="mx-auto max-w-6xl px-6 py-5">
         <div className="grid grid-cols-[1fr_auto_1fr] items-center">
           <ul className="hidden items-center gap-7 xl:flex">
             {NAV_LEFT.map((item) => (
               <li key={item.label}>
-                <Link href={item.href} className={desktopLink}>
+                <Link href={item.href} className={link}>
                   {item.label}
                 </Link>
               </li>
             ))}
           </ul>
-          {/* keeps the mark centered while the links are collapsed */}
           <span aria-hidden className="xl:hidden" />
 
-          {/* Brand mark — Fanaar calligraphy, ivory over the dark hero video */}
           <Link href="/" className="group justify-self-center" aria-label="Fanaar — home">
             <Image
-              src="/images/brand/logo-ivory.png"
+              src="/images/brand/logo-ink.png"
               alt="Fanaar"
               width={1131}
               height={823}
               priority
-              className="h-9 w-auto opacity-90 transition-opacity duration-500 ease-lux group-hover:opacity-100 xl:h-11"
+              className="h-8 w-auto opacity-90 transition-opacity duration-500 ease-lux group-hover:opacity-100 xl:h-10"
             />
           </Link>
 
           <ul className="hidden items-center gap-7 justify-self-end xl:flex">
             {NAV_RIGHT.map((item) => (
               <li key={item.label}>
-                <Link href={item.href} className={desktopLink}>
+                <Link href={item.href} className={link}>
                   {item.label}
                 </Link>
               </li>
@@ -79,7 +74,7 @@ export default function SiteNavbar() {
             aria-expanded={open}
             aria-controls="site-menu"
             aria-label="Open menu"
-            className="justify-self-end p-1 text-ivory/90 transition-colors hover:text-ivory xl:hidden"
+            className="justify-self-end p-1 text-ink/80 transition-colors hover:text-ink xl:hidden"
           >
             <svg
               viewBox="0 0 24 24"
@@ -111,7 +106,7 @@ export default function SiteNavbar() {
               alt="Fanaar"
               width={1131}
               height={823}
-              className="h-9 w-auto"
+              className="h-8 w-auto"
             />
             <button
               autoFocus
@@ -150,6 +145,6 @@ export default function SiteNavbar() {
           </ul>
         </div>
       )}
-    </>
+    </header>
   );
 }

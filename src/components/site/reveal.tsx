@@ -44,8 +44,8 @@ export default function Reveal({ children, delay = 0, className = "" }: RevealPr
     <div
       ref={ref}
       style={{ transitionDelay: `${delay}ms` }}
-      className={`transition-[opacity,transform] duration-700 ease-out ${
-        hidden ? "translate-y-6 opacity-0" : "translate-y-0 opacity-100"
+      className={`transition-[opacity,transform] duration-[900ms] ease-lux ${
+        hidden ? "translate-y-8 opacity-0" : "translate-y-0 opacity-100"
       } ${className}`}
     >
       {children}
