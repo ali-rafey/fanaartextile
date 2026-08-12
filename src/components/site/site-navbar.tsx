@@ -6,9 +6,7 @@ import { useEffect, useState } from "react";
 import { NAV_LEFT, NAV_RIGHT } from "@/content/navigation";
 
 const desktopLink =
-  "relative text-xs whitespace-nowrap uppercase tracking-[0.18em] text-ivory/85 transition-colors hover:text-ivory " +
-  "after:absolute after:-bottom-1.5 after:left-0 after:h-px after:w-0 after:bg-ivory/80 " +
-  "after:transition-[width] after:duration-300 hover:after:w-full";
+  "text-xs whitespace-nowrap uppercase tracking-[0.18em] text-ivory/85 transition-colors duration-300 ease-lux hover:text-ivory";
 
 /**
  * Transparent primary navbar floating over the hero video: three links left

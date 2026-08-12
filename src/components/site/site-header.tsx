@@ -6,9 +6,7 @@ import { useEffect, useState } from "react";
 import { NAV_LEFT, NAV_RIGHT } from "@/content/navigation";
 
 const link =
-  "relative text-xs whitespace-nowrap uppercase tracking-[0.18em] text-ink/70 transition-colors hover:text-ink " +
-  "after:absolute after:-bottom-1.5 after:left-0 after:h-px after:w-0 after:bg-clay " +
-  "after:transition-[width] after:duration-300 hover:after:w-full";
+  "text-xs whitespace-nowrap uppercase tracking-[0.18em] text-ink/70 transition-colors duration-300 ease-lux hover:text-ink";
 
 /**
  * Light interior-page header — the counterpart to the transparent hero navbar
