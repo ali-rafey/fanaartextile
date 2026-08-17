@@ -26,7 +26,9 @@ export default async function DashboardLayout({
   }
 
   if (!isAdminEmail(email)) {
-    redirect("/admin/login");
+    // Signed in but not on the ADMIN_EMAILS allowlist → explain it; otherwise
+    // it's simply a missing session.
+    redirect(email ? "/admin/login?error=forbidden" : "/admin/login");
   }
 
   return (

@@ -45,6 +45,10 @@ export async function updateSession(request: NextRequest) {
   if (!onLogin && !admin) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = "/admin/login";
+    redirectUrl.search = "";
+    // Distinguish "signed in but not on the allowlist" (ADMIN_EMAILS) from
+    // "not signed in" so the login page can explain the former.
+    if (user) redirectUrl.searchParams.set("error", "forbidden");
     return NextResponse.redirect(redirectUrl);
   }
 

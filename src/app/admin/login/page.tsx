@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
 export default function AdminLoginPage() {
@@ -8,6 +8,14 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  // Redirected here after signing in with an account that isn't on the
+  // ADMIN_EMAILS allowlist (or the allowlist is unset on the host).
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("error") === "forbidden") {
+      setError("This account isn't authorised for the admin portal.");
+    }
+  }, []);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
