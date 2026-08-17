@@ -12,12 +12,20 @@ import { getSupabaseServerClient } from "@/lib/supabase/server";
 export default async function DashboardLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const supabase = await getSupabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  let email: string | null | undefined;
+  try {
+    const supabase = await getSupabaseServerClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    email = user?.email;
+  } catch {
+    // Supabase not configured (e.g. env vars missing on the host) or no
+    // session — send to login rather than crashing the route.
+    redirect("/admin/login");
+  }
 
-  if (!isAdminEmail(user?.email)) {
+  if (!isAdminEmail(email)) {
     redirect("/admin/login");
   }
 

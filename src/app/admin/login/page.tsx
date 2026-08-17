@@ -16,22 +16,31 @@ export default function AdminLoginPage() {
     setLoading(true);
     setError(null);
 
-    const supabase = getSupabaseBrowserClient();
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      const supabase = getSupabaseBrowserClient();
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    if (signInError) {
-      setError(signInError.message);
+      if (signInError) {
+        setError(signInError.message);
+        setLoading(false);
+        return;
+      }
+
+      // Session cookie is now set — let the server (middleware + layout) verify
+      // the admin allowlist and route accordingly.
+      router.replace("/admin");
+      router.refresh();
+    } catch {
+      // Thrown when Supabase env vars are missing on the host (build-time
+      // NEXT_PUBLIC_* not set). Surface it instead of failing silently.
+      setError(
+        "Sign-in is unavailable — the server is missing its Supabase configuration."
+      );
       setLoading(false);
-      return;
     }
-
-    // Session cookie is now set — let the server (middleware + layout) verify
-    // the admin allowlist and route accordingly.
-    router.replace("/admin");
-    router.refresh();
   }
 
   const field =
