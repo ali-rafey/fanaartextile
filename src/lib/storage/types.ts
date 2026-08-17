@@ -39,8 +39,36 @@ export interface HeroVideoUpload {
  * Drivers store the uploaded bytes verbatim — no transcoding, resizing or
  * re-encoding ever happens, so playback quality equals the source file.
  */
+/** Where the browser should PUT the bytes for a direct-to-storage upload. */
+export interface DirectUploadTarget {
+  signedUrl: string;
+  /** Object path inside the bucket, echoed back on commit. */
+  path: string;
+}
+
+/** Metadata recorded once a direct upload has finished. */
+export interface DirectUploadCommit {
+  path: string;
+  originalName: string;
+  mimeType: string;
+  size: number;
+  width?: number;
+  height?: number;
+  durationSec?: number;
+}
+
 export interface StorageDriver {
   getHeroVideo(): Promise<HeroVideoMeta | null>;
   saveHeroVideo(upload: HeroVideoUpload): Promise<HeroVideoMeta>;
   deleteHeroVideo(): Promise<void>;
+
+  /**
+   * Optional direct-upload pair. When a driver implements these, the browser
+   * sends the file straight to the storage provider and the app server only
+   * records metadata — essential on hosts like Vercel, whose serverless
+   * functions cap request bodies at ~4.5MB. Drivers without them (local fs)
+   * keep using the streaming saveHeroVideo path.
+   */
+  createHeroUploadTarget?(originalName: string): Promise<DirectUploadTarget>;
+  commitHeroVideo?(commit: DirectUploadCommit): Promise<HeroVideoMeta>;
 }

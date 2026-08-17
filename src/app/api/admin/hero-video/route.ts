@@ -1,34 +1,18 @@
 import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
-import { isAdminEmail } from "@/lib/auth";
+import { isAdminRequest, unauthorized } from "@/lib/admin-guard";
 import {
   MAX_HERO_VIDEO_BYTES,
   MAX_HERO_VIDEO_MB,
   isAllowedVideoFile,
 } from "@/lib/constants";
 import { getStorage } from "@/lib/storage";
-import { getSupabaseServerClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
 
-/** Every handler below requires a signed-in admin (see ADMIN_EMAILS). */
-async function requireAdmin(): Promise<boolean> {
-  try {
-    const supabase = await getSupabaseServerClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    return isAdminEmail(user?.email);
-  } catch {
-    return false;
-  }
-}
-
-const unauthorized = () => NextResponse.json({ error: "Unauthorized." }, { status: 401 });
-
 /** Current hero video metadata (used for debugging / future admin needs). */
 export async function GET() {
-  if (!(await requireAdmin())) return unauthorized();
+  if (!(await isAdminRequest())) return unauthorized();
   try {
     const video = await getStorage().getHeroVideo();
     return NextResponse.json({ video });
@@ -79,7 +63,7 @@ function limitBytes(source: ReadableStream<Uint8Array>, maxBytes: number) {
  * in the browser before upload.
  */
 export async function POST(request: NextRequest) {
-  if (!(await requireAdmin())) return unauthorized();
+  if (!(await isAdminRequest())) return unauthorized();
   try {
     const rawName = request.headers.get("x-file-name");
     if (!rawName || !request.body) {
@@ -136,7 +120,7 @@ export async function POST(request: NextRequest) {
 
 /** Remove the current hero video — the homepage falls back to the placeholder. */
 export async function DELETE() {
-  if (!(await requireAdmin())) return unauthorized();
+  if (!(await isAdminRequest())) return unauthorized();
   try {
     await getStorage().deleteHeroVideo();
     revalidatePath("/");

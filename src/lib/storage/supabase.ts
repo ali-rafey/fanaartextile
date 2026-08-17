@@ -1,5 +1,10 @@
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
-import type { HeroVideoMeta, StorageDriver } from "./types";
+import type {
+  DirectUploadCommit,
+  DirectUploadTarget,
+  HeroVideoMeta,
+  StorageDriver,
+} from "./types";
 
 /**
  * Supabase-backed driver. Becomes active when STORAGE_DRIVER=supabase and the
@@ -98,6 +103,57 @@ export const supabaseDriver: StorageDriver = {
     }
 
     if (previous && previous.path !== objectPath) {
+      await supabase.storage.from(SITE_ASSETS_BUCKET).remove([previous.path]);
+    }
+
+    return toMeta(value);
+  },
+
+  /**
+   * Mint a short-lived signed URL the browser uploads to directly. Keeps large
+   * masters off the app server entirely (Vercel functions cap bodies at ~4.5MB)
+   * and the bytes still land in Supabase verbatim — nothing is transcoded.
+   */
+  async createHeroUploadTarget(originalName: string): Promise<DirectUploadTarget> {
+    const supabase = getSupabaseAdminClient();
+    const objectPath = `hero/hero-${Date.now()}.${safeExtension(originalName)}`;
+
+    const { data, error } = await supabase.storage
+      .from(SITE_ASSETS_BUCKET)
+      .createSignedUploadUrl(objectPath);
+    if (error || !data) {
+      throw new Error(`Failed to create upload URL: ${error?.message ?? "unknown error"}`);
+    }
+    return { signedUrl: data.signedUrl, path: data.path ?? objectPath };
+  },
+
+  /** Record metadata for a file the browser already uploaded. */
+  async commitHeroVideo(commit: DirectUploadCommit): Promise<HeroVideoMeta> {
+    const supabase = getSupabaseAdminClient();
+    const previous = await readStoredValue();
+
+    const value: StoredHeroValue = {
+      path: commit.path,
+      fileName: commit.path.split("/").pop() ?? commit.path,
+      originalName: commit.originalName,
+      mimeType: commit.mimeType,
+      size: commit.size,
+      uploadedAt: new Date().toISOString(),
+      width: commit.width,
+      height: commit.height,
+      durationSec: commit.durationSec,
+    };
+
+    const { error } = await supabase
+      .from("site_settings")
+      .upsert({ key: HERO_SETTINGS_KEY, value, updated_at: new Date().toISOString() });
+    if (error) {
+      // Don't leave an orphaned object behind if the metadata write failed.
+      await supabase.storage.from(SITE_ASSETS_BUCKET).remove([commit.path]);
+      throw new Error(`Failed to save hero video settings: ${error.message}`);
+    }
+
+    if (previous && previous.path !== commit.path) {
       await supabase.storage.from(SITE_ASSETS_BUCKET).remove([previous.path]);
     }
 

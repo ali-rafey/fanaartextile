@@ -46,6 +46,27 @@ function probeVideo(file: File): Promise<Probe | null> {
   });
 }
 
+/** XHR so upload progress is reportable (fetch cannot report it). */
+function sendWithProgress(
+  method: "PUT" | "POST",
+  url: string,
+  file: File,
+  onProgress: (fraction: number) => void,
+  headers: Record<string, string> = {}
+): Promise<{ status: number; text: string }> {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open(method, url);
+    Object.entries(headers).forEach(([key, value]) => xhr.setRequestHeader(key, value));
+    xhr.upload.onprogress = (event) => {
+      if (event.lengthComputable) onProgress(event.loaded / event.total);
+    };
+    xhr.onload = () => resolve({ status: xhr.status, text: xhr.responseText });
+    xhr.onerror = () => reject(new Error("Network error during upload — try again."));
+    xhr.send(file);
+  });
+}
+
 export default function HeroVideoManager({
   initialVideo,
 }: {
@@ -80,51 +101,87 @@ export default function HeroVideoManager({
       const probe = await probeVideo(file);
 
       setStatus({ kind: "uploading", progress: 0 });
+      const onProgress = (progress: number) => setStatus({ kind: "uploading", progress });
 
-      // The file goes up as the raw request body (XHR still reports progress),
-      // so the server can stream it to storage without buffering it in memory.
-      const xhr = new XMLHttpRequest();
-      xhr.open("POST", "/api/admin/hero-video");
-      xhr.setRequestHeader("Content-Type", file.type || "application/octet-stream");
-      xhr.setRequestHeader("X-File-Name", encodeURIComponent(file.name));
-      if (probe) {
-        xhr.setRequestHeader("X-Video-Width", String(probe.width));
-        xhr.setRequestHeader("X-Video-Height", String(probe.height));
-        xhr.setRequestHeader("X-Video-Duration", String(Math.round(probe.durationSec)));
-      }
-      xhr.upload.onprogress = (event) => {
-        if (event.lengthComputable) {
-          setStatus({ kind: "uploading", progress: event.loaded / event.total });
-        }
+      const finish = (saved: HeroVideoMeta) => {
+        setVideo(saved);
+        const shortfall = saved?.height && saved.height < RECOMMENDED_MIN_HERO_HEIGHT;
+        setStatus({
+          kind: "success",
+          message: shortfall
+            ? "Uploaded and live — but see the resolution note below."
+            : "Hero video updated — it is now live on the homepage.",
+        });
+        router.refresh();
       };
-      xhr.onload = () => {
-        try {
-          const body = JSON.parse(xhr.responseText);
-          if (xhr.status >= 200 && xhr.status < 300) {
-            setVideo(body.video);
-            const shortfall =
-              body.video?.height && body.video.height < RECOMMENDED_MIN_HERO_HEIGHT;
-            setStatus({
-              kind: "success",
-              message: shortfall
-                ? "Uploaded and live — but see the resolution note below."
-                : "Hero video updated — it is now live on the homepage.",
-            });
-            router.refresh();
-          } else {
-            setStatus({
-              kind: "error",
-              message: body.error ?? `Upload failed (HTTP ${xhr.status}).`,
-            });
+
+      try {
+        // Prefer a direct-to-storage upload: on serverless hosts the file must
+        // bypass the app server entirely (Vercel caps request bodies at ~4.5MB).
+        const targetRes = await fetch("/api/admin/hero-video/upload-url", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ originalName: file.name, mimeType: file.type }),
+        });
+        const target = await targetRes.json();
+        if (!targetRes.ok) throw new Error(target.error ?? "Could not start the upload.");
+
+        if (target.supported) {
+          const put = await sendWithProgress("PUT", target.signedUrl, file, onProgress, {
+            "Content-Type": file.type || "application/octet-stream",
+            "x-upsert": "true",
+          });
+          if (put.status < 200 || put.status >= 300) {
+            throw new Error(`Upload to storage failed (HTTP ${put.status}).`);
           }
-        } catch {
-          setStatus({ kind: "error", message: `Upload failed (HTTP ${xhr.status}).` });
-        }
-      };
-      xhr.onerror = () =>
-        setStatus({ kind: "error", message: "Network error during upload — try again." });
 
-      xhr.send(file);
+          const commitRes = await fetch("/api/admin/hero-video/commit", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              path: target.path,
+              originalName: file.name,
+              mimeType: file.type || "video/mp4",
+              size: file.size,
+              width: probe?.width,
+              height: probe?.height,
+              durationSec: probe ? Math.round(probe.durationSec) : undefined,
+            }),
+          });
+          const committed = await commitRes.json();
+          if (!commitRes.ok) throw new Error(committed.error ?? "Could not save the video.");
+          finish(committed.video);
+          return;
+        }
+
+        // Local filesystem driver — stream the raw body through the app server.
+        const headers: Record<string, string> = {
+          "Content-Type": file.type || "application/octet-stream",
+          "X-File-Name": encodeURIComponent(file.name),
+        };
+        if (probe) {
+          headers["X-Video-Width"] = String(probe.width);
+          headers["X-Video-Height"] = String(probe.height);
+          headers["X-Video-Duration"] = String(Math.round(probe.durationSec));
+        }
+        const res = await sendWithProgress(
+          "POST",
+          "/api/admin/hero-video",
+          file,
+          onProgress,
+          headers
+        );
+        const body = JSON.parse(res.text);
+        if (res.status < 200 || res.status >= 300) {
+          throw new Error(body.error ?? `Upload failed (HTTP ${res.status}).`);
+        }
+        finish(body.video);
+      } catch (error) {
+        setStatus({
+          kind: "error",
+          message: error instanceof Error ? error.message : "Upload failed — try again.",
+        });
+      }
     },
     [router]
   );
