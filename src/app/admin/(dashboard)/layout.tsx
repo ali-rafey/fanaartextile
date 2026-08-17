@@ -31,7 +31,7 @@ export default async function DashboardLayout({
 
   return (
     <div className="flex min-h-svh bg-stone-100">
-      <AdminSidebar adminEmail={user!.email!} />
+      <AdminSidebar adminEmail={email!} />
       <main className="flex-1 px-8 py-10">{children}</main>
     </div>
   );
