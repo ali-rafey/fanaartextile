@@ -13,7 +13,7 @@ export interface NavItem {
 }
 
 export const NAV_LEFT: NavItem[] = [
-  { label: "Fabrics", href: "/#categories" },
+  { label: "Fabrics", href: "/fabrics" },
   { label: "Threads", href: "/threads" },
   { label: "Blogs", href: "/blogs" },
 ];

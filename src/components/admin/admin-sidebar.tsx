@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
 const NAV_LINKS = [
   { href: "/admin", label: "Dashboard", exact: true },
@@ -11,8 +12,15 @@ const NAV_LINKS = [
 // Roadmap modules — enabled one by one as they are built.
 const PLANNED = ["Products", "Categories", "Blogs", "Feedback"];
 
-export default function AdminSidebar() {
+export default function AdminSidebar({ adminEmail }: { adminEmail: string }) {
   const pathname = usePathname();
+  const router = useRouter();
+
+  async function signOut() {
+    await getSupabaseBrowserClient().auth.signOut();
+    router.replace("/admin/login");
+    router.refresh();
+  }
 
   return (
     <aside className="flex w-60 shrink-0 flex-col bg-ink text-stone-300">
@@ -66,10 +74,22 @@ export default function AdminSidebar() {
         </div>
       </nav>
 
-      <div className="px-6 py-5">
-        <Link href="/" className="text-xs text-stone-500 transition-colors hover:text-ivory">
-          ← View site
-        </Link>
+      <div className="border-t border-stone-800 px-6 py-5">
+        <p className="truncate text-[11px] text-stone-500" title={adminEmail}>
+          {adminEmail}
+        </p>
+        <div className="mt-3 flex items-center justify-between">
+          <Link href="/" className="text-xs text-stone-500 transition-colors hover:text-ivory">
+            ← View site
+          </Link>
+          <button
+            type="button"
+            onClick={signOut}
+            className="text-xs text-stone-400 transition-colors hover:text-ivory"
+          >
+            Sign out
+          </button>
+        </div>
       </div>
     </aside>
   );

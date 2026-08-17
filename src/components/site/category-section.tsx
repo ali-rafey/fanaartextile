@@ -166,10 +166,10 @@ export default function CategorySection() {
             [ ← ]
           </button>
           <Link
-            href={current.href}
-            className="text-ink underline-offset-4 transition-colors duration-300 ease-lux hover:text-clay hover:underline"
+            href="/fabrics"
+            className="text-ink transition-colors duration-300 ease-lux hover:text-clay"
           >
-            View collection
+            View fabrics
           </Link>
           <button
             type="button"
