@@ -5,7 +5,8 @@ import BlogPlaceholder from "@/components/site/blog-placeholder";
 import Reveal from "@/components/site/reveal";
 import SiteFooter from "@/components/site/site-footer";
 import SiteHeader from "@/components/site/site-header";
-import { BLOG_INDEX, BLOG_POSTS } from "@/content/blogs";
+import { BLOG_INDEX } from "@/content/blogs";
+import { listPublishedPosts } from "@/lib/db/blogs";
 
 export const metadata: Metadata = {
   title: "Journal",
@@ -25,7 +26,9 @@ const TILES = [
   { w: "w-40 sm:w-44 md:w-52", y: "md:translate-y-10", ar: "aspect-[4/5]", r: "" },
 ];
 
-export default function BlogsPage() {
+export default async function BlogsPage() {
+  const posts = await listPublishedPosts();
+
   return (
     <>
       <SiteHeader />
@@ -46,7 +49,7 @@ export default function BlogsPage() {
         {/* Scattered archive gallery */}
         <Reveal className="relative w-full overflow-hidden pt-16 pb-24 md:pt-24 md:pb-32">
           <div className="flex flex-wrap items-center justify-center gap-6 md:flex-nowrap md:gap-7">
-            {BLOG_POSTS.map((post, i) => {
+            {posts.map((post, i) => {
               const tile = TILES[i % TILES.length];
               return (
                 <Link

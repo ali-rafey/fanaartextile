@@ -5,11 +5,11 @@ import Reveal from "@/components/site/reveal";
 import SiteFooter from "@/components/site/site-footer";
 import SiteHeader from "@/components/site/site-header";
 import {
-  FABRICS,
   FABRICS_CATEGORIES,
   FABRICS_FEATURED,
   FABRICS_INDEX,
 } from "@/content/fabrics";
+import { listPublishedFabrics } from "@/lib/db/fabrics";
 
 export const metadata: Metadata = {
   title: "Fabrics",
@@ -17,7 +17,9 @@ export const metadata: Metadata = {
     "The Fanaar fabric library — featured edits and every construction: twill, jersey, piqué, fleece and more, each with its own specification, character and best use.",
 };
 
-export default function FabricsPage() {
+export default async function FabricsPage() {
+  const fabrics = await listPublishedFabrics();
+
   return (
     <>
       <SiteHeader />
@@ -84,7 +86,7 @@ export default function FabricsPage() {
             </Reveal>
 
             <div className="mt-14 grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
-              {FABRICS.map((fabric, i) => (
+              {fabrics.map((fabric, i) => (
                 <Reveal key={fabric.slug} delay={(i % 3) * 110}>
                   <Link href={`/fabrics/${fabric.slug}`} className="group block">
                     <div className="relative aspect-[4/5] overflow-hidden bg-ink/5">

@@ -7,10 +7,10 @@ import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 const NAV_LINKS = [
   { href: "/admin", label: "Dashboard", exact: true },
   { href: "/admin/hero", label: "Hero Video", exact: false },
+  { href: "/admin/fabrics", label: "Fabrics", exact: false },
+  { href: "/admin/blogs", label: "Journal", exact: false },
+  { href: "/admin/feedback", label: "Feedback", exact: false },
 ];
-
-// Roadmap modules — enabled one by one as they are built.
-const PLANNED = ["Products", "Categories", "Blogs", "Feedback"];
 
 export default function AdminSidebar({ adminEmail }: { adminEmail: string }) {
   const pathname = usePathname();
@@ -54,22 +54,6 @@ export default function AdminSidebar({ adminEmail }: { adminEmail: string }) {
           );
         })}
 
-        <div className="mt-6 border-t border-stone-800 pt-4">
-          <p className="px-3 pb-2 text-[11px] uppercase tracking-widest text-stone-600">
-            Coming soon
-          </p>
-          {PLANNED.map((label) => (
-            <span
-              key={label}
-              className="flex cursor-not-allowed items-center justify-between px-3 py-2 text-sm text-stone-600"
-            >
-              {label}
-              <span className="rounded-full border border-stone-700 px-2 py-0.5 text-[10px] uppercase tracking-wider">
-                Soon
-              </span>
-            </span>
-          ))}
-        </div>
       </nav>
 
       <div className="border-t border-stone-800 px-6 py-5">

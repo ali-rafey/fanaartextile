@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { BLOG_SECTION, FEATURED_BLOGS } from "@/content/blogs";
+import { BLOG_SECTION } from "@/content/blogs";
+import { listPublishedPosts } from "@/lib/db/blogs";
 import BlogPlaceholder from "./blog-placeholder";
 import Reveal from "./reveal";
 
@@ -11,7 +12,9 @@ import Reveal from "./reveal";
  * still, an excerpt and a READ link. No cards, lots of air — the passion of
  * textile laid out like a printed spread. Copy lives in content/blogs.ts.
  */
-export default function FeaturedBlogs() {
+export default async function FeaturedBlogs() {
+  const posts = (await listPublishedPosts()).slice(0, 3);
+
   return (
     <section
       id="journal"
@@ -36,7 +39,7 @@ export default function FeaturedBlogs() {
               </div>
 
               <ul className="mt-12 space-y-1.5 font-mono text-[0.7rem] uppercase tracking-[0.15em] text-ink/45 md:mt-0">
-                {FEATURED_BLOGS.map((post) => (
+                {posts.map((post) => (
                   <li key={post.id}>{post.date}</li>
                 ))}
               </ul>
@@ -46,7 +49,7 @@ export default function FeaturedBlogs() {
           {/* Entries */}
           <div className="md:col-span-8 lg:col-span-9">
             <div className="grid gap-x-8 gap-y-12 sm:grid-cols-3 md:pt-10">
-              {FEATURED_BLOGS.map((post, i) => (
+              {posts.map((post, i) => (
                 <Reveal key={post.id} delay={i * 110}>
                   <article className="flex h-full flex-col">
                     <div className="flex items-baseline justify-between font-mono text-[0.65rem] uppercase tracking-[0.2em]">

@@ -20,11 +20,36 @@ export default function FeedbackForm() {
   const [sent, setSent] = useState(false);
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    // TODO: replace with a real submission once the backend exists.
-    setSent(true);
+    const data = new FormData(event.currentTarget);
+    setSending(true);
+    setError(null);
+
+    try {
+      const res = await fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          kind: "feedback",
+          name: data.get("name"),
+          email: data.get("email"),
+          topic: data.get("category"),
+          rating: rating || null,
+          message: data.get("message"),
+        }),
+      });
+      const body = await res.json();
+      if (!res.ok) throw new Error(body.error ?? "Could not send your feedback.");
+      setSent(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not send your feedback.");
+    } finally {
+      setSending(false);
+    }
   }
 
   if (sent) {
@@ -134,11 +159,16 @@ export default function FeedbackForm() {
         <textarea id="fb-message" name="message" rows={5} required className={`mt-2 resize-y ${field}`} />
       </div>
 
+      {error ? (
+        <p className="mt-5 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>
+      ) : null}
+
       <button
         type="submit"
-        className="mt-7 inline-flex w-full items-center justify-center rounded-full bg-ink px-8 py-3.5 text-sm font-medium tracking-wide text-ivory transition-colors duration-300 hover:bg-clay-deep focus-visible:ring-2 focus-visible:ring-clay focus-visible:ring-offset-2 focus-visible:ring-offset-ivory focus-visible:outline-none sm:w-auto"
+        disabled={sending}
+        className="mt-7 inline-flex w-full items-center justify-center rounded-full bg-ink px-8 py-3.5 text-sm font-medium tracking-wide text-ivory transition-colors duration-300 hover:bg-clay-deep focus-visible:ring-2 focus-visible:ring-clay focus-visible:ring-offset-2 focus-visible:ring-offset-ivory focus-visible:outline-none disabled:opacity-60 sm:w-auto"
       >
-        Submit feedback
+        {sending ? "Sending…" : "Submit feedback"}
       </button>
     </form>
   );

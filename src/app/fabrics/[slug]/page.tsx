@@ -5,7 +5,8 @@ import { notFound } from "next/navigation";
 import Reveal from "@/components/site/reveal";
 import SiteFooter from "@/components/site/site-footer";
 import SiteHeader from "@/components/site/site-header";
-import { FABRIC_CTA, FABRICS, getFabric } from "@/content/fabrics";
+import { FABRIC_CTA, FABRICS } from "@/content/fabrics";
+import { getPublishedFabric, listPublishedFabrics } from "@/lib/db/fabrics";
 
 export function generateStaticParams() {
   return FABRICS.map((fabric) => ({ slug: fabric.slug }));
@@ -17,7 +18,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const fabric = getFabric(slug);
+  const fabric = await getPublishedFabric(slug);
   if (!fabric) return { title: "Fabric not found" };
   return {
     title: fabric.name,
@@ -31,7 +32,7 @@ export default async function FabricDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const fabric = getFabric(slug);
+  const fabric = await getPublishedFabric(slug);
   if (!fabric) notFound();
 
   const specRows: { label: string; value: string }[] = [
@@ -43,7 +44,9 @@ export default async function FabricDetailPage({
     { label: "Width", value: fabric.specs.width },
   ];
 
-  const related = FABRICS.filter((f) => f.slug !== fabric.slug).slice(0, 3);
+  const related = (await listPublishedFabrics())
+    .filter((f) => f.slug !== fabric.slug)
+    .slice(0, 3);
 
   return (
     <>
