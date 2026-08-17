@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
 const NAV_LINKS = [
@@ -14,12 +14,10 @@ const PLANNED = ["Products", "Categories", "Blogs", "Feedback"];
 
 export default function AdminSidebar({ adminEmail }: { adminEmail: string }) {
   const pathname = usePathname();
-  const router = useRouter();
 
   async function signOut() {
     await getSupabaseBrowserClient().auth.signOut();
-    router.replace("/admin/login");
-    router.refresh();
+    window.location.assign("/admin/login");
   }
 
   return (

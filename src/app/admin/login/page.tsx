@@ -1,11 +1,9 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
 export default function AdminLoginPage() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -29,10 +27,11 @@ export default function AdminLoginPage() {
         return;
       }
 
-      // Session cookie is now set — let the server (middleware + layout) verify
-      // the admin allowlist and route accordingly.
-      router.replace("/admin");
-      router.refresh();
+      // Session cookie is now set. Use a HARD navigation (full reload) rather
+      // than a client-side route change: on hosts like Vercel a soft navigation
+      // can race the freshly-written auth cookie, leaving /admin stuck. A full
+      // load guarantees middleware + the server layout see the session.
+      window.location.assign("/admin");
     } catch {
       // Thrown when Supabase env vars are missing on the host (build-time
       // NEXT_PUBLIC_* not set). Surface it instead of failing silently.
