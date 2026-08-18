@@ -15,8 +15,8 @@ export default async function AdminHeroPage() {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <h1 className="text-2xl font-semibold">Hero video</h1>
-      <p className="mt-1 text-sm text-stone-500">
+      <h1 className="text-3xl font-bold tracking-tight text-neutral-900">Hero video</h1>
+      <p className="mt-1.5 text-sm text-neutral-500">
         Plays full-screen at the top of the homepage, exactly as uploaded — the
         file is stored and streamed untouched, never compressed or resized. For a
         crisp result use a {RECOMMENDED_MIN_HERO_HEIGHT}p or 4K master: MP4

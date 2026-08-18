@@ -1,17 +1,23 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { Icon, type IconName } from "@/components/admin/icons";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
-const NAV_LINKS = [
-  { href: "/admin", label: "Dashboard", exact: true },
-  { href: "/admin/hero", label: "Hero Video", exact: false },
-  { href: "/admin/fabrics", label: "Fabrics", exact: false },
-  { href: "/admin/blogs", label: "Journal", exact: false },
-  { href: "/admin/feedback", label: "Feedback", exact: false },
+const NAV_LINKS: { href: string; label: string; icon: IconName; exact: boolean }[] = [
+  { href: "/admin", label: "Dashboard", icon: "grid", exact: true },
+  { href: "/admin/hero", label: "Hero Video", icon: "play", exact: false },
+  { href: "/admin/fabrics", label: "Fabrics", icon: "layers", exact: false },
+  { href: "/admin/blogs", label: "Journal", icon: "book", exact: false },
+  { href: "/admin/feedback", label: "Feedback", icon: "chat", exact: false },
 ];
 
+/**
+ * Pinterest-style rail: white, borderless, with pill nav items that fill grey
+ * on hover and go solid black when active.
+ */
 export default function AdminSidebar({ adminEmail }: { adminEmail: string }) {
   const pathname = usePathname();
 
@@ -21,20 +27,24 @@ export default function AdminSidebar({ adminEmail }: { adminEmail: string }) {
   }
 
   return (
-    <aside className="flex w-60 shrink-0 flex-col bg-ink text-stone-300">
-      <div className="px-6 py-7">
-        <Link
-          href="/admin"
-          className="text-lg font-extralight tracking-[0.35em] text-ivory"
-        >
-          FANAAR
-        </Link>
-        <p className="mt-1 text-[11px] uppercase tracking-widest text-stone-500">
-          Admin portal
-        </p>
-      </div>
+    <aside className="sticky top-0 flex h-svh w-64 shrink-0 flex-col bg-white px-3 py-5">
+      <Link
+        href="/admin"
+        className="flex items-center gap-3 rounded-2xl px-3 py-2 transition-colors hover:bg-neutral-100"
+      >
+        <Image
+          src="/images/brand/logo-ink.png"
+          alt="Fanaar"
+          width={1131}
+          height={823}
+          className="h-7 w-auto"
+        />
+        <span className="text-[11px] font-medium uppercase tracking-[0.18em] text-neutral-400">
+          Admin
+        </span>
+      </Link>
 
-      <nav className="flex flex-1 flex-col gap-1 px-3">
+      <nav className="mt-6 flex flex-1 flex-col gap-1.5">
         {NAV_LINKS.map((link) => {
           const active = link.exact
             ? pathname === link.href
@@ -44,31 +54,35 @@ export default function AdminSidebar({ adminEmail }: { adminEmail: string }) {
               key={link.href}
               href={link.href}
               prefetch
-              className={`rounded-md px-3 py-2 text-sm transition-colors ${
+              aria-current={active ? "page" : undefined}
+              className={`flex items-center gap-3.5 rounded-full px-4 py-3 text-sm font-semibold transition-colors duration-200 ${
                 active
-                  ? "bg-clay text-ivory"
-                  : "hover:bg-stone-800 hover:text-ivory"
+                  ? "bg-neutral-900 text-white"
+                  : "text-neutral-700 hover:bg-neutral-100"
               }`}
             >
+              <Icon name={link.icon} />
               {link.label}
             </Link>
           );
         })}
-
       </nav>
 
-      <div className="border-t border-stone-800 px-6 py-5">
-        <p className="truncate text-[11px] text-stone-500" title={adminEmail}>
+      <div className="rounded-2xl bg-neutral-50 p-3">
+        <p className="truncate px-1 text-xs font-medium text-neutral-500" title={adminEmail}>
           {adminEmail}
         </p>
-        <div className="mt-3 flex items-center justify-between">
-          <Link href="/" className="text-xs text-stone-500 transition-colors hover:text-ivory">
-            ← View site
+        <div className="mt-2 flex items-center gap-1">
+          <Link
+            href="/"
+            className="flex-1 rounded-full px-3 py-2 text-center text-xs font-semibold text-neutral-600 transition-colors hover:bg-neutral-200/70"
+          >
+            View site
           </Link>
           <button
             type="button"
             onClick={signOut}
-            className="text-xs text-stone-400 transition-colors hover:text-ivory"
+            className="flex-1 rounded-full px-3 py-2 text-xs font-semibold text-neutral-600 transition-colors hover:bg-neutral-200/70"
           >
             Sign out
           </button>

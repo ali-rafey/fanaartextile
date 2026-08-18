@@ -213,9 +213,9 @@ export default function HeroVideoManager({
   return (
     <div className="mt-8 space-y-6">
       {video && (
-        <section className="rounded-xl border border-stone-200 bg-white p-5 shadow-sm">
+        <section className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-medium text-stone-700">Current video</h2>
+            <h2 className="text-sm font-medium text-neutral-700">Current video</h2>
             <span className="rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-medium text-emerald-700">
               Live on homepage
             </span>
@@ -227,36 +227,36 @@ export default function HeroVideoManager({
             controls
             playsInline
             preload="metadata"
-            className="mt-4 aspect-video w-full rounded-lg bg-ink object-contain"
+            className="mt-4 aspect-video w-full rounded-xl bg-neutral-900 object-contain"
           />
 
           <dl className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 text-sm sm:grid-cols-4">
             <div className="col-span-2 sm:col-span-1">
-              <dt className="text-stone-400">File</dt>
-              <dd className="truncate text-stone-700" title={video.originalName}>
+              <dt className="text-neutral-400">File</dt>
+              <dd className="truncate text-neutral-700" title={video.originalName}>
                 {video.originalName}
               </dd>
             </div>
             <div>
-              <dt className="text-stone-400">Resolution</dt>
-              <dd className={lowResolution ? "font-medium text-amber-700" : "text-stone-700"}>
+              <dt className="text-neutral-400">Resolution</dt>
+              <dd className={lowResolution ? "font-medium text-amber-700" : "text-neutral-700"}>
                 {resolution ?? "—"}
               </dd>
             </div>
             <div>
-              <dt className="text-stone-400">Size</dt>
-              <dd className="text-stone-700">{formatBytes(video.size)}</dd>
+              <dt className="text-neutral-400">Size</dt>
+              <dd className="text-neutral-700">{formatBytes(video.size)}</dd>
             </div>
             <div>
-              <dt className="text-stone-400">Uploaded</dt>
-              <dd className="text-stone-700" suppressHydrationWarning>
+              <dt className="text-neutral-400">Uploaded</dt>
+              <dd className="text-neutral-700" suppressHydrationWarning>
                 {new Date(video.uploadedAt).toLocaleDateString()}
               </dd>
             </div>
           </dl>
 
           {lowResolution && (
-            <p className="mt-4 rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-800">
+            <p className="mt-4 rounded-xl bg-amber-50 px-4 py-3 text-sm text-amber-800">
               <strong className="font-medium">This video is below Full HD.</strong> It plays at
               its original quality — nothing is compressed on upload — but at{" "}
               {video.width}×{video.height} it gets stretched to fill a full-screen hero, so it
@@ -270,7 +270,7 @@ export default function HeroVideoManager({
               type="button"
               onClick={openFilePicker}
               disabled={busy}
-              className="rounded-lg bg-clay px-4 py-2 text-sm font-medium text-ivory transition-colors hover:bg-clay-deep disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-xl bg-neutral-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-neutral-700 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Replace video
             </button>
@@ -278,7 +278,7 @@ export default function HeroVideoManager({
               type="button"
               onClick={removeVideo}
               disabled={busy}
-              className="rounded-lg border border-red-200 px-4 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-xl border border-red-200 px-4 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Remove
             </button>
@@ -298,8 +298,8 @@ export default function HeroVideoManager({
           const file = event.dataTransfer.files?.[0];
           if (file && !busy) upload(file);
         }}
-        className={`rounded-xl border-2 border-dashed p-10 text-center transition-colors ${
-          dragging ? "border-clay bg-clay/5" : "border-stone-300 bg-white"
+        className={`rounded-2xl border-2 border-dashed p-10 text-center transition-colors ${
+          dragging ? "border-neutral-900 bg-neutral-900/5" : "border-neutral-300 bg-white"
         }`}
       >
         <svg
@@ -317,7 +317,7 @@ export default function HeroVideoManager({
           />
         </svg>
 
-        <p className="mt-4 text-sm text-stone-600">
+        <p className="mt-4 text-sm text-neutral-600">
           {video
             ? "Drop a new video here to replace the current one, or "
             : "Drop your hero video here, or "}
@@ -325,29 +325,29 @@ export default function HeroVideoManager({
             type="button"
             onClick={openFilePicker}
             disabled={busy}
-            className="font-medium text-clay underline underline-offset-2 hover:text-clay-deep disabled:cursor-not-allowed disabled:opacity-50"
+            className="font-medium text-neutral-900 underline underline-offset-2 hover:text-neutral-900-deep disabled:cursor-not-allowed disabled:opacity-50"
           >
             browse files
           </button>
         </p>
-        <p className="mt-2 text-xs text-stone-400">
+        <p className="mt-2 text-xs text-neutral-400">
           MP4, WebM or MOV · up to {MAX_HERO_VIDEO_MB}MB · uploaded at full quality, never
           compressed
         </p>
 
         {status.kind === "reading" && (
-          <p className="mt-6 text-xs text-stone-500">Reading video…</p>
+          <p className="mt-6 text-xs text-neutral-500">Reading video…</p>
         )}
 
         {status.kind === "uploading" && (
           <div className="mx-auto mt-6 max-w-sm">
-            <div className="h-2 overflow-hidden rounded-full bg-stone-200">
+            <div className="h-2 overflow-hidden rounded-full bg-neutral-200">
               <div
-                className="h-full rounded-full bg-clay transition-[width] duration-200"
+                className="h-full rounded-full bg-neutral-900 transition-[width] duration-200"
                 style={{ width: `${Math.round(status.progress * 100)}%` }}
               />
             </div>
-            <p className="mt-2 text-xs text-stone-500">
+            <p className="mt-2 text-xs text-neutral-500">
               Uploading… {Math.round(status.progress * 100)}%
             </p>
           </div>
@@ -355,12 +355,12 @@ export default function HeroVideoManager({
       </section>
 
       {status.kind === "error" && (
-        <p role="alert" className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+        <p role="alert" className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">
           {status.message}
         </p>
       )}
       {status.kind === "success" && (
-        <p className="rounded-lg bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+        <p className="rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
           {status.message}
         </p>
       )}

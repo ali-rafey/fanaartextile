@@ -1,72 +1,99 @@
 import Link from "next/link";
+import { Icon, type IconName } from "@/components/admin/icons";
 import { describeResolution, formatBytes } from "@/lib/constants";
+import { listAllPosts } from "@/lib/db/blogs";
+import { listAllFabrics } from "@/lib/db/fabrics";
+import { countNewFeedback } from "@/lib/db/feedback";
 import { getStorage } from "@/lib/storage";
 
-// Always reflect the latest uploaded content in the admin.
 export const dynamic = "force-dynamic";
 
-const PLANNED_MODULES = [
-  { name: "Products & Categories", blurb: "Catalogue of lounge fabrics." },
-  { name: "Blogs", blurb: "Stories and fabric guides." },
-  { name: "Feedback", blurb: "Customer feedback inbox." },
-];
+/** Counts never break the dashboard — a missing table just reads as zero. */
+async function safeCount(load: () => Promise<{ length: number }>) {
+  try {
+    return (await load()).length;
+  } catch {
+    return 0;
+  }
+}
 
 export default async function AdminDashboardPage() {
-  const heroVideo = await getStorage().getHeroVideo();
+  const [heroVideo, fabricCount, postCount, unread] = await Promise.all([
+    getStorage().getHeroVideo().catch(() => null),
+    safeCount(listAllFabrics),
+    safeCount(listAllPosts),
+    countNewFeedback().catch(() => 0),
+  ]);
+
+  const tiles: {
+    href: string;
+    icon: IconName;
+    label: string;
+    value: string;
+    hint: string;
+  }[] = [
+    {
+      href: "/admin/hero",
+      icon: "play",
+      label: "Hero video",
+      value: heroVideo ? "Live" : "Not set",
+      hint: heroVideo
+        ? [
+            describeResolution(heroVideo.width, heroVideo.height),
+            formatBytes(heroVideo.size),
+          ]
+            .filter(Boolean)
+            .join(" · ")
+        : "Upload the homepage film",
+    },
+    {
+      href: "/admin/fabrics",
+      icon: "layers",
+      label: "Fabrics",
+      value: String(fabricCount),
+      hint: fabricCount ? "in the catalogue" : "import the starter set",
+    },
+    {
+      href: "/admin/blogs",
+      icon: "book",
+      label: "Journal",
+      value: String(postCount),
+      hint: postCount ? "articles" : "import starter articles",
+    },
+    {
+      href: "/admin/feedback",
+      icon: "chat",
+      label: "Feedback",
+      value: String(unread),
+      hint: unread ? "unread messages" : "inbox is clear",
+    },
+  ];
 
   return (
     <div className="mx-auto max-w-5xl">
-      <h1 className="text-2xl font-semibold">Dashboard</h1>
-      <p className="mt-1 text-sm text-stone-500">
-        Manage the Fanaar storefront content.
-      </p>
+      <h1 className="text-3xl font-bold tracking-tight text-neutral-900">Dashboard</h1>
+      <p className="mt-1.5 text-sm text-neutral-500">Everything on the Fanaar storefront.</p>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2">
-        <Link
-          href="/admin/hero"
-          className="group rounded-xl border border-stone-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md"
-        >
-          <div className="flex items-center justify-between">
-            <h2 className="font-medium">Hero video</h2>
-            <span
-              className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                heroVideo
-                  ? "bg-emerald-100 text-emerald-700"
-                  : "bg-amber-100 text-amber-700"
-              }`}
-            >
-              {heroVideo ? "Live" : "Not set"}
-            </span>
-          </div>
-          <p className="mt-2 truncate text-sm text-stone-500">
-            {heroVideo
-              ? [
-                  heroVideo.originalName,
-                  describeResolution(heroVideo.width, heroVideo.height),
-                  formatBytes(heroVideo.size),
-                ]
-                  .filter(Boolean)
-                  .join(" · ")
-              : "Upload the full-screen video for the homepage."}
-          </p>
-          <p className="mt-4 text-sm font-medium text-clay group-hover:text-clay-deep">
-            Manage →
-          </p>
-        </Link>
-
-        {PLANNED_MODULES.map((module) => (
-          <div
-            key={module.name}
-            className="rounded-xl border border-dashed border-stone-300 bg-stone-50 p-5"
+        {tiles.map((tile) => (
+          <Link
+            key={tile.href}
+            href={tile.href}
+            prefetch
+            className="group rounded-3xl bg-neutral-50 p-6 transition-colors duration-200 hover:bg-neutral-100"
           >
-            <div className="flex items-center justify-between">
-              <h2 className="font-medium text-stone-400">{module.name}</h2>
-              <span className="rounded-full border border-stone-300 px-2.5 py-0.5 text-xs text-stone-400">
-                Planned
+            <div className="flex items-center gap-3 text-neutral-500">
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-neutral-700 shadow-sm">
+                <Icon name={tile.icon} className="h-[18px] w-[18px]" />
               </span>
+              <span className="text-sm font-semibold text-neutral-700">{tile.label}</span>
             </div>
-            <p className="mt-2 text-sm text-stone-400">{module.blurb}</p>
-          </div>
+
+            <p className="mt-5 text-3xl font-bold tracking-tight text-neutral-900">
+              {tile.value}
+            </p>
+            <p className="mt-1 text-sm text-neutral-500">{tile.hint}</p>
+          </Link>
         ))}
       </div>
     </div>

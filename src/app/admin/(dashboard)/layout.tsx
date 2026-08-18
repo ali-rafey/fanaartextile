@@ -15,9 +15,9 @@ export default async function DashboardLayout({
   if (!admin) redirect("/admin/login?error=forbidden");
 
   return (
-    <div className="flex min-h-svh bg-stone-100">
+    <div className="flex min-h-svh bg-white">
       <AdminSidebar adminEmail={admin.email} />
-      <main className="flex-1 px-8 py-10">{children}</main>
+      <main className="flex-1 px-8 py-8 lg:px-12">{children}</main>
     </div>
   );
 }
