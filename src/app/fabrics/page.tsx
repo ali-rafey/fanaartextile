@@ -10,18 +10,46 @@ import {
   FABRICS_INDEX,
 } from "@/content/fabrics";
 import { listPublishedFabrics } from "@/lib/db/fabrics";
+import JsonLd from "@/components/seo/json-ld";
+import { absoluteUrl, breadcrumbJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Fabrics",
   description:
-    "The Fanaar fabric library — featured edits and every construction: twill, jersey, piqué, fleece and more, each with its own specification, character and best use.",
+    "Explore the Fanaar fabric library — twill, jersey, piqué, fleece, French terry and interlock. Full specifications: composition, GSM, dye class, finish and width.",
+  alternates: { canonical: "/fabrics" },
+  openGraph: {
+    title: "Fabrics · Fanaar Textile",
+    description:
+      "Explore the Fanaar fabric library — twill, jersey, piqué, fleece, French terry and interlock. Full specifications: composition, GSM, dye class, finish and width.",
+    url: "/fabrics",
+  },
 };
 
 export default async function FabricsPage() {
   const fabrics = await listPublishedFabrics();
 
+  const catalogueJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "The Fanaar fabric library",
+    itemListElement: fabrics.map((fabric, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: `${fabric.name} Fabric`,
+      url: absoluteUrl(`/fabrics/${fabric.slug}`),
+    })),
+  };
+
   return (
     <>
+      <JsonLd data={catalogueJsonLd} />
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Fabrics", path: "/fabrics" },
+        ])}
+      />
       <SiteHeader />
       <main className="bg-ivory">
         {/* ── Featured: full-height hero — masthead up top, image row pinned to the bottom ── */}

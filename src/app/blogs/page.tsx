@@ -7,11 +7,20 @@ import SiteFooter from "@/components/site/site-footer";
 import SiteHeader from "@/components/site/site-header";
 import { BLOG_INDEX } from "@/content/blogs";
 import { listPublishedPosts } from "@/lib/db/blogs";
+import JsonLd from "@/components/seo/json-ld";
+import { SITE_NAME, absoluteUrl, breadcrumbJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Journal",
   description:
-    "The Fanaar journal — a living archive of fibre, craft and the people behind every metre.",
+    "The Fanaar journal — field notes on fibre, weave, GSM, colourfastness and fabric care from a working textile house.",
+  alternates: { canonical: "/blogs" },
+  openGraph: {
+    title: "Journal · Fanaar Textile",
+    description:
+      "The Fanaar journal — field notes on fibre, weave, GSM, colourfastness and fabric care from a working textile house.",
+    url: "/blogs",
+  },
 };
 
 // A composed, organic scatter — varied widths, vertical offsets and a hair of
@@ -29,8 +38,32 @@ const TILES = [
 export default async function BlogsPage() {
   const posts = await listPublishedPosts();
 
+  const blogJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    name: `${SITE_NAME} Journal`,
+    url: absoluteUrl("/blogs"),
+    description: BLOG_INDEX.intro,
+    blogPost: posts.map((post) => ({
+      "@type": "BlogPosting",
+      headline: post.title,
+      description: post.excerpt,
+      articleSection: post.category,
+      url: absoluteUrl(post.href),
+      ...(post.image ? { image: absoluteUrl(post.image) } : {}),
+      publisher: { "@type": "Organization", name: SITE_NAME },
+    })),
+  };
+
   return (
     <>
+      <JsonLd data={blogJsonLd} />
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Journal", path: "/blogs" },
+        ])}
+      />
       <SiteHeader />
       <main className="bg-greige">
         {/* Statement hero */}

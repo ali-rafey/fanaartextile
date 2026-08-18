@@ -9,7 +9,14 @@ import { CONTACT_DETAILS, CONTACT_HERO } from "@/content/contact";
 export const metadata: Metadata = {
   title: "Contact Us",
   description:
-    "Get in touch with Fanaar — for fabric sourcing, collaborations or any question about how we work.",
+    "Contact Fanaar Textile for fabric sourcing, sample requests, production runs or collaborations. Email hello@fanaar.com and a real person will reply.",
+  alternates: { canonical: "/contact" },
+  openGraph: {
+    title: "Contact Us · Fanaar Textile",
+    description:
+      "Contact Fanaar Textile for fabric sourcing, sample requests, production runs or collaborations. Email hello@fanaar.com and a real person will reply.",
+    url: "/contact",
+  },
 };
 
 export default function ContactPage() {

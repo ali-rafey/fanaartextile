@@ -8,7 +8,14 @@ import SiteHeader from "@/components/site/site-header";
 export const metadata: Metadata = {
   title: "Feedback",
   description:
-    "Share your experience with Fanaar. Your feedback flows straight back into how we source, test and finish every collection.",
+    "Share your experience with Fanaar fabric. Your feedback flows straight back into how we source, test and finish every collection.",
+  alternates: { canonical: "/feedback" },
+  openGraph: {
+    title: "Feedback · Fanaar Textile",
+    description:
+      "Share your experience with Fanaar fabric. Your feedback flows straight back into how we source, test and finish every collection.",
+    url: "/feedback",
+  },
 };
 
 export default function FeedbackPage() {

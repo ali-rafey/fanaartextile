@@ -12,7 +12,10 @@ export default async function Hero() {
 
   return (
     <section className="relative h-svh w-full overflow-hidden bg-ink">
-      <h1 className="sr-only">Fanaar — premium lounge fabrics</h1>
+      <h1 className="sr-only">
+        Fanaar Textile — premium lounge and loungewear fabric, woven and knitted
+        to one standard
+      </h1>
       <SiteNavbar />
 
       {video ? (

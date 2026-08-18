@@ -11,7 +11,14 @@ import { THREADS, THREADS_CTA, THREADS_HERO, THREADS_INTRO } from "@/content/thr
 export const metadata: Metadata = {
   title: "Threads",
   description:
-    "Fanaar stitching threads — polyester, cotton, core-spun, overlock, embroidery and bonded nylon, matched to the fabric and the seam.",
+    "Fanaar stitching threads — spun polyester, cotton, core-spun, overlock, embroidery and bonded nylon, matched to the fabric, the seam and the finish.",
+  alternates: { canonical: "/threads" },
+  openGraph: {
+    title: "Threads · Fanaar Textile",
+    description:
+      "Fanaar stitching threads — spun polyester, cotton, core-spun, overlock, embroidery and bonded nylon, matched to the fabric, the seam and the finish.",
+    url: "/threads",
+  },
 };
 
 export default function ThreadsPage() {

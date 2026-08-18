@@ -7,6 +7,8 @@ import SiteFooter from "@/components/site/site-footer";
 import SiteHeader from "@/components/site/site-header";
 import { FABRIC_CTA, FABRICS } from "@/content/fabrics";
 import { getPublishedFabric, listPublishedFabrics } from "@/lib/db/fabrics";
+import JsonLd from "@/components/seo/json-ld";
+import { SITE_NAME, absoluteUrl, breadcrumbJsonLd } from "@/lib/seo";
 
 export function generateStaticParams() {
   return FABRICS.map((fabric) => ({ slug: fabric.slug }));
@@ -20,9 +22,30 @@ export async function generateMetadata({
   const { slug } = await params;
   const fabric = await getPublishedFabric(slug);
   if (!fabric) return { title: "Fabric not found" };
+
+  const description = `${fabric.name} — ${fabric.tagline} ${fabric.specs.composition}, ${fabric.specs.weight}. ${fabric.intro}`.slice(
+    0,
+    300
+  );
+
   return {
-    title: fabric.name,
-    description: `${fabric.name} — ${fabric.tagline} ${fabric.intro}`,
+    title: `${fabric.name} Fabric`,
+    description,
+    keywords: [
+      `${fabric.name.toLowerCase()} fabric`,
+      `${fabric.name.toLowerCase()} ${fabric.family.toLowerCase()}`,
+      fabric.category.toLowerCase(),
+      "lounge fabric",
+      "loungewear fabric supplier",
+    ],
+    alternates: { canonical: `/fabrics/${fabric.slug}` },
+    openGraph: {
+      type: "article",
+      title: `${fabric.name} Fabric · ${SITE_NAME}`,
+      description,
+      url: `/fabrics/${fabric.slug}`,
+      images: [{ url: fabric.image, alt: fabric.alt }],
+    },
   };
 }
 
@@ -48,8 +71,42 @@ export default async function FabricDetailPage({
     .filter((f) => f.slug !== fabric.slug)
     .slice(0, 3);
 
+  const productJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: `${fabric.name} Fabric`,
+    description: fabric.intro,
+    image: [absoluteUrl(fabric.image)],
+    url: absoluteUrl(`/fabrics/${fabric.slug}`),
+    category: `${fabric.family} — ${fabric.category}`,
+    brand: { "@type": "Brand", name: SITE_NAME },
+    material: fabric.specs.composition,
+    additionalProperty: [
+      { name: "Composition", value: fabric.specs.composition },
+      { name: "Construction", value: fabric.specs.construction },
+      { name: "Weight", value: fabric.specs.weight },
+      { name: "Dye class", value: fabric.specs.dyeClass },
+      { name: "Finish", value: fabric.specs.finish },
+      { name: "Width", value: fabric.specs.width },
+    ]
+      .filter((spec) => spec.value)
+      .map((spec) => ({
+        "@type": "PropertyValue",
+        name: spec.name,
+        value: spec.value,
+      })),
+  };
+
   return (
     <>
+      <JsonLd data={productJsonLd} />
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Fabrics", path: "/fabrics" },
+          { name: fabric.name, path: `/fabrics/${fabric.slug}` },
+        ])}
+      />
       <SiteHeader />
       <main className="bg-ivory">
         {/* Breadcrumb */}

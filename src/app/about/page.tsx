@@ -9,7 +9,14 @@ import { ABOUT_CTA, ABOUT_HERO, ABOUT_STORY, ABOUT_VALUES } from "@/content/abou
 export const metadata: Metadata = {
   title: "About Us",
   description:
-    "The Fanaar story — an emerging house of considered lounge textiles, built on craft, measured quality and honest making.",
+    "Fanaar Textile is a craft-led lounge fabric house — audited mills, lab-tested batches and small-batch finishing, built on traceable origins and honest pricing.",
+  alternates: { canonical: "/about" },
+  openGraph: {
+    title: "About Us · Fanaar Textile",
+    description:
+      "Fanaar Textile is a craft-led lounge fabric house — audited mills, lab-tested batches and small-batch finishing, built on traceable origins and honest pricing.",
+    url: "/about",
+  },
 };
 
 export default function AboutPage() {

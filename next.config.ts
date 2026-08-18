@@ -1,9 +1,16 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Supabase storage will serve hero/product media once integrated.
-  // Add the project's *.supabase.co hostname to `images.remotePatterns`
-  // when we start rendering product images through next/image.
+  images: {
+    // Media served from Supabase storage (hero video poster, uploaded imagery).
+    remotePatterns: [{ protocol: "https", hostname: "*.supabase.co" }],
+    // Modern formats keep Largest Contentful Paint (a ranking signal) down.
+    formats: ["image/avif", "image/webp"],
+  },
+  // Strip the "X-Powered-By: Next.js" fingerprint.
+  poweredByHeader: false,
+  // Trailing-slash-free URLs, one canonical form per page.
+  trailingSlash: false,
 };
 
 export default nextConfig;
