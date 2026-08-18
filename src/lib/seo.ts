@@ -4,7 +4,7 @@
  * override per environment with NEXT_PUBLIC_SITE_URL (no trailing slash).
  */
 export const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://fanaartextile.vercel.app"
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://fanaar.online"
 ).replace(/\/$/, "");
 
 export const SITE_NAME = "Fanaar Textile";
