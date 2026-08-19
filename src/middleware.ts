@@ -24,6 +24,6 @@ export const config = {
   // Run on pages, but skip static assets, images and the SEO files so the
   // bot check never adds latency to cached responses.
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|icon.svg|images/|robots.txt|sitemap.xml|manifest.webmanifest).*)",
+    "/((?!_next/static|_next/image|favicon.ico|icon.png|apple-icon.png|images/|robots.txt|sitemap.xml|manifest.webmanifest).*)",
   ],
 };
