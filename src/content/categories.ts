@@ -29,10 +29,14 @@ export interface Category {
 }
 
 export const CATEGORY_SECTION = {
-  eyebrow: "(Collections)",
-  tagline: "Explore the archive",
-  /** Monospace caption line, echoing the editorial reference. */
-  caption: "EXPLORE THE FANAAR ARCHIVE — ©2026",
+  /** Mono caption block sitting above the strip, editorial-index style. */
+  caption: [
+    "EXPLORE THE COLLECTION",
+    "WOVEN & KNITTED CLOTH,",
+    "EXPLORE THE ARCHIVE, \u00a92026 FANAAR",
+  ],
+  cta: "View fabrics",
+  ctaHref: "/fabrics",
 };
 
 export const CATEGORIES: Category[] = [
@@ -40,7 +44,7 @@ export const CATEGORIES: Category[] = [
     id: "cotton",
     name: "Cotton",
     descriptor: "Long-staple and endlessly breathable.",
-    image: "/images/categories/cotton.jpg",
+    image: "/images/collection/cotton.jpg",
     alt: "Fanaar cotton lounge fabric",
     href: "#",
   },
@@ -48,7 +52,7 @@ export const CATEGORIES: Category[] = [
     id: "linen",
     name: "Linen",
     descriptor: "Cool, textured, better with every wash.",
-    image: "/images/categories/linen.jpg",
+    image: "/images/collection/linen.jpg",
     alt: "Fanaar linen lounge fabric",
     href: "#",
   },
@@ -56,7 +60,7 @@ export const CATEGORIES: Category[] = [
     id: "modal",
     name: "Modal",
     descriptor: "A liquid drape with a quiet softness.",
-    image: "/images/categories/modal.jpg",
+    image: "/images/collection/modal.jpg",
     alt: "Fanaar modal lounge fabric",
     href: "#",
   },
@@ -64,7 +68,7 @@ export const CATEGORIES: Category[] = [
     id: "bamboo",
     name: "Bamboo",
     descriptor: "Silky, temperature-smart, gentle on skin.",
-    image: "/images/categories/bamboo.jpg",
+    image: "/images/collection/bamboo.jpg",
     alt: "Fanaar bamboo lounge fabric",
     href: "#",
   },
@@ -72,7 +76,7 @@ export const CATEGORIES: Category[] = [
     id: "polyester",
     name: "Polyester",
     descriptor: "Resilient, colourfast, quietly technical.",
-    image: "/images/categories/polyester.jpg",
+    image: "/images/collection/polyester.jpg",
     alt: "Fanaar polyester lounge fabric",
     href: "#",
   },
@@ -80,7 +84,7 @@ export const CATEGORIES: Category[] = [
     id: "wool",
     name: "Wool",
     descriptor: "Warm, resilient, naturally regulating.",
-    image: "/images/categories/wool.jpg",
+    image: "/images/collection/wool.jpg",
     alt: "Fanaar wool lounge fabric",
     href: "#",
   },
@@ -88,7 +92,7 @@ export const CATEGORIES: Category[] = [
     id: "silk",
     name: "Silk",
     descriptor: "A whisper of lustre in every metre.",
-    image: "/images/categories/silk.jpg",
+    image: "/images/collection/silk.jpg",
     alt: "Fanaar silk-blend lounge fabric",
     href: "#",
   },
