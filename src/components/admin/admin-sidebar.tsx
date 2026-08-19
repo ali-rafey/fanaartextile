@@ -10,6 +10,7 @@ const NAV_LINKS: { href: string; label: string; icon: IconName; exact: boolean }
   { href: "/admin", label: "Dashboard", icon: "grid", exact: true },
   { href: "/admin/hero", label: "Hero Video", icon: "play", exact: false },
   { href: "/admin/fabrics", label: "Fabrics", icon: "layers", exact: false },
+  { href: "/admin/threads", label: "Threads", icon: "spool", exact: false },
   { href: "/admin/blogs", label: "Journal", icon: "book", exact: false },
   { href: "/admin/feedback", label: "Feedback", icon: "chat", exact: false },
 ];

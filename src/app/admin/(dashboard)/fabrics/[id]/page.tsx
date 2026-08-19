@@ -6,7 +6,7 @@ import { saveFabric } from "../actions";
 export const dynamic = "force-dynamic";
 
 const field =
-  "w-full rounded-2xl bg-neutral-100 px-4 py-3 text-sm text-neutral-900 outline-none transition-colors placeholder:text-neutral-400 focus:bg-white focus:ring-2 focus:ring-neutral-900";
+  "w-full rounded-xl border border-neutral-200 bg-white px-3.5 py-2.5 text-sm text-neutral-900 outline-none transition-colors placeholder:text-neutral-400 focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900";
 const label = "block text-xs font-semibold text-neutral-600";
 
 export default async function FabricEditorPage({
@@ -26,12 +26,12 @@ export default async function FabricEditorPage({
       <Link href="/admin/fabrics" className="text-xs font-semibold text-neutral-500 hover:text-neutral-900">
         ← Fabrics
       </Link>
-      <h1 className="mt-2 text-3xl font-bold tracking-tight text-neutral-900">{isNew ? "New fabric" : "Edit fabric"}</h1>
+      <h1 className="mt-2 text-2xl font-bold tracking-tight text-neutral-900">{isNew ? "New fabric" : "Edit fabric"}</h1>
 
-      <form action={saveFabric} className="mt-8 space-y-5">
+      <form action={saveFabric} className="mt-6 space-y-4">
         {fabric ? <input type="hidden" name="id" value={fabric.id} /> : null}
 
-        <div className="grid gap-5 sm:grid-cols-2">
+        <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <label htmlFor="name" className={label}>
               Name
@@ -40,13 +40,13 @@ export default async function FabricEditorPage({
           </div>
           <div>
             <label htmlFor="slug" className={label}>
-              Slug <span className="text-neutral-400">(auto if blank)</span>
+              Slug <span className="font-normal text-neutral-400">(auto if blank)</span>
             </label>
             <input id="slug" name="slug" defaultValue={fabric?.slug ?? ""} className={`mt-1.5 ${field}`} />
           </div>
         </div>
 
-        <div className="grid gap-5 sm:grid-cols-2">
+        <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <label htmlFor="family" className={label}>
               Family
@@ -84,7 +84,7 @@ export default async function FabricEditorPage({
           <textarea id="intro" name="intro" rows={3} defaultValue={fabric?.intro ?? ""} className={`mt-1.5 ${field}`} />
         </div>
 
-        <fieldset className="rounded-3xl bg-neutral-50 p-6">
+        <fieldset className="rounded-xl border border-neutral-200 p-5">
           <legend className="px-2 text-xs font-bold uppercase tracking-wider text-neutral-500">
             Specification
           </legend>
@@ -129,7 +129,7 @@ export default async function FabricEditorPage({
 
         <div>
           <label htmlFor="best_for" className={label}>
-            Best used for <span className="text-neutral-400">(one per line)</span>
+            Best used for <span className="font-normal text-neutral-400">(one per line)</span>
           </label>
           <textarea
             id="best_for"
@@ -142,7 +142,7 @@ export default async function FabricEditorPage({
 
         <div>
           <label htmlFor="root" className={label}>
-            The root <span className="text-neutral-400">(one paragraph per line)</span>
+            The root <span className="font-normal text-neutral-400">(one paragraph per line)</span>
           </label>
           <textarea
             id="root"
@@ -153,7 +153,7 @@ export default async function FabricEditorPage({
           />
         </div>
 
-        <div className="grid gap-5 sm:grid-cols-2">
+        <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <label htmlFor="image" className={label}>
               Image path
@@ -174,7 +174,7 @@ export default async function FabricEditorPage({
           </div>
         </div>
 
-        <div className="flex items-center justify-between gap-6 rounded-2xl bg-neutral-50 px-5 py-4">
+        <div className="flex items-center justify-between gap-6 rounded-xl border border-neutral-200 px-4 py-3">
           <div>
             <label htmlFor="sort_order" className={label}>
               Sort order
@@ -184,7 +184,7 @@ export default async function FabricEditorPage({
               name="sort_order"
               type="number"
               defaultValue={fabric?.sort_order ?? 0}
-              className="mt-1.5 w-24 rounded-xl bg-neutral-100 px-3 py-2 text-sm outline-none focus:bg-white focus:ring-2 focus:ring-neutral-900"
+              className="mt-1.5 w-24 rounded-lg border border-neutral-200 px-3 py-1.5 text-sm outline-none focus:border-neutral-900"
             />
           </div>
           <label className="flex items-center gap-2 text-sm font-medium text-neutral-700">
@@ -199,12 +199,12 @@ export default async function FabricEditorPage({
         </div>
 
         <div className="flex gap-3 pt-2">
-          <button className="rounded-full bg-neutral-900 px-7 py-3 text-sm font-semibold text-white transition-colors hover:bg-neutral-700">
+          <button className="rounded-full bg-neutral-900 px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-neutral-700">
             Save fabric
           </button>
           <Link
             href="/admin/fabrics"
-            className="rounded-full bg-neutral-100 px-7 py-3 text-sm font-semibold text-neutral-700 transition-colors hover:bg-neutral-200"
+            className="rounded-full border border-neutral-200 px-6 py-2.5 text-sm font-semibold text-neutral-700 transition-colors hover:bg-neutral-50"
           >
             Cancel
           </Link>

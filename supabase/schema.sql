@@ -113,3 +113,29 @@ create policy "feedback_public_insert" on public.feedback
 create index if not exists fabrics_sort_idx    on public.fabrics (sort_order, name);
 create index if not exists blog_posts_sort_idx on public.blog_posts (sort_order, created_at desc);
 create index if not exists feedback_recent_idx on public.feedback (created_at desc);
+
+-- ─────────────────────────────────────────────────────────────────────────────
+-- v3: stitching threads (powers /threads)
+-- ─────────────────────────────────────────────────────────────────────────────
+
+create table if not exists public.threads (
+  id          uuid primary key default gen_random_uuid(),
+  slug        text unique not null,
+  name        text not null,
+  description text not null default '',
+  properties  jsonb not null default '[]'::jsonb,
+  image       text,
+  alt         text not null default '',
+  sort_order  integer not null default 0,
+  published   boolean not null default true,
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now()
+);
+
+alter table public.threads enable row level security;
+
+drop policy if exists "threads_public_read" on public.threads;
+create policy "threads_public_read" on public.threads
+  for select using (published = true);
+
+create index if not exists threads_sort_idx on public.threads (sort_order, name);

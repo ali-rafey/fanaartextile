@@ -65,7 +65,7 @@ export default function AdminLoginPage() {
 
         <form
           onSubmit={handleSubmit}
-          className="mt-8 rounded-3xl bg-neutral-50 p-7"
+          className="mt-8 rounded-2xl border border-neutral-200 p-6"
         >
           <h1 className="text-2xl font-bold tracking-tight text-neutral-900">Sign in</h1>
           <p className="mt-1 text-sm text-neutral-500">Authorised administrators only.</p>

@@ -3,6 +3,7 @@ import { Icon, type IconName } from "@/components/admin/icons";
 import { describeResolution, formatBytes } from "@/lib/constants";
 import { listAllPosts } from "@/lib/db/blogs";
 import { listAllFabrics } from "@/lib/db/fabrics";
+import { listAllThreads } from "@/lib/db/threads";
 import { countNewFeedback } from "@/lib/db/feedback";
 import { getStorage } from "@/lib/storage";
 
@@ -18,9 +19,10 @@ async function safeCount(load: () => Promise<{ length: number }>) {
 }
 
 export default async function AdminDashboardPage() {
-  const [heroVideo, fabricCount, postCount, unread] = await Promise.all([
+  const [heroVideo, fabricCount, threadCount, postCount, unread] = await Promise.all([
     getStorage().getHeroVideo().catch(() => null),
     safeCount(listAllFabrics),
+    safeCount(listAllThreads),
     safeCount(listAllPosts),
     countNewFeedback().catch(() => 0),
   ]);
@@ -54,6 +56,13 @@ export default async function AdminDashboardPage() {
       hint: fabricCount ? "in the catalogue" : "import the starter set",
     },
     {
+      href: "/admin/threads",
+      icon: "spool",
+      label: "Threads",
+      value: String(threadCount),
+      hint: threadCount ? "stitching threads" : "import the built-in range",
+    },
+    {
       href: "/admin/blogs",
       icon: "book",
       label: "Journal",
@@ -71,28 +80,28 @@ export default async function AdminDashboardPage() {
 
   return (
     <div className="mx-auto max-w-5xl">
-      <h1 className="text-3xl font-bold tracking-tight text-neutral-900">Dashboard</h1>
+      <h1 className="text-2xl font-bold tracking-tight text-neutral-900">Dashboard</h1>
       <p className="mt-1.5 text-sm text-neutral-500">Everything on the Fanaar storefront.</p>
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-2">
+      <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {tiles.map((tile) => (
           <Link
             key={tile.href}
             href={tile.href}
             prefetch
-            className="group rounded-3xl bg-neutral-50 p-6 transition-colors duration-200 hover:bg-neutral-100"
+            className="group rounded-xl border border-neutral-200 p-4 transition-colors duration-200 hover:bg-neutral-50"
           >
             <div className="flex items-center gap-3 text-neutral-500">
-              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-neutral-700 shadow-sm">
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-100 text-neutral-700">
                 <Icon name={tile.icon} className="h-[18px] w-[18px]" />
               </span>
               <span className="text-sm font-semibold text-neutral-700">{tile.label}</span>
             </div>
 
-            <p className="mt-5 text-3xl font-bold tracking-tight text-neutral-900">
+            <p className="mt-4 text-2xl font-bold tracking-tight text-neutral-900">
               {tile.value}
             </p>
-            <p className="mt-1 text-sm text-neutral-500">{tile.hint}</p>
+            <p className="mt-0.5 text-xs text-neutral-500">{tile.hint}</p>
           </Link>
         ))}
       </div>

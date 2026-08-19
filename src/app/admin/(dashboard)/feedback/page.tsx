@@ -20,7 +20,7 @@ function Stars({ rating }: { rating: number }) {
 
 function Message({ item }: { item: FeedbackRow }) {
   return (
-    <article className="rounded-3xl bg-neutral-50 p-6 transition-colors hover:bg-neutral-100/70">
+    <article className="rounded-xl border border-neutral-200 p-4 transition-colors hover:bg-neutral-50">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="min-w-0">
           <p className="font-bold text-neutral-900">
@@ -40,7 +40,7 @@ function Message({ item }: { item: FeedbackRow }) {
         </div>
         <div className="flex items-center gap-2">
           {item.rating ? <Stars rating={item.rating} /> : null}
-          <span className="rounded-full bg-white px-3 py-1 text-xs font-medium text-neutral-600 capitalize shadow-sm">
+          <span className="rounded-full border border-neutral-200 px-2.5 py-0.5 text-xs font-medium text-neutral-600 capitalize">
             {item.kind}
           </span>
           <span
@@ -60,21 +60,21 @@ function Message({ item }: { item: FeedbackRow }) {
       <div className="mt-4 flex flex-wrap gap-2 border-t border-neutral-200/70 pt-3 text-xs">
         {item.status !== "read" && (
           <form action={markFeedback.bind(null, item.id, "read")}>
-            <button className="rounded-full bg-white px-4 py-2 font-semibold text-neutral-700 shadow-sm transition-colors hover:bg-neutral-200/70">
+            <button className="rounded-full border border-neutral-200 px-3 py-1.5 font-semibold text-neutral-700 transition-colors hover:bg-neutral-100">
               Mark read
             </button>
           </form>
         )}
         {item.status !== "archived" && (
           <form action={markFeedback.bind(null, item.id, "archived")}>
-            <button className="rounded-full bg-white px-4 py-2 font-semibold text-neutral-700 shadow-sm transition-colors hover:bg-neutral-200/70">
+            <button className="rounded-full border border-neutral-200 px-3 py-1.5 font-semibold text-neutral-700 transition-colors hover:bg-neutral-100">
               Archive
             </button>
           </form>
         )}
         {item.status !== "new" && (
           <form action={markFeedback.bind(null, item.id, "new")}>
-            <button className="rounded-full bg-white px-4 py-2 font-semibold text-neutral-700 shadow-sm transition-colors hover:bg-neutral-200/70">
+            <button className="rounded-full border border-neutral-200 px-3 py-1.5 font-semibold text-neutral-700 transition-colors hover:bg-neutral-100">
               Mark unread
             </button>
           </form>
@@ -103,14 +103,14 @@ export default async function AdminFeedbackPage() {
 
   return (
     <div className="mx-auto max-w-4xl">
-      <h1 className="text-3xl font-bold tracking-tight text-neutral-900">Feedback</h1>
+      <h1 className="text-2xl font-bold tracking-tight text-neutral-900">Feedback</h1>
       <p className="mt-1.5 text-sm text-neutral-500">
         Messages from the contact and feedback forms.
         {items.length ? ` ${items.length} total · ${unread} unread.` : ""}
       </p>
 
       {error ? (
-        <div className="mt-8 rounded-3xl bg-amber-50 p-6 text-sm text-amber-900">
+        <div className="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-5 text-sm text-amber-900">
           <p className="font-semibold">Could not load messages.</p>
           <p className="mt-1">{error}</p>
           <p className="mt-2">
@@ -120,7 +120,7 @@ export default async function AdminFeedbackPage() {
           </p>
         </div>
       ) : items.length === 0 ? (
-        <div className="mt-8 rounded-3xl bg-neutral-50 p-12 text-center">
+        <div className="mt-6 rounded-xl border border-dashed border-neutral-300 bg-neutral-50 p-10 text-center">
           <p className="text-sm text-neutral-500">
             No messages yet. Submissions from{" "}
             <span className="font-semibold text-neutral-700">/contact</span> and{" "}
@@ -128,7 +128,7 @@ export default async function AdminFeedbackPage() {
           </p>
         </div>
       ) : (
-        <div className="mt-8 space-y-4">
+        <div className="mt-6 space-y-3">
           {items.map((item) => (
             <Message key={item.id} item={item} />
           ))}

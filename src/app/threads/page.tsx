@@ -6,7 +6,8 @@ import Reveal from "@/components/site/reveal";
 import SiteFooter from "@/components/site/site-footer";
 import SiteHeader from "@/components/site/site-header";
 import ThreadPlaceholder from "@/components/site/thread-placeholder";
-import { THREADS, THREADS_CTA, THREADS_HERO, THREADS_INTRO } from "@/content/threads";
+import { THREADS_CTA, THREADS_HERO, THREADS_INTRO } from "@/content/threads";
+import { listPublishedThreads } from "@/lib/db/threads";
 
 export const metadata: Metadata = {
   title: "Threads",
@@ -21,7 +22,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ThreadsPage() {
+export default async function ThreadsPage() {
+  const threads = await listPublishedThreads();
+
   return (
     <>
       <SiteHeader />
@@ -65,7 +68,7 @@ export default function ThreadsPage() {
             </Reveal>
 
             <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-              {THREADS.map((thread, i) => (
+              {threads.map((thread, i) => (
                 <Reveal key={thread.id} delay={(i % 3) * 120}>
                   <article className="flex h-full flex-col overflow-hidden rounded-3xl bg-ivory shadow-sm ring-1 ring-ink/5">
                     <div className="relative aspect-[4/3] overflow-hidden">

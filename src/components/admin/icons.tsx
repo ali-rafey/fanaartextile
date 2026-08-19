@@ -9,7 +9,7 @@ const base = {
   "aria-hidden": true,
 };
 
-export type IconName = "grid" | "play" | "layers" | "book" | "chat";
+export type IconName = "grid" | "play" | "layers" | "spool" | "book" | "chat";
 
 export function Icon({ name, className = "h-5 w-5" }: { name: IconName; className?: string }) {
   return (
@@ -33,6 +33,13 @@ export function Icon({ name, className = "h-5 w-5" }: { name: IconName; classNam
           <path d="M12 3 3 7.6l9 4.6 9-4.6L12 3Z" />
           <path d="m3 12.4 9 4.6 9-4.6" />
           <path d="m3 16.9 9 4.6 9-4.6" />
+        </>
+      )}
+      {name === "spool" && (
+        <>
+          <rect x="7" y="3" width="10" height="18" rx="1.5" />
+          <path d="M7 7h10M7 17h10" />
+          <path d="M9.5 10.5c1.7.9 3.3.9 5 0M9.5 13.5c1.7.9 3.3.9 5 0" />
         </>
       )}
       {name === "book" && (
