@@ -1,6 +1,10 @@
 /**
- * Copy for the About page (/about). Prose, figures and values live here so the
- * page component stays presentational.
+ * Copy for the About page (/about).
+ *
+ * The page is deliberately typographic: no stock industrial photography. What
+ * fills it is the reasoning behind the house and the person behind that —
+ * which is the point of an about page, and reads far better than a strip of
+ * looms nobody has any relationship to.
  */
 
 export const ABOUT_HERO = {
@@ -11,16 +15,18 @@ export const ABOUT_HERO = {
     "Fanaar began with a simple discontent — that the fabric we spend the most unguarded hours in was the least considered. Everything here follows from fixing that.",
 };
 
-export const ABOUT_STORY = {
-  lead: "We are a fabric house first.",
+/** Why the house exists — the thinking, set large. */
+export const ABOUT_PSYCHOLOGY = {
+  eyebrow: "Why Fanaar exists",
+  statement: "Softness is a feeling.\nQuality is a measurement.\nWe refuse to choose.",
   paragraphs: [
-    "Before a garment is cut or a collection is named, there is the cloth — its fibre, its weight, the way it settles against skin at the end of a long day. Everything Fanaar makes begins and ends with that feeling.",
-    "From audited mills to a testing lab that measures what softness alone cannot, we hold every batch to one standard. Nothing carries the Fanaar name until it has earned it — and what we learn from the people who live in our fabric flows straight back into the next run.",
-    "We are young, deliberately so. It lets us question the shortcuts a larger house takes for granted, trace every yarn to its origin, and price honestly.",
+    "The cloth we spend our most unguarded hours in — asleep, at home, off duty — is the cloth almost nobody examines. It is sold on adjectives. Soft. Premium. Luxurious. Not one of them means anything you can hold to account.",
+    "Fanaar starts from the other end. Before a fabric earns the name it is traced to its origin, weighed, washed, pulled and tested. What survives is what we sell, and what the people wearing it tell us decides the next run.",
+    "That is the whole psychology of the house: measure everything that can be measured, and be honest about the rest.",
   ],
 };
 
-/** Mono figures strip — the house at a glance. */
+/** The house at a glance. */
 export const ABOUT_FIGURES = [
   { value: "6", label: "Constructions in the library" },
   { value: "100%", label: "Traceable to origin" },
@@ -28,9 +34,25 @@ export const ABOUT_FIGURES = [
   { value: "1", label: "Standard, no exceptions" },
 ];
 
-export const ABOUT_QUOTE = {
-  text: "Softness is a feeling. Quality is a measurement. We insist on both.",
-  attribution: "The Fanaar Standard",
+/**
+ * The person behind the house, in the first person.
+ *
+ * `portrait` is intentionally empty: the note stands on its own as type rather
+ * than borrowing a stranger's photograph. Point it at a real portrait
+ * (e.g. "/images/about/founder.jpg") and it renders beside the note instead.
+ * Setting `name` prints it above the role.
+ */
+export const ABOUT_FOUNDER = {
+  eyebrow: "The person behind it",
+  paragraphs: [
+    "I came to textiles from the outside — not from a family mill, not from a fashion house, but from a stubborn belief that an industry this old deserves someone willing to ask better questions of it.",
+    "Fanaar is that belief turned into a company. It is young and deliberately small, and I would rather it grow slowly and mean something than grow quickly and mean very little.",
+    "If you are reading this, you are early. I would genuinely like to know what you think.",
+  ],
+  name: "",
+  role: "Founder, Fanaar Textile",
+  portrait: "",
+  portraitAlt: "",
 };
 
 export interface AboutValue {
@@ -55,31 +77,6 @@ export const ABOUT_VALUES: AboutValue[] = [
       "Traceable origins, transparent pricing and feedback that shapes the next collection. Value returned, not extracted.",
   },
 ];
-
-/** One quiet frame beneath the masthead, rather than a strip of them. */
-export const ABOUT_BAND = {
-  src: "/images/about/band.jpg",
-  alt: "Warp threads drawn tight across the loom",
-};
-
-/**
- * A note from the founder — the reasoning behind the house, in the first
- * person. Replace `image` with a real portrait when there is one, and set
- * `name` to have it printed above the role.
- */
-export const ABOUT_FOUNDER = {
-  eyebrow: "A note from the founder",
-  paragraphs: [
-    "I did not arrive at textiles from a family mill or a fashion house. I arrived as someone who kept noticing the same thing: the cloth we spend our most unguarded hours in — asleep, at home, off duty — is the cloth almost nobody thinks about.",
-    "Fanaar began as a stubborn question. We measure almost everything else we buy. So why is “soft” a marketing word instead of a number? Why does the fabric closest to us get the least scrutiny?",
-    "The house is built around that answer. Audited mills, a testing lab, four gates before anything carries the name. It is a slower way to work, and it is the only way I wanted to do it.",
-  ],
-  /** Optional — leave empty and only the role is shown. */
-  name: "",
-  role: "Founder, Fanaar Textile",
-  image: "/images/about/hands.jpg",
-  imageAlt: "A weaver's hand guiding thread at the loom",
-};
 
 export const ABOUT_CTA = {
   heading: "Have a question, or a project in mind?",
