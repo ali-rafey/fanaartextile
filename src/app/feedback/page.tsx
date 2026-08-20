@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import FeedbackForm from "@/components/site/feedback-form";
-import PageHero from "@/components/site/page-hero";
 import Reveal from "@/components/site/reveal";
 import SiteFooter from "@/components/site/site-footer";
 import SiteHeader from "@/components/site/site-header";
@@ -18,20 +17,56 @@ export const metadata: Metadata = {
   },
 };
 
+/** The loop a piece of feedback travels once it reaches us. */
+const LOOP = [
+  { step: "Sourcing", note: "Fibre choices revisited at origin." },
+  { step: "Testing", note: "Thresholds tightened in the lab." },
+  { step: "Production", note: "Finishing adjusted on the floor." },
+  { step: "Back to you", note: "Better cloth in the next run." },
+];
+
 export default function FeedbackPage() {
   return (
     <>
       <SiteHeader />
-      <main>
-        <PageHero
-          eyebrow="Feedback"
-          heading="Help shape the next metre"
-          intro="At Fanaar the cycle doesn't end at delivery. What you tell us about the fabric you live in flows straight back into sourcing, testing and production — and returns to you as better cloth."
-        />
-
-        <section className="bg-ivory py-20 md:py-28">
-          <div className="mx-auto max-w-2xl px-6">
+      <main className="bg-ivory">
+        <section className="mx-auto max-w-7xl px-6 pt-16 pb-24 md:px-10 md:pt-24 md:pb-32">
+          <div className="grid gap-16 lg:grid-cols-[1fr_1.1fr] lg:gap-24">
+            {/* Left — why this matters */}
             <Reveal>
+              <div className="lg:sticky lg:top-28">
+                <p className="font-mono text-[0.62rem] tracking-[0.2em] text-ink/70">(03)</p>
+                <h1 className="mt-5 font-display text-5xl leading-[0.98] tracking-tight text-ink md:text-6xl">
+                  Help shape
+                  <br />
+                  the next metre.
+                </h1>
+                <p className="mt-7 max-w-sm leading-relaxed text-ink/55">
+                  At Fanaar the cycle doesn&apos;t end at delivery. What you tell us about
+                  the cloth you live in flows straight back into how the next run is made.
+                </p>
+
+                <ol className="mt-12">
+                  {LOOP.map((item, i) => (
+                    <li
+                      key={item.step}
+                      className="flex items-baseline gap-5 border-t border-ink/10 py-4 last:border-b"
+                    >
+                      <span className="font-mono text-[0.6rem] tracking-[0.2em] text-clay">
+                        ({String(i + 1).padStart(2, "0")})
+                      </span>
+                      <span className="flex-1 text-ink">{item.step}</span>
+                      <span className="hidden max-w-[18ch] text-right text-xs text-ink/40 sm:block">
+                        {item.note}
+                      </span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            </Reveal>
+
+            {/* Right — the form */}
+            <Reveal delay={120}>
               <FeedbackForm />
             </Reveal>
           </div>
