@@ -10,21 +10,28 @@ const pad = (n: number) => String(n).padStart(2, "0");
 // One long, soft curve shared by the track glide and every still, so the whole
 // strip moves as a single unhurried gesture.
 const GLIDE = "1000ms cubic-bezier(0.22, 1, 0.36, 1)";
-/** How much taller the featured still stands than the rest. */
-const SCALE = 2;
+/** How much larger the featured still stands than the rest. */
+const SCALE = 2.2;
+
+/**
+ * The strip is the collection repeated end to end. Each still is deliberately
+ * small, so a single pass would leave the row floating in the middle of the
+ * page; repeating it keeps the film running off both edges the way an archive
+ * reel does. Clicking a repeat selects the same fabric.
+ */
+const REEL = [...CATEGORIES, ...CATEGORIES, ...CATEGORIES];
+const START = CATEGORIES.length + 3;
 
 /**
  * Homepage collection — an editorial filmstrip on cream.
  *
- * Every still shares one base size and sits in a single row; the active one
- * scales up and breaks the line while its neighbours slide outward by exactly
- * the overflow, so the gaps stay even and the row keeps bleeding off both
- * edges. Motion is transform-only (no width/layout animation) so it stays
- * glass-smooth, and sizes are measured at rest — nothing is ever measured
- * mid-animation.
+ * Every still shares one base size; the active one scales up and breaks the
+ * line while its neighbours slide outward by exactly the overflow, so the gaps
+ * stay even. Motion is transform-only (no width/layout animation) so it stays
+ * glass-smooth, and sizes are measured at rest — never mid-animation.
  */
 export default function CategorySection() {
-  const [active, setActive] = useState(3);
+  const [active, setActive] = useState(START);
   const [m, setM] = useState<{ w: number; gap: number; vw: number } | null>(null);
 
   const viewportRef = useRef<HTMLDivElement>(null);
@@ -61,7 +68,7 @@ export default function CategorySection() {
   const delta = m ? (m.w * (SCALE - 1)) / 2 : 0;
   const trackOffset = m ? m.vw / 2 - (active * (m.w + m.gap) + m.w / 2) : 0;
 
-  const clamp = (n: number) => Math.min(CATEGORIES.length - 1, Math.max(0, n));
+  const clamp = (n: number) => Math.min(REEL.length - 1, Math.max(0, n));
   const onKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === "ArrowRight") {
       event.preventDefault();
@@ -72,23 +79,24 @@ export default function CategorySection() {
     }
   };
 
-  const current = CATEGORIES[active];
+  const current = REEL[active];
+  const position = (active % CATEGORIES.length) + 1;
 
   return (
     <section
       id="categories"
       aria-labelledby="categories-heading"
-      className="relative overflow-hidden bg-[#f1efea] py-16 md:py-24"
+      className="relative overflow-hidden bg-[#f1efea] py-14 md:py-20"
     >
-      {/* Index + caption block, set like an archive slip */}
+      {/* Index + caption slip — both update with the active still */}
       <div className="mx-auto max-w-7xl px-6 md:px-10">
         <p className="font-mono text-[0.62rem] tracking-[0.2em] text-ink/70">
-          ({pad(active + 1)})
+          ({pad(position)})
         </p>
-        <div className="mt-6 font-mono text-[0.62rem] leading-[1.7] tracking-[0.16em] text-ink/70 uppercase">
-          {CATEGORY_SECTION.caption.map((line) => (
-            <p key={line}>{line}</p>
-          ))}
+        <div className="mt-5 font-mono text-[0.62rem] leading-[1.75] tracking-[0.16em] text-ink/70 uppercase">
+          <p>{current.name} — {CATEGORY_SECTION.caption[0]}</p>
+          <p>{CATEGORY_SECTION.caption[1]}</p>
+          <p>{CATEGORY_SECTION.caption[2]}</p>
         </div>
         <h2 id="categories-heading" className="sr-only">
           Explore the Fanaar collection
@@ -102,23 +110,23 @@ export default function CategorySection() {
         aria-label="Fabric collection"
         tabIndex={0}
         onKeyDown={onKeyDown}
-        className="relative mt-10 w-full overflow-hidden py-24 focus:outline-none md:mt-14 md:py-28"
+        className="relative mt-8 w-full overflow-hidden py-20 focus:outline-none md:mt-10 md:py-24"
       >
         <div
           ref={trackRef}
-          className="flex items-center gap-2.5 will-change-transform sm:gap-3"
+          className="flex items-center gap-2 will-change-transform sm:gap-2.5"
           style={{
             transform: `translateX(${trackOffset}px)`,
             opacity: m ? 1 : 0,
             transition: `transform ${GLIDE}, opacity 500ms ease`,
           }}
         >
-          {CATEGORIES.map((category, i) => {
+          {REEL.map((category, i) => {
             const isActive = i === active;
             const shift = i < active ? -delta : i > active ? delta : 0;
             return (
               <button
-                key={category.id}
+                key={`${category.id}-${i}`}
                 ref={(el) => {
                   itemRefs.current[i] = el;
                 }}
@@ -131,20 +139,20 @@ export default function CategorySection() {
                   transform: `translateX(${shift}px) scale(${isActive ? SCALE : 1})`,
                   zIndex: isActive ? 10 : 1,
                   transition: `transform ${GLIDE}, opacity ${GLIDE}`,
-                  // Viewport-relative so the strip overflows both edges on any
-                  // screen, rather than floating in the middle.
-                  width: "max(96px, 13vw)",
+                  // Compact, viewport-relative stills — the reel repeats to fill
+                  // the row rather than the stills growing to fill it.
+                  width: "max(96px, 11.5vw)",
                 }}
                 className={`relative aspect-[3/4] shrink-0 overflow-hidden bg-ink/5 will-change-transform focus-visible:outline-none ${
-                  isActive ? "opacity-100" : "opacity-90 hover:opacity-100"
+                  isActive ? "opacity-100" : "opacity-85 hover:opacity-100"
                 }`}
               >
                 <Image
                   src={category.image!}
                   alt={category.alt}
                   fill
-                  sizes="(min-width: 768px) 280px, 220px"
-                  priority={i < 4}
+                  sizes="(min-width: 768px) 320px, 220px"
+                  priority={i >= START - 2 && i <= START + 2}
                   className="object-cover"
                 />
               </button>
@@ -153,10 +161,13 @@ export default function CategorySection() {
         </div>
       </div>
 
-      {/* Footer slip — mirrors the header, with the active name */}
+      {/* Footer slip — the fabric name, bold, bottom left */}
       <div className="mx-auto flex max-w-7xl flex-wrap items-end justify-between gap-6 px-6 md:px-10">
         <div>
-          <h3 className="font-display text-3xl tracking-tight text-ink md:text-4xl">
+          <p className="font-mono text-[0.6rem] uppercase tracking-[0.25em] text-clay">
+            {CATEGORY_SECTION.eyebrow}
+          </p>
+          <h3 className="mt-2 font-display text-4xl font-semibold tracking-tight text-ink md:text-5xl">
             {current.name}
           </h3>
           <p className="mt-2 text-sm text-ink/55">{current.descriptor}</p>
@@ -181,7 +192,7 @@ export default function CategorySection() {
           <button
             type="button"
             onClick={() => setActive((i) => clamp(i + 1))}
-            disabled={active === CATEGORIES.length - 1}
+            disabled={active === REEL.length - 1}
             aria-label="Next"
             className="text-ink/60 transition-colors duration-300 ease-lux hover:text-ink disabled:opacity-25"
           >

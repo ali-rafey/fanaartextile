@@ -29,6 +29,7 @@ export interface Category {
 }
 
 export const CATEGORY_SECTION = {
+  eyebrow: "The collection",
   /** Mono caption block sitting above the strip, editorial-index style. */
   caption: [
     "EXPLORE THE COLLECTION",
