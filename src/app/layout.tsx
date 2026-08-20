@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Fraunces } from "next/font/google";
+import Analytics from "@/components/analytics";
 import {
   OG_IMAGE,
   SITE_DESCRIPTION,
@@ -70,6 +71,10 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
     },
   },
+  verification: {
+    // Google Search Console ownership — set NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION.
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+  },
   category: "Textiles",
   formatDetection: { telephone: false },
 };
@@ -84,7 +89,10 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={fraunces.variable}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }
