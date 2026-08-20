@@ -5,10 +5,11 @@ import Reveal from "@/components/site/reveal";
 import SiteFooter from "@/components/site/site-footer";
 import SiteHeader from "@/components/site/site-header";
 import {
+  ABOUT_BAND,
   ABOUT_CTA,
   ABOUT_FIGURES,
+  ABOUT_FOUNDER,
   ABOUT_HERO,
-  ABOUT_IMAGES,
   ABOUT_QUOTE,
   ABOUT_STORY,
   ABOUT_VALUES,
@@ -52,25 +53,17 @@ export default function AboutPage() {
           </Reveal>
         </section>
 
-        {/* Image band — staggered, running off both edges */}
+        {/* One quiet frame, full width */}
         <Reveal>
-          <div className="flex items-start gap-3 overflow-hidden pb-6 md:gap-4">
-            {ABOUT_IMAGES.map((image, i) => (
-              <div
-                key={image.src}
-                className={`relative aspect-[3/4] shrink-0 overflow-hidden ${
-                  i === 1 ? "w-[34vw] md:translate-y-8" : "w-[26vw]"
-                } ${i === 2 ? "md:-translate-y-4" : ""} ${i === 3 ? "md:translate-y-12" : ""}`}
-              >
-                <Image
-                  src={image.src}
-                  alt={image.alt}
-                  fill
-                  sizes="(min-width: 768px) 34vw, 50vw"
-                  className="object-cover"
-                />
-              </div>
-            ))}
+          <div className="relative aspect-[21/9] w-full overflow-hidden md:aspect-[2.6/1]">
+            <Image
+              src={ABOUT_BAND.src}
+              alt={ABOUT_BAND.alt}
+              fill
+              sizes="100vw"
+              priority
+              className="object-cover"
+            />
           </div>
         </Reveal>
 
@@ -105,6 +98,46 @@ export default function AboutPage() {
                 </p>
               </Reveal>
             ))}
+          </div>
+        </section>
+
+        {/* A note from the founder — the reasoning, in the first person */}
+        <section className="mx-auto max-w-7xl px-6 py-20 md:px-10 md:py-28">
+          <div className="grid gap-12 md:grid-cols-[0.85fr_1.15fr] md:gap-16">
+            <Reveal>
+              <div className="relative aspect-[4/5] w-full overflow-hidden md:sticky md:top-28">
+                <Image
+                  src={ABOUT_FOUNDER.image}
+                  alt={ABOUT_FOUNDER.imageAlt}
+                  fill
+                  sizes="(min-width: 768px) 38vw, 100vw"
+                  className="object-cover"
+                />
+              </div>
+            </Reveal>
+
+            <Reveal delay={120}>
+              <div>
+                <p className="font-mono text-[0.6rem] uppercase tracking-[0.28em] text-clay">
+                  {ABOUT_FOUNDER.eyebrow}
+                </p>
+                <div className="mt-8 space-y-6 text-lg leading-relaxed text-ink/70 md:text-xl md:leading-relaxed">
+                  {ABOUT_FOUNDER.paragraphs.map((paragraph) => (
+                    <p key={paragraph.slice(0, 24)}>{paragraph}</p>
+                  ))}
+                </div>
+                <div className="mt-10 border-t border-ink/10 pt-5">
+                  {ABOUT_FOUNDER.name ? (
+                    <p className="font-display text-xl tracking-tight text-ink">
+                      {ABOUT_FOUNDER.name}
+                    </p>
+                  ) : null}
+                  <p className="font-mono text-[0.6rem] uppercase tracking-[0.22em] text-ink/45">
+                    {ABOUT_FOUNDER.role}
+                  </p>
+                </div>
+              </div>
+            </Reveal>
           </div>
         </section>
 

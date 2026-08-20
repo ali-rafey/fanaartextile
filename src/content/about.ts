@@ -56,12 +56,30 @@ export const ABOUT_VALUES: AboutValue[] = [
   },
 ];
 
-export const ABOUT_IMAGES = [
-  { src: "/images/about/mill.jpg", alt: "Spinning machinery at a partner mill" },
-  { src: "/images/about/hands.jpg", alt: "A weaver's hand at the loom" },
-  { src: "/images/about/yarn.jpg", alt: "Cones of yarn waiting to be warped" },
-  { src: "/images/about/warp.jpg", alt: "Warp threads drawn tight across the loom" },
-];
+/** One quiet frame beneath the masthead, rather than a strip of them. */
+export const ABOUT_BAND = {
+  src: "/images/about/band.jpg",
+  alt: "Warp threads drawn tight across the loom",
+};
+
+/**
+ * A note from the founder — the reasoning behind the house, in the first
+ * person. Replace `image` with a real portrait when there is one, and set
+ * `name` to have it printed above the role.
+ */
+export const ABOUT_FOUNDER = {
+  eyebrow: "A note from the founder",
+  paragraphs: [
+    "I did not arrive at textiles from a family mill or a fashion house. I arrived as someone who kept noticing the same thing: the cloth we spend our most unguarded hours in — asleep, at home, off duty — is the cloth almost nobody thinks about.",
+    "Fanaar began as a stubborn question. We measure almost everything else we buy. So why is “soft” a marketing word instead of a number? Why does the fabric closest to us get the least scrutiny?",
+    "The house is built around that answer. Audited mills, a testing lab, four gates before anything carries the name. It is a slower way to work, and it is the only way I wanted to do it.",
+  ],
+  /** Optional — leave empty and only the role is shown. */
+  name: "",
+  role: "Founder, Fanaar Textile",
+  image: "/images/about/hands.jpg",
+  imageAlt: "A weaver's hand guiding thread at the loom",
+};
 
 export const ABOUT_CTA = {
   heading: "Have a question, or a project in mind?",
