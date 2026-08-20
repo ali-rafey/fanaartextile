@@ -9,6 +9,7 @@ import {
   ABOUT_FIGURES,
   ABOUT_FOUNDER,
   ABOUT_HERO,
+  ABOUT_PERCEPTION,
   ABOUT_PSYCHOLOGY,
   ABOUT_VALUES,
 } from "@/content/about";
@@ -75,6 +76,55 @@ export default function AboutPage() {
                 </div>
               </Reveal>
             </div>
+          </div>
+        </section>
+
+        {/* How cloth is actually judged — sensory, not industrial */}
+        <section className="mx-auto max-w-7xl px-6 py-20 md:px-10 md:py-28">
+          <Reveal>
+            <p className="font-mono text-[0.6rem] uppercase tracking-[0.28em] text-clay">
+              {ABOUT_PERCEPTION.eyebrow}
+            </p>
+          </Reveal>
+
+          <div className="mt-10 grid gap-10 md:grid-cols-[1.15fr_0.85fr] md:items-start md:gap-14">
+            <Reveal>
+              <figure>
+                <div className="relative aspect-[4/5] w-full overflow-hidden">
+                  <Image
+                    src={ABOUT_PERCEPTION.images[0].src}
+                    alt={ABOUT_PERCEPTION.images[0].alt}
+                    fill
+                    sizes="(min-width: 768px) 52vw, 100vw"
+                    className="object-cover"
+                  />
+                </div>
+                <figcaption className="mt-4 font-mono text-[0.6rem] uppercase leading-[1.7] tracking-[0.18em] text-ink/45">
+                  {ABOUT_PERCEPTION.images[0].caption}
+                </figcaption>
+              </figure>
+            </Reveal>
+
+            <Reveal delay={120}>
+              <div className="md:pt-24">
+                <figure>
+                  <div className="relative aspect-[3/4] w-full overflow-hidden">
+                    <Image
+                      src={ABOUT_PERCEPTION.images[1].src}
+                      alt={ABOUT_PERCEPTION.images[1].alt}
+                      fill
+                      sizes="(min-width: 768px) 36vw, 100vw"
+                      className="object-cover"
+                    />
+                  </div>
+                  <figcaption className="mt-4 font-mono text-[0.6rem] uppercase leading-[1.7] tracking-[0.18em] text-ink/45">
+                    {ABOUT_PERCEPTION.images[1].caption}
+                  </figcaption>
+                </figure>
+
+                <p className="mt-12 leading-relaxed text-ink/60">{ABOUT_PERCEPTION.note}</p>
+              </div>
+            </Reveal>
           </div>
         </section>
 

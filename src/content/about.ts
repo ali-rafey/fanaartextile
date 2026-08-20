@@ -26,6 +26,28 @@ export const ABOUT_PSYCHOLOGY = {
   ],
 };
 
+/**
+ * Two frames on how people actually read cloth — by hand, and by feel, long
+ * before they read a label. Sensory rather than industrial on purpose: nobody
+ * forms a relationship with a photograph of a loom.
+ */
+export const ABOUT_PERCEPTION = {
+  eyebrow: "How cloth is really judged",
+  images: [
+    {
+      src: "/images/perception/touch.jpg",
+      alt: "A hand reaching out to feel hanging cloth in daylight",
+      caption: "The hand decides before the eye does.",
+    },
+    {
+      src: "/images/perception/perception.jpg",
+      alt: "A hand resting behind a sheer length of fabric",
+      caption: "Weight, drape and warmth are read in the first second of contact.",
+    },
+  ],
+  note: "Nobody buys fabric by reading a specification. They touch it, and something older than reasoning tells them whether it is good. Our job is to make sure that instinct is right — that what feels considered has actually been measured.",
+};
+
 /** The house at a glance. */
 export const ABOUT_FIGURES = [
   { value: "6", label: "Constructions in the library" },
