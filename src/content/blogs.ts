@@ -14,7 +14,8 @@ export type BlogId =
   | "care"
   | "traceability"
   | "seasonless"
-  | "colourfast";
+  | "colourfast"
+  | "dye-house";
 
 export interface BlogPost {
   id: BlogId;
@@ -115,6 +116,18 @@ export const BLOG_POSTS: BlogPost[] = [
     date: "March 2026",
     image: "/images/journal/seasonless.jpg",
     alt: "Folded loungewear in muted, seasonless tones",
+    href: "#",
+  },
+  {
+    id: "dye-house",
+    category: "Craft",
+    title: "A morning in the dye house",
+    excerpt:
+      "Colour is decided long before a garment exists — in vats, timings and water. A morning watching a shade get built from nothing.",
+    readTime: "6 min read",
+    date: "January 2026",
+    image: "/images/journal/dye-house.jpg",
+    alt: "Workers gathered outside a textile dye house",
     href: "#",
   },
   {

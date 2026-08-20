@@ -1,30 +1,68 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { BlogPost } from "@/content/blogs";
 import { BLOG_SECTION } from "@/content/blogs";
 import { listPublishedPosts } from "@/lib/db/blogs";
 import Reveal from "./reveal";
 
 /**
- * Homepage journal — a centred statement over a scattered archive gallery.
+ * Homepage journal — a centred statement over a scattered archive wall.
  *
- * The stills sit at deliberately uneven widths and vertical offsets, with the
- * middle one dominant and the outermost pair running off both edges, so the row
- * reads like photographs laid out on a table rather than a tidy grid. Offsets
- * only apply from md up; below that the row wraps into a centred cluster.
+ * Laid out as five columns rather than one row: the two columns flanking the
+ * centre stack a pair of photographs, the middle column holds a single
+ * dominant portrait, and the outer columns run past both edges of the frame.
+ * Each column carries its own vertical offset so the wall reads like prints
+ * pinned at slightly different heights. Below md it collapses to a simple
+ * two-up grid.
  */
 
-// width · vertical offset · aspect — the middle entry is the anchor.
-const TILES = [
-  { w: "w-40 sm:w-44 md:w-[13rem]", y: "md:translate-y-16", ar: "aspect-[3/4]" },
-  { w: "w-48 sm:w-56 md:w-[15rem]", y: "md:-translate-y-6", ar: "aspect-[4/5]" },
-  { w: "w-44 sm:w-52 md:w-[13.5rem]", y: "md:translate-y-24", ar: "aspect-[3/4]" },
-  { w: "w-60 sm:w-72 md:w-[21rem]", y: "md:translate-y-2", ar: "aspect-[4/5]" },
-  { w: "w-44 sm:w-52 md:w-[14rem]", y: "md:-translate-y-10", ar: "aspect-[3/4]" },
-  { w: "w-40 sm:w-48 md:w-[13rem]", y: "md:translate-y-20", ar: "aspect-[4/5]" },
+/** Column plan: which posts sit in each column, and how that column is offset. */
+// Widths are viewport-relative and total more than 100vw, so the outer
+// columns are always cropped by the frame — the wall never floats centred.
+const COLUMNS: { picks: number[]; width: string; offset: string }[] = [
+  { picks: [0], width: "w-[19vw] min-w-[160px]", offset: "md:translate-y-10" },
+  { picks: [1, 2], width: "w-[21vw] min-w-[180px]", offset: "md:-translate-y-8" },
+  { picks: [3], width: "w-[29vw] min-w-[250px]", offset: "md:translate-y-16" },
+  { picks: [4, 5], width: "w-[21vw] min-w-[180px]", offset: "md:-translate-y-6" },
+  { picks: [6], width: "w-[19vw] min-w-[160px]", offset: "md:translate-y-12" },
 ];
 
+function Frame({ post, ratio }: { post: BlogPost; ratio: string }) {
+  return (
+    <Link href={post.href} aria-label={post.title} className="group block">
+      <div
+        className={`relative ${ratio} overflow-hidden rounded-md shadow-[0_20px_50px_-24px_rgba(27,24,21,0.6)]`}
+      >
+        <div className="absolute inset-0 transition-transform duration-[1200ms] ease-lux group-hover:scale-[1.05] motion-reduce:transition-none">
+          {post.image ? (
+            <Image
+              src={post.image}
+              alt={post.alt}
+              fill
+              sizes="(min-width: 768px) 24vw, 45vw"
+              className="object-cover"
+            />
+          ) : null}
+        </div>
+
+        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/90 via-ink/30 to-transparent p-4 opacity-0 transition-opacity duration-500 ease-lux group-hover:opacity-100">
+          <p className="font-display text-sm leading-snug text-ivory">{post.title}</p>
+          <p className="mt-1.5 flex items-center justify-between font-mono text-[0.55rem] uppercase tracking-[0.18em] text-ivory/70">
+            <span>{post.category}</span>
+            <span>↗ Read</span>
+          </p>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
 export default async function FeaturedBlogs() {
-  const posts = (await listPublishedPosts()).slice(0, 6);
+  const posts = await listPublishedPosts();
+  if (posts.length === 0) return null;
+
+  // Wrap the index so the wall stays full even with fewer posts than slots.
+  const at = (i: number) => posts[i % posts.length];
 
   return (
     <section
@@ -35,61 +73,49 @@ export default async function FeaturedBlogs() {
       {/* Statement */}
       <div className="mx-auto max-w-3xl px-6 text-center">
         <Reveal>
-          <p className="font-mono text-[0.62rem] uppercase tracking-[0.3em] text-clay">
-            {BLOG_SECTION.caption}
-          </p>
           <h2
             id="journal-heading"
-            className="mx-auto mt-6 max-w-2xl font-display text-3xl leading-[1.2] tracking-tight text-ink whitespace-pre-line md:text-[2.75rem]"
+            className="mx-auto max-w-2xl font-display text-[1.75rem] leading-[1.25] tracking-tight text-ink whitespace-pre-line md:text-[2.6rem]"
           >
             {BLOG_SECTION.statement}
           </h2>
-          <p className="mx-auto mt-6 max-w-xl text-sm leading-relaxed text-ink/55 md:text-base">
+          <p className="mx-auto mt-6 max-w-lg text-sm leading-relaxed text-ink/55">
             {BLOG_SECTION.intro}
           </p>
         </Reveal>
       </div>
 
-      {/* Scattered archive */}
+      {/* Archive wall */}
       <Reveal className="mt-16 w-full md:mt-24">
-        <div className="flex flex-wrap items-center justify-center gap-5 md:flex-nowrap md:gap-6">
-          {posts.map((post, i) => {
-            const tile = TILES[i % TILES.length];
-            return (
-              <Link
-                key={post.id}
-                href={post.href}
-                aria-label={post.title}
-                className={`group relative block shrink-0 ${tile.w} ${tile.y}`}
-              >
-                <div
-                  className={`relative ${tile.ar} overflow-hidden rounded-[3px] shadow-[0_18px_45px_-20px_rgba(27,24,21,0.55)]`}
-                >
-                  <div className="absolute inset-0 transition-transform duration-[1200ms] ease-lux group-hover:scale-[1.04] motion-reduce:transition-none">
-                    {post.image ? (
-                      <Image
-                        src={post.image}
-                        alt={post.alt}
-                        fill
-                        sizes="(min-width: 768px) 22rem, 60vw"
-                        className="object-cover"
-                      />
-                    ) : null}
-                  </div>
+        {/* md+: five staggered columns that bleed off both edges */}
+        <div className="hidden items-start justify-center gap-4 md:flex lg:gap-6">
+          {COLUMNS.map((column, ci) => (
+            <div
+              key={ci}
+              className={`flex shrink-0 flex-col gap-4 lg:gap-6 ${column.width} ${column.offset}`}
+            >
+              {column.picks.map((index, ri) => (
+                <Frame
+                  key={index}
+                  post={at(index)}
+                  ratio={
+                    column.picks.length === 1
+                      ? "aspect-[3/4]"
+                      : ri === 0
+                        ? "aspect-[4/5]"
+                        : "aspect-square"
+                  }
+                />
+              ))}
+            </div>
+          ))}
+        </div>
 
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/85 via-ink/25 to-transparent p-4 opacity-0 transition-opacity duration-500 ease-lux group-hover:opacity-100">
-                    <p className="font-display text-sm leading-snug text-ivory md:text-base">
-                      {post.title}
-                    </p>
-                    <p className="mt-1.5 flex items-center justify-between font-mono text-[0.55rem] uppercase tracking-[0.18em] text-ivory/70">
-                      <span>{post.category}</span>
-                      <span>↗ Read</span>
-                    </p>
-                  </div>
-                </div>
-              </Link>
-            );
-          })}
+        {/* below md: a simple two-up grid */}
+        <div className="grid grid-cols-2 gap-4 px-6 md:hidden">
+          {posts.slice(0, 6).map((post) => (
+            <Frame key={post.id} post={post} ratio="aspect-[4/5]" />
+          ))}
         </div>
       </Reveal>
 
