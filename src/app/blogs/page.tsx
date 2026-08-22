@@ -35,8 +35,21 @@ const TILES = [
   { w: "w-40 sm:w-44 md:w-52", y: "md:translate-y-10", ar: "aspect-[4/5]", r: "" },
 ];
 
-export default async function BlogsPage() {
-  const posts = await listPublishedPosts();
+export default async function BlogsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ category?: string }>;
+}) {
+  const { category } = await searchParams;
+  const all = await listPublishedPosts();
+
+  // Category comes from the navbar's Journal panel. An unknown value falls
+  // back to the full archive rather than an empty wall.
+  const filtered = category
+    ? all.filter((post) => post.category.toLowerCase() === category.toLowerCase())
+    : all;
+  const posts = filtered.length ? filtered : all;
+  const activeCategory = filtered.length ? category : undefined;
 
   const blogJsonLd = {
     "@context": "https://schema.org",
@@ -76,6 +89,18 @@ export default async function BlogsPage() {
               {BLOG_INDEX.statement}
             </h1>
             <p className="mx-auto mt-7 max-w-2xl leading-relaxed text-ink/55">{BLOG_INDEX.intro}</p>
+
+          {activeCategory ? (
+            <p className="mt-8 font-mono text-[0.62rem] uppercase tracking-[0.24em] text-ink/50">
+              {activeCategory}
+              <Link
+                href="/blogs"
+                className="ml-4 text-clay transition-colors duration-300 ease-lux hover:text-ink"
+              >
+                Clear
+              </Link>
+            </p>
+          ) : null}
           </Reveal>
         </section>
 
