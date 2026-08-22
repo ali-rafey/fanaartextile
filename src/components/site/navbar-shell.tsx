@@ -51,6 +51,9 @@ export default function NavbarShell({ journal }: { journal: JournalMenuData }) {
               return (
                 <li
                   key={item.label}
+                  // Handlers sit on the item, not the Link: next/link does not
+                  // forward onMouseEnter. The item is a content-sized flex
+                  // child, so its box is the text itself.
                   onMouseEnter={hasMenu ? menu.show : undefined}
                   onMouseLeave={hasMenu ? menu.hide : undefined}
                 >
@@ -115,7 +118,9 @@ export default function NavbarShell({ journal }: { journal: JournalMenuData }) {
         </div>
         {/* Journal drop panel — breaks out of the inset nav to full width */}
         <div
-          className="absolute left-1/2 top-full hidden w-screen -translate-x-1/2 pt-6 xl:block"
+          className={`absolute left-1/2 top-full hidden w-screen -translate-x-1/2 pt-6 xl:block ${
+            menu.open ? "pointer-events-auto" : "pointer-events-none"
+          }`}
           onMouseEnter={menu.show}
           onMouseLeave={menu.hide}
         >

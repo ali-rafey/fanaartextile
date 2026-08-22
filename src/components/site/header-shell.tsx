@@ -41,6 +41,9 @@ export default function HeaderShell({ journal }: { journal: JournalMenuData }) {
               return (
                 <li
                   key={item.label}
+                  // Handlers sit on the item, not the Link: next/link does not
+                  // forward onMouseEnter. The item is a content-sized flex
+                  // child, so its box is the text itself.
                   onMouseEnter={hasMenu ? menu.show : undefined}
                   onMouseLeave={hasMenu ? menu.hide : undefined}
                 >
@@ -103,9 +106,15 @@ export default function HeaderShell({ journal }: { journal: JournalMenuData }) {
         </div>
       </nav>
 
-      {/* Journal drop panel — desktop hover only */}
+      {/* Journal drop panel — desktop hover only.
+          The wrapper spans the width of the header, so it must ignore the
+          pointer while closed; otherwise moving anywhere beneath the navbar
+          would open it. It only becomes hoverable once already open, so the
+          pointer can travel from the link into the panel. */}
       <div
-        className="absolute inset-x-0 top-full hidden xl:block"
+        className={`absolute inset-x-0 top-full hidden xl:block ${
+          menu.open ? "pointer-events-auto" : "pointer-events-none"
+        }`}
         onMouseEnter={menu.show}
         onMouseLeave={menu.hide}
       >
