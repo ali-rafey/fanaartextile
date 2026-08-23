@@ -5,8 +5,6 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CATEGORIES, CATEGORY_SECTION } from "@/content/categories";
 
-const pad = (n: number) => String(n).padStart(2, "0");
-
 // One long, soft curve shared by the track glide and every still, so the whole
 // strip moves as a single unhurried gesture.
 const GLIDE = "1000ms cubic-bezier(0.22, 1, 0.36, 1)";
@@ -80,7 +78,6 @@ export default function CategorySection() {
   };
 
   const current = REEL[active];
-  const position = (active % CATEGORIES.length) + 1;
 
   return (
     <section
@@ -88,15 +85,13 @@ export default function CategorySection() {
       aria-labelledby="categories-heading"
       className="relative overflow-hidden border-t border-ink/10 bg-ivory py-14 md:py-20"
     >
-      {/* Index + caption slip — both update with the active still */}
+      {/* Technical slip — updates with the active still. What the fibre
+          actually is, in a mill's terms, rather than house boilerplate. */}
       <div className="mx-auto max-w-7xl px-6 md:px-10">
-        <p className="font-mono text-[0.62rem] tracking-[0.2em] text-ink/70">
-          ({pad(position)})
-        </p>
-        <div className="mt-5 font-mono text-[0.62rem] leading-[1.75] tracking-[0.16em] text-ink/70 uppercase">
-          <p>{current.name} — {CATEGORY_SECTION.caption[0]}</p>
-          <p>{CATEGORY_SECTION.caption[1]}</p>
-          <p>{CATEGORY_SECTION.caption[2]}</p>
+        <div className="font-mono text-[0.62rem] leading-[1.75] tracking-[0.16em] text-ink/70 uppercase">
+          {current.science.map((line) => (
+            <p key={line}>{line}</p>
+          ))}
         </div>
         <h2 id="categories-heading" className="sr-only">
           Explore the Fanaar collection
