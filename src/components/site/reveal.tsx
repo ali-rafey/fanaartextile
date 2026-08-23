@@ -7,6 +7,8 @@ type RevealProps = {
   /** Extra transition delay in ms, for staggering siblings. */
   delay?: number;
   className?: string;
+  /** Merged with the delay — lets a caller place the block itself. */
+  style?: React.CSSProperties;
 };
 
 /**
@@ -15,7 +17,7 @@ type RevealProps = {
  * hides the block only if it is still off-screen, then reveals it when it
  * enters the viewport; reduced-motion users skip the effect entirely.
  */
-export default function Reveal({ children, delay = 0, className = "" }: RevealProps) {
+export default function Reveal({ children, delay = 0, className = "", style }: RevealProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [hidden, setHidden] = useState(false);
 
@@ -43,7 +45,7 @@ export default function Reveal({ children, delay = 0, className = "" }: RevealPr
   return (
     <div
       ref={ref}
-      style={{ transitionDelay: `${delay}ms` }}
+      style={{ ...style, transitionDelay: `${delay}ms` }}
       className={`transition-[opacity,transform] duration-[900ms] ease-lux ${
         hidden ? "translate-y-8 opacity-0" : "translate-y-0 opacity-100"
       } ${className}`}
