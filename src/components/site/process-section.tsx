@@ -33,7 +33,7 @@ const STAGE = { w: 1200, h: 640 };
 
 /** Stops on the thread, and the pocket each sentence sits in. */
 const STOPS = [
-  { node: { x: 168, y: 196 }, text: { x: 344, y: 186, w: 212 }, align: "left" as const },
+  { node: { x: 168, y: 196 }, text: { x: 216, y: 56, w: 240 }, align: "left" as const },
   { node: { x: 452, y: 430 }, text: { x: 330, y: 496, w: 264 }, align: "left" as const },
   { node: { x: 772, y: 188 }, text: { x: 648, y: 22, w: 264 }, align: "left" as const },
   { node: { x: 1010, y: 452 }, text: { x: 712, y: 470, w: 264 }, align: "right" as const },
@@ -54,6 +54,9 @@ const THREAD =
   "C 560,442 610,300 772,188 " +
   "C 900,108 950,320 1010,452 " +
   "C 1090,540 1170,578 1260,604";
+
+/** Stop diameter in px — also the offset that centres it on the thread. */
+const DOT = 12;
 
 const pct = (v: number, total: number) => `${(v / total) * 100}%`;
 
@@ -77,17 +80,12 @@ export default function ProcessSection() {
         </Reveal>
 
         <Reveal>
-          <div className="mt-12 flex flex-col gap-8 md:flex-row md:items-end md:justify-between md:gap-16">
-            <h2
-              id="process-heading"
-              className="max-w-2xl font-display text-4xl leading-[1.02] tracking-tight text-ink md:text-5xl"
-            >
-              {PROCESS_SECTION.heading}
-            </h2>
-            <p className="max-w-sm text-[0.92rem] leading-relaxed text-ink/60 md:pb-2">
-              {PROCESS_SECTION.intro}
-            </p>
-          </div>
+          <h2
+            id="process-heading"
+            className="mt-12 max-w-2xl font-display text-4xl leading-[1.02] tracking-tight text-ink md:text-5xl"
+          >
+            {PROCESS_SECTION.heading}
+          </h2>
         </Reveal>
 
         {/* ── The thread, at the width it was drawn for ───────────────────── */}
@@ -113,15 +111,21 @@ export default function ProcessSection() {
               const stop = STOPS[i];
               return (
                 <li key={step.id}>
+                  {/* Centred by offsetting half the dot, not by a transform:
+                      Reveal animates translate-y, which would clobber it and
+                      leave the stop sitting off its own thread. */}
                   <Reveal
                     delay={i * 90}
-                    className="absolute z-10 -translate-x-1/2 -translate-y-1/2"
+                    className="absolute z-10"
                     style={{
-                      left: pct(stop.node.x, STAGE.w),
-                      top: pct(stop.node.y, STAGE.h),
+                      left: `calc(${pct(stop.node.x, STAGE.w)} - ${DOT / 2}px)`,
+                      top: `calc(${pct(stop.node.y, STAGE.h)} - ${DOT / 2}px)`,
                     }}
                   >
-                    <span className="block h-3 w-3 rounded-full bg-ink ring-4 ring-ivory" />
+                    <span
+                      className="block rounded-full bg-ink ring-4 ring-ivory"
+                      style={{ width: DOT, height: DOT }}
+                    />
                   </Reveal>
 
                   <Reveal
@@ -134,10 +138,7 @@ export default function ProcessSection() {
                       textAlign: stop.align,
                     }}
                   >
-                    <p className="font-mono text-[0.58rem] tracking-[0.22em] text-clay">
-                      {step.step}
-                    </p>
-                    <p className="mt-2.5 text-[0.95rem] leading-relaxed text-ink/75">
+                    <p className="text-[0.95rem] leading-relaxed text-ink/75">
                       {step.description}
                     </p>
                   </Reveal>
@@ -159,8 +160,7 @@ export default function ProcessSection() {
               className="relative border-l border-ink/20 pb-10 pl-8 last:border-transparent last:pb-0"
             >
               <span className="absolute top-1.5 -left-[0.4rem] block h-3 w-3 rounded-full bg-ink ring-4 ring-ivory" />
-              <p className="font-mono text-[0.58rem] tracking-[0.22em] text-clay">{step.step}</p>
-              <p className="mt-2.5 leading-relaxed text-ink/75">{step.description}</p>
+              <p className="leading-relaxed text-ink/75">{step.description}</p>
             </li>
           ))}
         </ol>
