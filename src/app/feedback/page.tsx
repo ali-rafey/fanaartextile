@@ -3,6 +3,7 @@ import FeedbackForm from "@/components/site/feedback-form";
 import Reveal from "@/components/site/reveal";
 import SiteFooter from "@/components/site/site-footer";
 import SiteHeader from "@/components/site/site-header";
+import { FEEDBACK_LOOP } from "@/content/feedback";
 
 export const metadata: Metadata = {
   title: "Feedback",
@@ -16,14 +17,6 @@ export const metadata: Metadata = {
     url: "/feedback",
   },
 };
-
-/** The loop a piece of feedback travels once it reaches us. */
-const LOOP = [
-  { step: "Sourcing", note: "Fibre choices revisited at origin." },
-  { step: "Testing", note: "Thresholds tightened in the lab." },
-  { step: "Production", note: "Finishing adjusted on the floor." },
-  { step: "Back to you", note: "Better cloth in the next run." },
-];
 
 export default function FeedbackPage() {
   return (
@@ -47,7 +40,7 @@ export default function FeedbackPage() {
                 </p>
 
                 <ol className="mt-12">
-                  {LOOP.map((item, i) => (
+                  {FEEDBACK_LOOP.map((item, i) => (
                     <li
                       key={item.step}
                       className="flex items-baseline gap-5 border-t border-ink/10 py-4 last:border-b"

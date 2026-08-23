@@ -1,7 +1,9 @@
 "use client";
 
 import AboutMenu from "@/components/site/menus/about-menu";
+import ContactMenu from "@/components/site/menus/contact-menu";
 import FabricsMenu from "@/components/site/menus/fabrics-menu";
+import FeedbackMenu from "@/components/site/menus/feedback-menu";
 import JournalMenu from "@/components/site/menus/journal-menu";
 import ThreadsMenu from "@/components/site/menus/threads-menu";
 import type { MenuKey } from "@/components/site/use-hover-menu";
@@ -52,6 +54,8 @@ export default function NavMenus({
         onNavigate={onNavigate}
         className={className}
       />
+      <ContactMenu open={active === "contact"} onNavigate={onNavigate} className={className} />
+      <FeedbackMenu open={active === "feedback"} onNavigate={onNavigate} className={className} />
     </>
   );
 }
@@ -62,4 +66,6 @@ export const MENU_FOR: Record<string, MenuKey> = {
   Threads: "threads",
   Journal: "journal",
   "About Us": "about",
+  "Contact Us": "contact",
+  Feedback: "feedback",
 };

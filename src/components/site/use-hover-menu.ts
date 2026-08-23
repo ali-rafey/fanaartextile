@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-export type MenuKey = "fabrics" | "threads" | "journal" | "about";
+export type MenuKey = "fabrics" | "threads" | "journal" | "about" | "contact" | "feedback";
 
 /**
  * Which navbar drop panel is open, if any.
