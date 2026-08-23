@@ -57,12 +57,10 @@ export const ABOUT_FIGURES = [
 ];
 
 /**
- * The person behind the house, in the first person.
+ * The person behind the house, in the first person, and the small card that
+ * sits beside the note — the portrait and the two ways to reach him.
  *
- * `portrait` is intentionally empty: the note stands on its own as type rather
- * than borrowing a stranger's photograph. Point it at a real portrait
- * (e.g. "/images/about/founder.jpg") and it renders beside the note instead.
- * Setting `name` prints it above the role.
+ * Clearing `portrait` drops the card and lets the note run full width.
  */
 export const ABOUT_FOUNDER = {
   eyebrow: "The person behind it",
@@ -71,10 +69,17 @@ export const ABOUT_FOUNDER = {
     "Fanaar is that belief turned into a company. It is young and deliberately small, and I would rather it grow slowly and mean something than grow quickly and mean very little.",
     "If you are reading this, you are early. I would genuinely like to know what you think.",
   ],
-  name: "",
+  name: "Ali Anees",
   role: "Founder, Fanaar Textile",
-  portrait: "",
-  portraitAlt: "",
+  portrait: "/images/about/founder.webp",
+  portraitAlt: "Ali Anees, founder of Fanaar Textile",
+  site: { label: "Pinch Ali \u{1F609}", href: "https://alianees.online" },
+  socials: [
+    {
+      name: "Instagram",
+      href: "https://www.instagram.com/alianees_?igsi=MTQwN29hZ2RhZm1wOQ==",
+    },
+  ],
 };
 
 export interface AboutValue {

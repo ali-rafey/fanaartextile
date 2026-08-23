@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import FounderCard from "@/components/site/founder-card";
 import Reveal from "@/components/site/reveal";
 import SiteFooter from "@/components/site/site-footer";
 import SiteHeader from "@/components/site/site-header";
@@ -154,25 +155,11 @@ export default function AboutPage() {
             <div
               className={
                 hasPortrait
-                  ? "mt-10 grid gap-12 md:grid-cols-[0.8fr_1.2fr] md:gap-16"
+                  ? "mt-10 grid gap-12 md:grid-cols-[1.15fr_0.65fr] md:items-start md:gap-16"
                   : "mt-10"
               }
             >
-              {hasPortrait ? (
-                <Reveal>
-                  <div className="relative aspect-[4/5] w-full overflow-hidden md:sticky md:top-28">
-                    <Image
-                      src={ABOUT_FOUNDER.portrait}
-                      alt={ABOUT_FOUNDER.portraitAlt}
-                      fill
-                      sizes="(min-width: 768px) 34vw, 100vw"
-                      className="object-cover"
-                    />
-                  </div>
-                </Reveal>
-              ) : null}
-
-              <Reveal delay={hasPortrait ? 120 : 0}>
+              <Reveal>
                 <div className={hasPortrait ? "" : "max-w-3xl"}>
                   <div className="space-y-7 font-display text-xl leading-[1.55] tracking-tight text-ink/75 md:text-[1.6rem] md:leading-[1.5]">
                     {ABOUT_FOUNDER.paragraphs.map((paragraph) => (
@@ -181,17 +168,21 @@ export default function AboutPage() {
                   </div>
 
                   <div className="mt-12 border-t border-ink/10 pt-5">
-                    {ABOUT_FOUNDER.name ? (
-                      <p className="font-display text-xl tracking-tight text-ink">
-                        {ABOUT_FOUNDER.name}
-                      </p>
-                    ) : null}
+                    <p className="font-display text-xl tracking-tight text-ink">
+                      {ABOUT_FOUNDER.name}
+                    </p>
                     <p className="font-mono text-[0.6rem] uppercase tracking-[0.22em] text-ink/60">
                       {ABOUT_FOUNDER.role}
                     </p>
                   </div>
                 </div>
               </Reveal>
+
+              {hasPortrait ? (
+                <Reveal delay={120} className="md:sticky md:top-28">
+                  <FounderCard />
+                </Reveal>
+              ) : null}
             </div>
           </div>
         </section>
