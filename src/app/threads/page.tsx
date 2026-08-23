@@ -76,6 +76,16 @@ export default async function ThreadsPage() {
               </header>
             </Reveal>
 
+            {threads.length === 0 ? (
+              <Reveal>
+                <p className="mx-auto mt-14 max-w-md text-center leading-relaxed text-ink/60">
+                  The thread range is being catalogued. Tell us the fabric and the finish
+                  you&rsquo;re working to and we&rsquo;ll match the thread to the job in the
+                  meantime.
+                </p>
+              </Reveal>
+            ) : null}
+
             <div className="mt-14 grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
               {threads.map((thread, i) => (
                 <Reveal key={thread.id} delay={(i % 3) * 120}>

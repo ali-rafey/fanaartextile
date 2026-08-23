@@ -49,6 +49,9 @@ export default function ThreadsMenu({
         </Link>
       </div>
 
+      {/* Six fixed tracks, however many threads Supabase publishes. A short
+          range leaves the row unfinished rather than stretching two swatches
+          across the whole header — and a card stays the size of a card. */}
       <ul className="mt-6 grid grid-cols-3 gap-x-4 gap-y-7 sm:grid-cols-4 md:grid-cols-6">
         {items.map((item) => {
           const dye = dyeFor(item.name);

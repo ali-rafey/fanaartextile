@@ -3,8 +3,13 @@ import { THREADS, type Thread } from "@/content/threads";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 
 /**
- * Stitching-thread catalogue. Mirrors lib/db/fabrics.ts — published reads fall
- * back to the static list in src/content/threads.ts until the table is filled.
+ * Stitching-thread catalogue.
+ *
+ * Unlike fabrics and the journal, threads are read from Supabase only: the
+ * table is the source of truth, and src/content/threads.ts survives purely as
+ * the seed the admin "Seed from content" action writes in. A publish or an
+ * unpublish in the portal is therefore the whole story on the storefront —
+ * no static list quietly filling in behind it.
  */
 
 export interface ThreadRow {
@@ -38,10 +43,12 @@ export async function listPublishedThreads(): Promise<Thread[]> {
       .eq("published", true)
       .order("sort_order", { ascending: true })
       .order("name", { ascending: true });
-    if (error || !data?.length) return THREADS;
+    // An unreachable table is the only case worth swallowing — an empty one is
+    // a real answer, and the page says so rather than inventing stock.
+    if (error) return [];
     return (data as ThreadRow[]).map(rowToThread);
   } catch {
-    return THREADS;
+    return [];
   }
 }
 
