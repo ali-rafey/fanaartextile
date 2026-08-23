@@ -13,9 +13,15 @@ export interface ProcessStep {
   id: ProcessStepId;
   /** Display number, e.g. "01". */
   step: string;
+  /** Kept for the page title and alt text; the homepage sets it in type. */
   title: string;
+  /**
+   * One sentence. The homepage draws the four disciplines as stops on a
+   * thread, and a stop can only carry a couple of lines before the drawing
+   * stops being a drawing — so the discipline has to be named inside the
+   * sentence rather than sitting above it as a heading.
+   */
   description: string;
-  points: string[];
   image: string | null;
   alt: string;
 }
@@ -33,12 +39,7 @@ export const PROCESS_STEPS: ProcessStep[] = [
     step: "01",
     title: "Fabric Sourcing",
     description:
-      "Every Fanaar fabric begins long before the loom — with fibre chosen at origin. We work with audited mills and select long-staple cottons, modal and bamboo blends for their hand-feel, drape and integrity, tracing each yarn back to where it was grown.",
-    points: [
-      "Audited partner mills",
-      "Long-staple & premium blends",
-      "Fully traceable origins",
-    ],
+      "Fibre is chosen at origin — long-staple cotton, modal, bamboo — from audited mills, and traced back to the field.",
     image: "/images/process/sourcing.jpg",
     alt: "Raw premium fibres and yarns at a Fanaar partner mill",
   },
@@ -47,12 +48,7 @@ export const PROCESS_STEPS: ProcessStep[] = [
     step: "02",
     title: "Laboratory Testing",
     description:
-      "Softness is a feeling — quality is a measurement. Before approval, every batch passes through the lab: GSM consistency, shrinkage and colourfastness, pilling resistance and skin safety. Only fabric that proves itself earns the Fanaar name.",
-    points: [
-      "GSM & shrinkage control",
-      "Colourfastness & pilling tests",
-      "Certified skin-safe",
-    ],
+      "Every batch is measured before it earns the name: GSM, shrinkage, colourfastness, pilling, skin safety.",
     image: "/images/process/lab.jpg",
     alt: "Fabric samples under analysis in the testing laboratory",
   },
@@ -61,12 +57,7 @@ export const PROCESS_STEPS: ProcessStep[] = [
     step: "03",
     title: "Garment Production",
     description:
-      "Approved fabric moves to small-batch production, where loungewear takes shape through precision cutting, clean seams and unhurried finishing. Quality gates at every stage keep each piece true to the standard the lab signed off.",
-    points: [
-      "Small-batch manufacturing",
-      "Precision cutting & finishing",
-      "Quality gates at every stage",
-    ],
+      "Approved cloth goes to small-batch production — precision cutting, clean seams, a quality gate at every stage.",
     image: "/images/process/production.jpg",
     alt: "Loungewear being cut and stitched on the production floor",
   },
@@ -75,12 +66,7 @@ export const PROCESS_STEPS: ProcessStep[] = [
     step: "04",
     title: "Feedback & Value Return",
     description:
-      "The cycle doesn't end at delivery. Wear-feedback from our customers flows straight back into sourcing, testing and production — refining every collection and returning the value to you: better fabric, honest pricing, no compromises.",
-    points: [
-      "Customer wear feedback",
-      "Continuous refinement",
-      "Value returned in every collection",
-    ],
+      "What you tell us after wearing it returns to sourcing and testing. The next run is better for it.",
     image: "/images/process/feedback.jpg",
     alt: "Customers sharing feedback that shapes future Fanaar collections",
   },
