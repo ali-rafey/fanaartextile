@@ -22,25 +22,40 @@ import Reveal from "./reveal";
  * business on a 375px screen.
  */
 
-/** Stop coordinates in the shared 0–100 space, and where its sentence sits. */
+/**
+ * The composition, in the stage's own pixel space (1200 x 640 at a 1440
+ * viewport). The previous version was drawn into a square viewBox and then
+ * stretched 1.875:1, which flattened the loop into a wobble and dragged the
+ * thread straight through three of the four sentences. Authoring at the
+ * stage's real proportions keeps the drawing the shape it was drawn as.
+ */
+const STAGE = { w: 1200, h: 640 };
+
+/** Stops on the thread, and the pocket each sentence sits in. */
 const STOPS = [
-  { node: { x: 23, y: 13 }, text: { x: 29, y: 6 }, align: "left" as const },
-  { node: { x: 71, y: 35 }, text: { x: 44, y: 29 }, align: "right" as const },
-  { node: { x: 27, y: 60 }, text: { x: 32, y: 53 }, align: "left" as const },
-  { node: { x: 73, y: 84 }, text: { x: 46, y: 77 }, align: "right" as const },
+  { node: { x: 168, y: 196 }, text: { x: 344, y: 186, w: 212 }, align: "left" as const },
+  { node: { x: 452, y: 430 }, text: { x: 330, y: 496, w: 264 }, align: "left" as const },
+  { node: { x: 772, y: 188 }, text: { x: 648, y: 22, w: 264 }, align: "left" as const },
+  { node: { x: 1010, y: 452 }, text: { x: 712, y: 470, w: 264 }, align: "right" as const },
 ];
 
 /**
- * The thread, authored in the same 0–100 space as STOPS: in off the top-right,
- * slack enough to loop back on itself between the first two stops, out off the
- * bottom-left.
+ * The thread: in off the left, down the back of a slack loop, out of it and
+ * along the floor, up to a crest and away off the bottom-right. Every stop
+ * sits on a change of direction, and every sentence sits in a pocket the
+ * curve opens — verified by sampling the path rather than by eye.
  */
 const THREAD =
-  "M 108,-6 C 92,4 74,9 23,13 " +
-  "C -12,16 -6,29 20,30 C 44,31 44,38 71,35 " +
-  "C 104,31 6,44 27,60 " +
-  "C 40,70 44,80 73,84 " +
-  "C 96,87 34,98 -8,108";
+  "M -60,96 C 30,150 96,190 168,196 " +
+  "C 250,205 300,250 322,318 " +
+  "C 352,404 300,470 232,452 " +
+  "C 176,437 196,372 274,380 " +
+  "C 352,389 398,424 452,430 " +
+  "C 560,442 610,300 772,188 " +
+  "C 900,108 950,320 1010,452 " +
+  "C 1090,540 1170,578 1260,604";
+
+const pct = (v: number, total: number) => `${(v / total) * 100}%`;
 
 export default function ProcessSection() {
   return (
@@ -75,11 +90,11 @@ export default function ProcessSection() {
           </div>
         </Reveal>
 
-        {/* ── Desktop: the thread ─────────────────────────────────────────── */}
-        <div className="relative mt-10 hidden h-[40rem] md:block">
+        {/* ── The thread, at the width it was drawn for ───────────────────── */}
+        <div className="relative mt-10 hidden h-[40rem] xl:block">
           <svg
             aria-hidden
-            viewBox="0 0 100 100"
+            viewBox={`0 0 ${STAGE.w} ${STAGE.h}`}
             preserveAspectRatio="none"
             className="absolute inset-0 h-full w-full"
           >
@@ -101,17 +116,21 @@ export default function ProcessSection() {
                   <Reveal
                     delay={i * 90}
                     className="absolute z-10 -translate-x-1/2 -translate-y-1/2"
-                    style={{ left: `${stop.node.x}%`, top: `${stop.node.y}%` }}
+                    style={{
+                      left: pct(stop.node.x, STAGE.w),
+                      top: pct(stop.node.y, STAGE.h),
+                    }}
                   >
                     <span className="block h-3 w-3 rounded-full bg-ink ring-4 ring-ivory" />
                   </Reveal>
 
                   <Reveal
                     delay={i * 90 + 60}
-                    className="absolute w-[24%]"
+                    className="absolute"
                     style={{
-                      left: `${stop.text.x}%`,
-                      top: `${stop.text.y}%`,
+                      left: pct(stop.text.x, STAGE.w),
+                      top: pct(stop.text.y, STAGE.h),
+                      width: pct(stop.text.w, STAGE.w),
                       textAlign: stop.align,
                     }}
                   >
@@ -128,8 +147,12 @@ export default function ProcessSection() {
           </ol>
         </div>
 
-        {/* ── Below md: the thread straightens into a rule ─────────────────── */}
-        <ol className="mt-12 ml-1 md:hidden">
+        {/* ── Below xl: the thread straightens into a rule ──────────────────
+            The placed composition is drawn for a 1200px stage. Narrower than
+            that the sentences wrap taller, the pockets close up and the copy
+            lands on the line — so it hands over to the rule rather than
+            degrading into a mess. */}
+        <ol className="mt-12 ml-1 xl:hidden">
           {PROCESS_STEPS.map((step) => (
             <li
               key={step.id}
