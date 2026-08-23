@@ -34,7 +34,7 @@ export default function ContactPage() {
                 <h1 className="mt-5 font-display text-5xl leading-[0.98] tracking-tight text-ink whitespace-pre-line md:text-6xl">
                   {CONTACT_HERO.statement}
                 </h1>
-                <p className="mt-7 max-w-sm leading-relaxed text-ink/55">
+                <p className="mt-7 max-w-sm leading-relaxed text-ink/60">
                   {CONTACT_HERO.intro}
                 </p>
 
@@ -44,7 +44,7 @@ export default function ContactPage() {
                       key={detail.label}
                       className="flex items-baseline justify-between gap-6 border-t border-ink/10 py-4 last:border-b"
                     >
-                      <dt className="font-mono text-[0.6rem] uppercase tracking-[0.22em] text-ink/45">
+                      <dt className="font-mono text-[0.6rem] uppercase tracking-[0.22em] text-ink/60">
                         {detail.label}
                       </dt>
                       <dd className="text-right text-ink">
@@ -63,7 +63,7 @@ export default function ContactPage() {
                   ))}
                 </dl>
 
-                <div className="mt-10 font-mono text-[0.6rem] leading-[1.9] uppercase tracking-[0.16em] text-ink/40">
+                <div className="mt-10 font-mono text-[0.6rem] leading-[1.9] uppercase tracking-[0.16em] text-ink/60">
                   {CONTACT_HERO.caption.map((line) => (
                     <p key={line}>{line}</p>
                   ))}

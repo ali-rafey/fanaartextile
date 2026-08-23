@@ -1,10 +1,10 @@
 /**
  * Content for the homepage "Fanaar Standard" process section.
  *
- * Owner will supply one photo per step. To wire a photo in:
- *   1. Drop the file into  public/images/process/   (e.g. sourcing.jpg)
- *   2. Set that step's `image` to "/images/process/sourcing.jpg"
- * Until then `image: null` renders the branded woven placeholder.
+ * Each step carries one image showing the cloth in the state that discipline
+ * leaves it in — loose fibre, measured cloth, a joined seam, worn cloth. To
+ * swap one, drop a file into public/images/process/ and point `image` at it;
+ * setting it back to null renders the branded woven placeholder instead.
  */
 
 export type ProcessStepId = "sourcing" | "lab" | "production" | "feedback";
@@ -39,7 +39,7 @@ export const PROCESS_STEPS: ProcessStep[] = [
       "Long-staple & premium blends",
       "Fully traceable origins",
     ],
-    image: null,
+    image: "/images/process/sourcing.jpg",
     alt: "Raw premium fibres and yarns at a Fanaar partner mill",
   },
   {
@@ -53,7 +53,7 @@ export const PROCESS_STEPS: ProcessStep[] = [
       "Colourfastness & pilling tests",
       "Certified skin-safe",
     ],
-    image: null,
+    image: "/images/process/lab.jpg",
     alt: "Fabric samples under analysis in the testing laboratory",
   },
   {
@@ -67,7 +67,7 @@ export const PROCESS_STEPS: ProcessStep[] = [
       "Precision cutting & finishing",
       "Quality gates at every stage",
     ],
-    image: null,
+    image: "/images/process/production.jpg",
     alt: "Loungewear being cut and stitched on the production floor",
   },
   {
@@ -81,7 +81,7 @@ export const PROCESS_STEPS: ProcessStep[] = [
       "Continuous refinement",
       "Value returned in every collection",
     ],
-    image: null,
+    image: "/images/process/feedback.jpg",
     alt: "Customers sharing feedback that shapes future Fanaar collections",
   },
 ];

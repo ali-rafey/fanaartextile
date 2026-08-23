@@ -15,7 +15,7 @@ export interface NavItem {
 export const NAV_LEFT: NavItem[] = [
   { label: "Fabrics", href: "/fabrics" },
   { label: "Threads", href: "/threads" },
-  { label: "Blogs", href: "/blogs" },
+  { label: "Journal", href: "/blogs" },
 ];
 
 export const NAV_RIGHT: NavItem[] = [

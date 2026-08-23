@@ -129,14 +129,14 @@ export default async function FabricsPage() {
 
                     <div className="mt-5 flex items-baseline justify-between gap-4">
                       <h3 className="font-display text-2xl text-ink">{fabric.name}</h3>
-                      <span className="font-mono text-[0.6rem] uppercase tracking-[0.2em] text-ink/40">
+                      <span className="font-mono text-[0.6rem] uppercase tracking-[0.2em] text-ink/60">
                         {fabric.family}
                       </span>
                     </div>
                     <p className="mt-1.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-clay">
                       {fabric.category}
                     </p>
-                    <p className="mt-3 text-sm leading-relaxed text-ink/55">{fabric.tagline}</p>
+                    <p className="mt-3 text-sm leading-relaxed text-ink/60">{fabric.tagline}</p>
 
                     <span className="mt-4 inline-flex items-center gap-1.5 font-mono text-[0.6rem] uppercase tracking-[0.2em] text-ink/70 transition-colors duration-300 ease-lux group-hover:text-clay">
                       View fabric

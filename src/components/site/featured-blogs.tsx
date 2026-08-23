@@ -68,7 +68,7 @@ export default async function FeaturedBlogs() {
     <section
       id="journal"
       aria-labelledby="journal-heading"
-      className="scroll-mt-16 overflow-hidden bg-[#efede8] pt-20 pb-24 md:pt-28 md:pb-32"
+      className="scroll-mt-16 overflow-hidden border-t border-ink/10 bg-ivory pt-20 pb-24 md:pt-28 md:pb-32"
     >
       {/* Statement */}
       <div className="mx-auto max-w-3xl px-6 text-center">
@@ -79,7 +79,7 @@ export default async function FeaturedBlogs() {
           >
             {BLOG_SECTION.statement}
           </h2>
-          <p className="mx-auto mt-6 max-w-lg text-sm leading-relaxed text-ink/55">
+          <p className="mx-auto mt-6 max-w-lg text-sm leading-relaxed text-ink/60">
             {BLOG_SECTION.intro}
           </p>
         </Reveal>

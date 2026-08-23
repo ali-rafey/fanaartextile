@@ -62,7 +62,7 @@ export default function FeedbackForm() {
             setSent(false);
             setRating(0);
           }}
-          className="mt-8 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-ink/50 transition-colors duration-300 ease-lux hover:text-clay"
+          className="mt-8 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-ink/60 transition-colors duration-300 ease-lux hover:text-clay"
         >
           Share more feedback
         </button>
@@ -106,7 +106,7 @@ export default function FeedbackForm() {
                 className={`flex h-11 w-11 cursor-pointer items-center justify-center border font-mono text-xs transition-colors duration-300 ease-lux ${
                   active
                     ? "border-ink bg-ink text-ivory"
-                    : "border-ink/20 text-ink/50 hover:border-ink/50"
+                    : "border-ink/50 text-ink/60 hover:border-ink"
                 }`}
               >
                 <input
@@ -124,7 +124,7 @@ export default function FeedbackForm() {
               </label>
             );
           })}
-          <span className="ml-3 font-mono text-[0.6rem] uppercase tracking-[0.2em] text-ink/35">
+          <span className="ml-3 font-mono text-[0.6rem] uppercase tracking-[0.2em] text-ink/60">
             {rating ? `${rating} / 5` : "Optional"}
           </span>
         </div>

@@ -53,7 +53,7 @@ export default function ContactForm() {
         <button
           type="button"
           onClick={() => setSent(false)}
-          className="mt-8 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-ink/50 transition-colors duration-300 ease-lux hover:text-clay"
+          className="mt-8 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-ink/60 transition-colors duration-300 ease-lux hover:text-clay"
         >
           Send another message
         </button>

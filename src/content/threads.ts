@@ -1,9 +1,10 @@
 /**
  * Content for the Threads page (/threads) — the sewing/stitching threads that
  * hold a Fanaar garment together. Showcase placeholders until the real
- * products feature ships from the admin portal. Wire a photo in like the
- * categories: drop a file into public/images/threads/ and set `image`.
- * Until then `image: null` renders the branded spool placeholder.
+ * products feature ships from the admin portal. Each entry carries a macro of
+ * the wound thread itself; to swap one, drop a file into
+ * public/images/threads/ and point `image` at it. Setting it back to null
+ * renders the branded spool placeholder instead.
  */
 
 export type ThreadId =
@@ -46,7 +47,7 @@ export const THREADS: Thread[] = [
     description:
       "Our all-purpose workhorse — strong, supple and colourfast, at home on almost every lounge weight.",
     properties: ["All-purpose", "High tensile", "Colourfast"],
-    image: null,
+    image: "/images/threads/polyester.jpg",
     alt: "Spool of spun polyester sewing thread",
   },
   {
@@ -55,7 +56,7 @@ export const THREADS: Thread[] = [
     description:
       "A natural-fibre thread for natural fabrics, sinking into cotton and blends for a soft, matte seam.",
     properties: ["Natural fibre", "Soft seam", "Breathable"],
-    image: null,
+    image: "/images/threads/cotton.jpg",
     alt: "Spool of natural cotton sewing thread",
   },
   {
@@ -64,7 +65,7 @@ export const THREADS: Thread[] = [
     description:
       "A polyester core wrapped in fibre — the strength of a filament with the feel of spun, built for high-speed stitching.",
     properties: ["Seam strength", "Heat-resistant", "Low friction"],
-    image: null,
+    image: "/images/threads/core-spun.jpg",
     alt: "Spool of core-spun sewing thread",
   },
   {
@@ -73,7 +74,7 @@ export const THREADS: Thread[] = [
     description:
       "Fine, high-yield thread for clean edge finishing and serged seams that stay flexible against the skin.",
     properties: ["Fine", "High-yield", "Flexible"],
-    image: null,
+    image: "/images/threads/overlock.jpg",
     alt: "Cone of fine overlock thread",
   },
   {
@@ -82,7 +83,7 @@ export const THREADS: Thread[] = [
     description:
       "Lustrous thread for labels, monograms and detail work — sheen that holds through every wash.",
     properties: ["Lustrous", "Decorative", "Wash-fast"],
-    image: null,
+    image: "/images/threads/embroidery.jpg",
     alt: "Spool of lustrous embroidery thread",
   },
   {
@@ -91,7 +92,7 @@ export const THREADS: Thread[] = [
     description:
       "A heavy-duty, bonded thread for load-bearing seams and trims where abrasion resistance matters most.",
     properties: ["Heavy-duty", "Abrasion-resistant", "Bonded"],
-    image: null,
+    image: "/images/threads/bonded-nylon.jpg",
     alt: "Spool of heavy-duty bonded nylon thread",
   },
 ];

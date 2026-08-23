@@ -86,7 +86,7 @@ export default function CategorySection() {
     <section
       id="categories"
       aria-labelledby="categories-heading"
-      className="relative overflow-hidden bg-[#f1efea] py-14 md:py-20"
+      className="relative overflow-hidden border-t border-ink/10 bg-ivory py-14 md:py-20"
     >
       {/* Index + caption slip — both update with the active still */}
       <div className="mx-auto max-w-7xl px-6 md:px-10">
@@ -110,7 +110,7 @@ export default function CategorySection() {
         aria-label="Fabric collection"
         tabIndex={0}
         onKeyDown={onKeyDown}
-        className="relative mt-8 w-full overflow-hidden py-20 focus:outline-none md:mt-10 md:py-24"
+        className="relative mt-8 w-full overflow-hidden py-20 md:mt-10 md:py-24"
       >
         <div
           ref={trackRef}
@@ -170,7 +170,7 @@ export default function CategorySection() {
           <h3 className="mt-2 font-display text-4xl font-semibold tracking-tight text-ink md:text-5xl">
             {current.name}
           </h3>
-          <p className="mt-2 text-sm text-ink/55">{current.descriptor}</p>
+          <p className="mt-2 text-sm text-ink/60">{current.descriptor}</p>
         </div>
 
         <div className="flex items-center gap-6 font-mono text-[0.62rem] uppercase tracking-[0.2em]">

@@ -50,12 +50,12 @@ export default function AboutPage() {
                 ))}
               </div>
             </div>
-            <p className="mt-10 max-w-xl leading-relaxed text-ink/55">{ABOUT_HERO.intro}</p>
+            <p className="mt-10 max-w-xl leading-relaxed text-ink/60">{ABOUT_HERO.intro}</p>
           </Reveal>
         </section>
 
         {/* The thinking — set large, carrying the space a photo strip used to */}
-        <section className="border-y border-ink/10 bg-[#f1efea]">
+        <section id="why" className="scroll-mt-24 border-y border-ink/10 bg-ivory">
           <div className="mx-auto max-w-7xl px-6 py-20 md:px-10 md:py-28">
             <Reveal>
               <p className="font-mono text-[0.6rem] uppercase tracking-[0.28em] text-clay">
@@ -80,7 +80,7 @@ export default function AboutPage() {
         </section>
 
         {/* How cloth is actually judged — sensory, not industrial */}
-        <section className="mx-auto max-w-7xl px-6 py-20 md:px-10 md:py-28">
+        <section id="perception" className="mx-auto max-w-7xl scroll-mt-24 px-6 py-20 md:px-10 md:py-28">
           <Reveal>
             <p className="font-mono text-[0.6rem] uppercase tracking-[0.28em] text-clay">
               {ABOUT_PERCEPTION.eyebrow}
@@ -99,7 +99,7 @@ export default function AboutPage() {
                     className="object-cover"
                   />
                 </div>
-                <figcaption className="mt-4 font-mono text-[0.6rem] uppercase leading-[1.7] tracking-[0.18em] text-ink/45">
+                <figcaption className="mt-4 font-mono text-[0.6rem] uppercase leading-[1.7] tracking-[0.18em] text-ink/60">
                   {ABOUT_PERCEPTION.images[0].caption}
                 </figcaption>
               </figure>
@@ -117,7 +117,7 @@ export default function AboutPage() {
                       className="object-cover"
                     />
                   </div>
-                  <figcaption className="mt-4 font-mono text-[0.6rem] uppercase leading-[1.7] tracking-[0.18em] text-ink/45">
+                  <figcaption className="mt-4 font-mono text-[0.6rem] uppercase leading-[1.7] tracking-[0.18em] text-ink/60">
                     {ABOUT_PERCEPTION.images[1].caption}
                   </figcaption>
                 </figure>
@@ -135,7 +135,7 @@ export default function AboutPage() {
               <p className="font-display text-4xl tracking-tight text-ink md:text-5xl">
                 {figure.value}
               </p>
-              <p className="mt-2 max-w-[14ch] font-mono text-[0.6rem] uppercase leading-[1.7] tracking-[0.18em] text-ink/50">
+              <p className="mt-2 max-w-[14ch] font-mono text-[0.6rem] uppercase leading-[1.7] tracking-[0.18em] text-ink/60">
                 {figure.label}
               </p>
             </Reveal>
@@ -143,7 +143,7 @@ export default function AboutPage() {
         </section>
 
         {/* The person — a note in the first person */}
-        <section className="border-t border-ink/10">
+        <section id="founder" className="scroll-mt-24 border-t border-ink/10">
           <div className="mx-auto max-w-7xl px-6 py-20 md:px-10 md:py-28">
             <Reveal>
               <p className="font-mono text-[0.6rem] uppercase tracking-[0.28em] text-clay">
@@ -186,7 +186,7 @@ export default function AboutPage() {
                         {ABOUT_FOUNDER.name}
                       </p>
                     ) : null}
-                    <p className="font-mono text-[0.6rem] uppercase tracking-[0.22em] text-ink/45">
+                    <p className="font-mono text-[0.6rem] uppercase tracking-[0.22em] text-ink/60">
                       {ABOUT_FOUNDER.role}
                     </p>
                   </div>
@@ -207,21 +207,21 @@ export default function AboutPage() {
                 <h3 className="font-display text-2xl tracking-tight text-ink md:text-3xl">
                   {value.title}
                 </h3>
-                <p className="leading-relaxed text-ink/55">{value.description}</p>
+                <p className="leading-relaxed text-ink/60">{value.description}</p>
               </div>
             </Reveal>
           ))}
         </section>
 
         {/* CTA */}
-        <section className="border-t border-ink/10 bg-[#f1efea] py-20 md:py-24">
+        <section className="border-t border-ink/10 bg-ivory py-20 md:py-24">
           <Reveal>
             <div className="mx-auto flex max-w-7xl flex-wrap items-end justify-between gap-8 px-6 md:px-10">
               <div>
                 <h2 className="max-w-md font-display text-3xl tracking-tight text-ink md:text-4xl">
                   {ABOUT_CTA.heading}
                 </h2>
-                <p className="mt-4 max-w-md leading-relaxed text-ink/55">{ABOUT_CTA.intro}</p>
+                <p className="mt-4 max-w-md leading-relaxed text-ink/60">{ABOUT_CTA.intro}</p>
               </div>
               <div className="flex items-center gap-8 font-mono text-[0.68rem] uppercase tracking-[0.2em]">
                 <Link
@@ -238,7 +238,7 @@ export default function AboutPage() {
                 </Link>
                 <Link
                   href={ABOUT_CTA.secondaryHref}
-                  className="text-ink/55 transition-colors duration-300 ease-lux hover:text-ink"
+                  className="text-ink/60 transition-colors duration-300 ease-lux hover:text-ink"
                 >
                   {ABOUT_CTA.secondaryLabel}
                 </Link>

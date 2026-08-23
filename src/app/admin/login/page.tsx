@@ -1,21 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useState } from "react";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // Redirected here after signing in with an account that isn't on the
-  // ADMIN_EMAILS allowlist (or the allowlist is unset on the host).
-  useEffect(() => {
-    if (new URLSearchParams(window.location.search).get("error") === "forbidden") {
-      setError("This account isn't authorised for the admin portal.");
-    }
-  }, []);
+  // Redirected here with ?error=forbidden after signing in with an account
+  // that isn't on the ADMIN_EMAILS allowlist (or the allowlist is unset on the
+  // host). Read once as the initial state rather than set from an effect.
+  const [error, setError] = useState<string | null>(() =>
+    typeof window !== "undefined" &&
+    new URLSearchParams(window.location.search).get("error") === "forbidden"
+      ? "This account isn't authorised for the admin portal."
+      : null
+  );
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -110,9 +112,9 @@ export default function AdminLoginPage() {
         </form>
 
         <p className="mt-6 text-center text-xs text-neutral-500">
-          <a href="/" className="font-semibold transition-colors hover:text-neutral-900">
+          <Link href="/" className="font-semibold transition-colors hover:text-neutral-900">
             ← Back to site
-          </a>
+          </Link>
         </p>
       </div>
     </div>

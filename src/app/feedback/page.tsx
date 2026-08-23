@@ -41,7 +41,7 @@ export default function FeedbackPage() {
                   <br />
                   the next metre.
                 </h1>
-                <p className="mt-7 max-w-sm leading-relaxed text-ink/55">
+                <p className="mt-7 max-w-sm leading-relaxed text-ink/60">
                   At Fanaar the cycle doesn&apos;t end at delivery. What you tell us about
                   the cloth you live in flows straight back into how the next run is made.
                 </p>
@@ -56,7 +56,7 @@ export default function FeedbackPage() {
                         ({String(i + 1).padStart(2, "0")})
                       </span>
                       <span className="flex-1 text-ink">{item.step}</span>
-                      <span className="hidden max-w-[18ch] text-right text-xs text-ink/40 sm:block">
+                      <span className="hidden max-w-[18ch] text-right text-xs text-ink/60 sm:block">
                         {item.note}
                       </span>
                     </li>

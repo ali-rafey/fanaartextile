@@ -19,7 +19,7 @@ export default function NotFound() {
           <h1 className="mt-6 font-display text-5xl leading-[1.05] tracking-tight text-ink md:text-6xl">
             This thread runs out here.
           </h1>
-          <p className="mt-6 max-w-md leading-relaxed text-ink/55">
+          <p className="mt-6 max-w-md leading-relaxed text-ink/60">
             The page you were looking for has moved or never existed. The fabric
             library is a good place to pick the trail back up.
           </p>

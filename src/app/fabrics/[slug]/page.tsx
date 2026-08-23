@@ -111,7 +111,7 @@ export default async function FabricDetailPage({
       <main className="bg-ivory">
         {/* Breadcrumb */}
         <div className="mx-auto max-w-6xl px-6 pt-10">
-          <nav className="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-ink/45">
+          <nav className="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-ink/60">
             <Link href="/fabrics" className="transition-colors duration-300 ease-lux hover:text-ink">
               Fabrics
             </Link>
@@ -149,7 +149,7 @@ export default async function FabricDetailPage({
                   {fabric.name}
                 </h1>
                 <p className="mt-5 font-display text-xl text-ink/70 md:text-2xl">{fabric.tagline}</p>
-                <p className="mt-5 leading-relaxed text-ink/55">{fabric.intro}</p>
+                <p className="mt-5 leading-relaxed text-ink/60">{fabric.intro}</p>
 
                 <div className="mt-8 flex flex-col gap-4 sm:flex-row">
                   <Link
@@ -177,7 +177,7 @@ export default async function FabricDetailPage({
                         key={row.label}
                         className="flex items-baseline justify-between gap-6 border-t border-ink/10 py-4 first:border-t-0"
                       >
-                        <dt className="shrink-0 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-ink/50">
+                        <dt className="shrink-0 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-ink/60">
                           {row.label}
                         </dt>
                         <dd className="text-right text-ink">{row.value}</dd>
@@ -191,7 +191,7 @@ export default async function FabricDetailPage({
         </section>
 
         {/* Best used for */}
-        <section className="bg-sand py-20 md:py-28">
+        <section className="border-t border-ink/10 bg-ivory py-20 md:py-28">
           <div className="mx-auto grid max-w-6xl gap-12 px-6 md:grid-cols-[0.9fr_1.1fr] md:gap-16">
             <Reveal>
               <div>
@@ -236,7 +236,7 @@ export default async function FabricDetailPage({
               </div>
             </Reveal>
             <Reveal delay={120}>
-              <div className="space-y-5 leading-relaxed text-stone-600">
+              <div className="space-y-5 leading-relaxed text-ink/60">
                 {fabric.root.map((p) => (
                   <p key={p.slice(0, 24)}>{p}</p>
                 ))}
@@ -299,7 +299,7 @@ export default async function FabricDetailPage({
               </p>
               <Link
                 href={FABRIC_CTA.href}
-                className="mt-8 inline-flex items-center justify-center rounded-full bg-ivory px-8 py-3.5 text-sm font-medium tracking-wide text-ink transition-colors duration-300 ease-lux hover:bg-sand focus-visible:ring-2 focus-visible:ring-clay focus-visible:outline-none"
+                className="mt-8 inline-flex items-center justify-center rounded-full bg-ivory px-8 py-3.5 text-sm font-medium tracking-wide text-ink transition-colors duration-300 ease-lux hover:bg-ink/[0.04] focus-visible:ring-2 focus-visible:ring-clay focus-visible:outline-none"
               >
                 {FABRIC_CTA.label}
               </Link>

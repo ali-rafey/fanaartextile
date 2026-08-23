@@ -6,7 +6,9 @@
   --color-sand: #ece5da;
   --color-greige: #e3ddd2;
   --color-ink: #1b1815;
-  --color-clay: #a9674b;
+  /* Deep enough to clear WCAG AA (4.97:1) on ivory — clay is used
+     for small mono eyebrows, which need full contrast, not large-text. */
+  --color-clay: #9c5b40;
   --color-clay-deep: #8a5138;
 
   /* Shared "buttery" easing — long, soft deceleration for every transition.
@@ -20,6 +22,15 @@
   --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
 }
 
+/* One focus ring for every interactive element. Zero specificity via :where()
+   so a component can still opt out, but nothing is left with an invisible
+   focus state by accident. */
+:where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-clay);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
 body {
   background-color: var(--color-ivory);
   color: var(--color-ink);
@@ -31,15 +42,5 @@ body {
 @media (prefers-reduced-motion: no-preference) {
   html {
     scroll-behavior: smooth;
-  }
-}
-
-/* Fill animation for the process-carousel step rail (see process-carousel.tsx) */
-@keyframes carousel-progress {
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: scaleX(1);
   }
 }
