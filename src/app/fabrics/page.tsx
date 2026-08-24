@@ -103,7 +103,7 @@ export default async function FabricsPage() {
 
         {/* ── Categories: the full construction list ── */}
         <section className="mt-24 border-t border-ink/10 py-20 md:mt-32 md:py-28">
-          <div className="mx-auto max-w-6xl px-6">
+          <div className="mx-auto max-w-7xl px-6 md:px-10">
             <Reveal>
               <p className="font-mono text-[0.65rem] uppercase tracking-[0.3em] text-clay">
                 {FABRICS_CATEGORIES.eyebrow}
@@ -113,22 +113,28 @@ export default async function FabricsPage() {
               </h2>
             </Reveal>
 
+            {/* The cloth is the point, so the frame gets the room: a wider
+                track, a taller crop, and the caption cut back to the name and
+                what the construction is. The whole card is the link, so it
+                never needed a "view fabric" line of its own. */}
             <div className="mt-14 grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
               {fabrics.map((fabric, i) => (
                 <Reveal key={fabric.slug} delay={(i % 3) * 110}>
                   <Link href={`/fabrics/${fabric.slug}`} className="group block">
-                    <div className="relative aspect-[4/5] overflow-hidden bg-ink/5">
+                    <div className="relative aspect-3/4 overflow-hidden rounded-2xl bg-ink/5">
                       <Image
                         src={fabric.image}
                         alt={fabric.alt}
                         fill
-                        sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 100vw"
-                        className="object-cover transition-transform duration-[1100ms] ease-lux group-hover:scale-[1.03]"
+                        sizes="(min-width: 1024px) 32vw, (min-width: 640px) 46vw, 100vw"
+                        className="object-cover transition-transform duration-[1100ms] ease-lux group-hover:scale-[1.03] motion-reduce:transition-none"
                       />
                     </div>
 
                     <div className="mt-5 flex items-baseline justify-between gap-4">
-                      <h3 className="font-display text-2xl text-ink">{fabric.name}</h3>
+                      <h3 className="font-display text-2xl tracking-tight text-ink transition-colors duration-300 ease-lux group-hover:text-clay">
+                        {fabric.name}
+                      </h3>
                       <span className="font-mono text-[0.6rem] uppercase tracking-[0.2em] text-ink/60">
                         {fabric.family}
                       </span>
@@ -136,17 +142,6 @@ export default async function FabricsPage() {
                     <p className="mt-1.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-clay">
                       {fabric.category}
                     </p>
-                    <p className="mt-3 text-sm leading-relaxed text-ink/60">{fabric.tagline}</p>
-
-                    <span className="mt-4 inline-flex items-center gap-1.5 font-mono text-[0.6rem] uppercase tracking-[0.2em] text-ink/70 transition-colors duration-300 ease-lux group-hover:text-clay">
-                      View fabric
-                      <span
-                        aria-hidden
-                        className="transition-transform duration-300 ease-lux group-hover:translate-x-1"
-                      >
-                        →
-                      </span>
-                    </span>
                   </Link>
                 </Reveal>
               ))}
