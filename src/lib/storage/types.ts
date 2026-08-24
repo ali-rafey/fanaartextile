@@ -57,6 +57,26 @@ export interface DirectUploadCommit {
   durationSec?: number;
 }
 
+/**
+ * An image on its way into storage. Like the video, the body is a stream and
+ * the bytes are written verbatim — nothing is resized or re-encoded.
+ */
+export interface ImageUpload {
+  body: ReadableStream<Uint8Array>;
+  originalName: string;
+  mimeType: string;
+  /** Sub-folder inside the media area, e.g. "fabrics". */
+  folder: string;
+}
+
+/** Where an uploaded image ended up. */
+export interface StoredImage {
+  /** URL to render — a Supabase public URL, or a local API route. */
+  url: string;
+  /** Storage path, kept so the file can be found or removed later. */
+  path: string;
+}
+
 export interface StorageDriver {
   getHeroVideo(): Promise<HeroVideoMeta | null>;
   saveHeroVideo(upload: HeroVideoUpload): Promise<HeroVideoMeta>;
@@ -71,4 +91,14 @@ export interface StorageDriver {
    */
   createHeroUploadTarget?(originalName: string): Promise<DirectUploadTarget>;
   commitHeroVideo?(commit: DirectUploadCommit): Promise<HeroVideoMeta>;
+
+  /** Catalogue imagery — fabric and thread photography uploaded from admin. */
+  saveImage(upload: ImageUpload): Promise<StoredImage>;
+
+  /**
+   * Optional direct-upload pair for images, same reasoning as the video: on
+   * serverless hosts the bytes should not pass through the app server.
+   */
+  createImageUploadTarget?(folder: string, originalName: string): Promise<DirectUploadTarget>;
+  commitImage?(path: string): Promise<StoredImage>;
 }

@@ -34,6 +34,31 @@ export function isAllowedVideoFile(fileName: string, mimeType: string): boolean 
   return ALLOWED_VIDEO_EXTENSIONS.includes(ext);
 }
 
+/**
+ * Upload ceiling for catalogue imagery. Well above any reasonable product
+ * photo — like the video, the file is stored byte-for-byte and never
+ * resized or re-encoded, so the admin is free to send the full-quality shot.
+ */
+export const MAX_IMAGE_MB = Number(process.env.NEXT_PUBLIC_MAX_IMAGE_MB) || 32;
+export const MAX_IMAGE_BYTES = MAX_IMAGE_MB * 1024 * 1024;
+
+export const ALLOWED_IMAGE_MIME_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/avif",
+  "image/gif",
+];
+
+/** Fallback check — some browsers report an empty MIME type. */
+export const ALLOWED_IMAGE_EXTENSIONS = ["jpg", "jpeg", "png", "webp", "avif", "gif"];
+
+export function isAllowedImageFile(fileName: string, mimeType: string): boolean {
+  if (ALLOWED_IMAGE_MIME_TYPES.includes(mimeType)) return true;
+  const ext = fileName.split(".").pop()?.toLowerCase() ?? "";
+  return ALLOWED_IMAGE_EXTENSIONS.includes(ext);
+}
+
 export function formatBytes(bytes: number): string {
   if (!Number.isFinite(bytes) || bytes <= 0) return "0 B";
   const units = ["B", "KB", "MB", "GB"];

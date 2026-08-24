@@ -2,7 +2,7 @@ import { createWriteStream } from "fs";
 import { mkdir, readFile, stat, unlink, writeFile } from "fs/promises";
 import path from "path";
 import { pipeline } from "stream/promises";
-import type { HeroVideoMeta, StorageDriver } from "./types";
+import type { HeroVideoMeta, ImageUpload, StorageDriver, StoredImage } from "./types";
 
 /** Bridges a web ReadableStream to something Node's pipeline() accepts. */
 async function* toAsyncIterable(stream: ReadableStream<Uint8Array>) {
@@ -23,6 +23,9 @@ async function* toAsyncIterable(stream: ReadableStream<Uint8Array>) {
 //   var/data/hero-video.json  — manifest describing the current video
 const VAR_ROOT = path.join(process.cwd(), "var");
 export const HERO_UPLOAD_DIR = path.join(VAR_ROOT, "uploads", "hero");
+//   var/uploads/images/<folder>/<file>  — catalogue imagery, served by
+//   /api/media/<folder>/<file> so it behaves like the Supabase public URL.
+export const IMAGE_UPLOAD_ROOT = path.join(VAR_ROOT, "uploads", "images");
 const HERO_MANIFEST_PATH = path.join(VAR_ROOT, "data", "hero-video.json");
 
 export type HeroManifest = Omit<HeroVideoMeta, "url">;
@@ -46,6 +49,18 @@ function toMeta(manifest: HeroManifest): HeroVideoMeta {
 function safeExtension(fileName: string): string {
   const ext = (fileName.split(".").pop() ?? "").toLowerCase().replace(/[^a-z0-9]/g, "");
   return ext || "mp4";
+}
+
+/** Keeps the admin's file name legible while guaranteeing a unique target. */
+function imageFileName(originalName: string): string {
+  const stem = (originalName.split("/").pop() ?? originalName)
+    .replace(/\.[^.]+$/, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 48) || "image";
+  const ext = (originalName.split(".").pop() ?? "").toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
+  return `${stem}-${Date.now()}.${ext}`;
 }
 
 export const localFsDriver: StorageDriver = {
@@ -97,6 +112,20 @@ export const localFsDriver: StorageDriver = {
     }
 
     return toMeta(manifest);
+  },
+
+  /**
+   * Written under var/ like everything else the local driver owns, and served
+   * back through /api/media so the stored URL has the same shape it would on
+   * Supabase — nothing downstream has to know which driver is active.
+   */
+  async saveImage(upload: ImageUpload): Promise<StoredImage> {
+    const folder = upload.folder.replace(/[^a-z0-9-]/gi, "").toLowerCase() || "misc";
+    const fileName = imageFileName(upload.originalName);
+    const dir = path.join(IMAGE_UPLOAD_ROOT, folder);
+    await mkdir(dir, { recursive: true });
+    await pipeline(toAsyncIterable(upload.body), createWriteStream(path.join(dir, fileName)));
+    return { url: `/api/media/${folder}/${fileName}`, path: `${folder}/${fileName}` };
   },
 
   async deleteHeroVideo() {

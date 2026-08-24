@@ -3,7 +3,9 @@ import type {
   DirectUploadCommit,
   DirectUploadTarget,
   HeroVideoMeta,
+  ImageUpload,
   StorageDriver,
+  StoredImage,
 } from "./types";
 
 /**
@@ -25,6 +27,24 @@ type StoredHeroValue = Omit<HeroVideoMeta, "url"> & {
   /** Object path inside the bucket, e.g. "hero/hero-1720000000000.mp4". */
   path: string;
 };
+
+/** A collision-proof object name that keeps the admin's own file name legible. */
+function imageObjectPath(folder: string, originalName: string): string {
+  const safeFolder = folder.replace(/[^a-z0-9-]/gi, "").toLowerCase() || "misc";
+  const stem = (originalName.split("/").pop() ?? originalName)
+    .replace(/\.[^.]+$/, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 48) || "image";
+  const ext = (originalName.split(".").pop() ?? "").toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
+  return `images/${safeFolder}/${stem}-${Date.now()}.${ext}`;
+}
+
+function publicUrl(path: string): string {
+  const { data } = getSupabaseAdminClient().storage.from(SITE_ASSETS_BUCKET).getPublicUrl(path);
+  return data.publicUrl;
+}
 
 function safeExtension(fileName: string): string {
   const ext = (fileName.split(".").pop() ?? "").toLowerCase().replace(/[^a-z0-9]/g, "");
@@ -158,6 +178,39 @@ export const supabaseDriver: StorageDriver = {
     }
 
     return toMeta(value);
+  },
+
+  /**
+   * Images are small enough to pass through the server, so this path works on
+   * every host. Larger files use the signed-URL pair below.
+   */
+  async saveImage(upload: ImageUpload): Promise<StoredImage> {
+    const supabase = getSupabaseAdminClient();
+    const objectPath = imageObjectPath(upload.folder, upload.originalName);
+    const blob = await new Response(upload.body).blob();
+
+    const { error } = await supabase.storage
+      .from(SITE_ASSETS_BUCKET)
+      .upload(objectPath, blob, { contentType: upload.mimeType, upsert: false });
+    if (error) throw new Error(`Failed to upload image: ${error.message}`);
+
+    return { url: publicUrl(objectPath), path: objectPath };
+  },
+
+  async createImageUploadTarget(folder: string, originalName: string): Promise<DirectUploadTarget> {
+    const supabase = getSupabaseAdminClient();
+    const objectPath = imageObjectPath(folder, originalName);
+    const { data, error } = await supabase.storage
+      .from(SITE_ASSETS_BUCKET)
+      .createSignedUploadUrl(objectPath);
+    if (error || !data) {
+      throw new Error(`Failed to create upload URL: ${error?.message ?? "unknown error"}`);
+    }
+    return { signedUrl: data.signedUrl, path: data.path ?? objectPath };
+  },
+
+  async commitImage(path: string): Promise<StoredImage> {
+    return { url: publicUrl(path), path };
   },
 
   async deleteHeroVideo() {

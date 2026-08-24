@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getFabricRow } from "@/lib/db/fabrics";
 import { saveFabric } from "../actions";
+import ImageField from "@/components/admin/image-field";
 
 export const dynamic = "force-dynamic";
 
@@ -153,24 +154,16 @@ export default async function FabricEditorPage({
           />
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div>
-            <label htmlFor="image" className={label}>
-              Image path
-            </label>
-            <input
-              id="image"
-              name="image"
-              placeholder="/images/fabrics/jersey.jpg"
-              defaultValue={fabric?.image ?? ""}
-              className={`mt-1.5 ${field}`}
-            />
-          </div>
+        <div className="grid gap-5 sm:grid-cols-2">
+          <ImageField name="image" folder="fabrics" defaultValue={fabric?.image ?? ""} />
           <div>
             <label htmlFor="alt" className={label}>
               Image alt text
             </label>
             <input id="alt" name="alt" defaultValue={fabric?.alt ?? ""} className={`mt-1.5 ${field}`} />
+            <p className="mt-2 text-xs text-neutral-500">
+              Describes the photograph for screen readers and search engines.
+            </p>
           </div>
         </div>
 
