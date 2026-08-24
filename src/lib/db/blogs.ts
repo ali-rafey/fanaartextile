@@ -33,6 +33,7 @@ export function rowToPost(row: BlogRow): BlogPost {
     image: row.image,
     alt: row.alt || row.title,
     href: `/blogs/${row.slug}`,
+    body: row.body,
   };
 }
 
@@ -49,6 +50,12 @@ export async function listPublishedPosts(): Promise<BlogPost[]> {
   } catch {
     return BLOG_POSTS;
   }
+}
+
+/** One published post by slug — the article page's only query. */
+export async function getPublishedPost(slug: string): Promise<BlogPost | undefined> {
+  const all = await listPublishedPosts();
+  return all.find((post) => post.href === `/blogs/${slug}` || post.id === slug);
 }
 
 export async function listAllPosts(): Promise<BlogRow[]> {

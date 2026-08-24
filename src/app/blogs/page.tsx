@@ -23,18 +23,6 @@ export const metadata: Metadata = {
   },
 };
 
-// A composed, organic scatter — varied widths, vertical offsets and a hair of
-// rotation, with the middle still the largest. Offsets only kick in from md up;
-// on small screens the row simply wraps into a centred cluster.
-const TILES = [
-  { w: "w-40 sm:w-44 md:w-52", y: "md:translate-y-12", ar: "aspect-[3/4]", r: "md:-rotate-1" },
-  { w: "w-48 sm:w-56 md:w-64", y: "md:-translate-y-10", ar: "aspect-[4/5]", r: "" },
-  { w: "w-60 sm:w-72 md:w-[22rem]", y: "md:translate-y-0", ar: "aspect-[3/4]", r: "", feature: true },
-  { w: "w-44 sm:w-52 md:w-60", y: "md:translate-y-14", ar: "aspect-[4/5]", r: "md:rotate-1" },
-  { w: "w-48 sm:w-56 md:w-64", y: "md:-translate-y-8", ar: "aspect-[3/4]", r: "" },
-  { w: "w-40 sm:w-44 md:w-52", y: "md:translate-y-10", ar: "aspect-[4/5]", r: "" },
-];
-
 export default async function BlogsPage({
   searchParams,
 }: {
@@ -50,6 +38,9 @@ export default async function BlogsPage({
     : all;
   const posts = filtered.length ? filtered : all;
   const activeCategory = filtered.length ? category : undefined;
+
+  // The newest piece leads; the rest fill the archive grid beneath it.
+  const [lead, ...rest] = posts;
 
   const blogJsonLd = {
     "@context": "https://schema.org",
@@ -78,75 +69,104 @@ export default async function BlogsPage({
         ])}
       />
       <SiteHeader />
-      <main className="bg-greige">
-        {/* Statement hero */}
-        <section className="mx-auto max-w-4xl px-6 pt-20 pb-4 text-center md:pt-28">
+      <main className="bg-ivory">
+        {/* Masthead */}
+        <section className="mx-auto max-w-7xl px-6 pt-16 pb-4 md:px-10 md:pt-24">
           <Reveal>
-            <p className="font-mono text-[0.65rem] uppercase tracking-[0.35em] text-clay">
+            <p className="font-mono text-[0.62rem] uppercase tracking-[0.3em] text-clay">
               {BLOG_INDEX.eyebrow}
             </p>
-            <h1 className="mx-auto mt-6 max-w-3xl font-display text-4xl leading-[1.08] tracking-tight text-ink md:text-6xl">
-              {BLOG_INDEX.statement}
-            </h1>
-            <p className="mx-auto mt-7 max-w-2xl leading-relaxed text-ink/65">{BLOG_INDEX.intro}</p>
-
-          {activeCategory ? (
-            <p className="mt-8 font-mono text-[0.62rem] uppercase tracking-[0.24em] text-ink/65">
-              {activeCategory}
-              <Link
-                href="/blogs"
-                className="ml-4 text-clay transition-colors duration-300 ease-lux hover:text-ink"
-              >
-                Clear
-              </Link>
-            </p>
-          ) : null}
+            <div className="mt-5 grid gap-8 md:grid-cols-[1.1fr_1fr] md:items-end md:gap-16">
+              <h1 className="max-w-2xl font-display text-5xl leading-[0.98] tracking-tight text-ink md:text-6xl">
+                {BLOG_INDEX.statement}
+              </h1>
+              <p className="leading-relaxed text-ink/60">{BLOG_INDEX.intro}</p>
+            </div>
+            {activeCategory ? (
+              <p className="mt-10 font-mono text-[0.6rem] uppercase tracking-[0.22em] text-ink/60">
+                {activeCategory}
+                <Link
+                  href="/blogs"
+                  className="ml-4 text-clay transition-colors duration-300 ease-lux hover:text-ink"
+                >
+                  Clear
+                </Link>
+              </p>
+            ) : null}
           </Reveal>
         </section>
 
-        {/* Scattered archive gallery */}
-        <Reveal className="relative w-full overflow-hidden pt-16 pb-24 md:pt-24 md:pb-32">
-          <div className="flex flex-wrap items-center justify-center gap-6 md:flex-nowrap md:gap-7">
-            {posts.map((post, i) => {
-              const tile = TILES[i % TILES.length];
-              return (
-                <Link
-                  key={post.id}
-                  href={post.href}
-                  aria-label={post.title}
-                  className={`group relative block shrink-0 ${tile.w} ${tile.y} ${tile.r} transition-transform duration-[900ms] ease-lux`}
-                >
-                  <div
-                    className={`relative ${tile.ar} overflow-hidden rounded-md ring-1 ring-ink/10 shadow-[0_16px_40px_-16px_rgba(27,24,21,0.45)]`}
-                  >
-                    <div className="absolute inset-0 transition-transform duration-[1200ms] ease-lux group-hover:scale-[1.05] motion-reduce:transition-none">
-                      {post.image ? (
-                        <Image
-                          src={post.image}
-                          alt={post.alt}
-                          fill
-                          sizes="(min-width: 768px) 24rem, 60vw"
-                          className="object-cover"
-                        />
-                      ) : (
-                        <BlogPlaceholder id={post.id} />
-                      )}
-                    </div>
+        {/* The lead piece, given the room a lead deserves */}
+        {lead ? (
+          <section className="mx-auto max-w-7xl px-6 pt-14 md:px-10 md:pt-20">
+            <Reveal>
+              <Link href={lead.href} className="group grid gap-8 md:grid-cols-2 md:items-center md:gap-14">
+                <div className="relative aspect-4/3 overflow-hidden rounded-2xl bg-ink/5">
+                  {lead.image ? (
+                    <Image
+                      src={lead.image}
+                      alt={lead.alt}
+                      fill
+                      sizes="(min-width: 768px) 50vw, 100vw"
+                      priority
+                      className="object-cover transition-transform duration-[1100ms] ease-lux group-hover:scale-[1.03] motion-reduce:transition-none"
+                    />
+                  ) : (
+                    <BlogPlaceholder id={lead.id} />
+                  )}
+                </div>
+                <div>
+                  <p className="font-mono text-[0.58rem] uppercase tracking-[0.22em] text-clay">
+                    {lead.category}
+                    {lead.date ? <span className="text-ink/60"> · {lead.date}</span> : null}
+                  </p>
+                  <h2 className="mt-4 max-w-md font-display text-3xl leading-[1.1] tracking-tight text-ink transition-colors duration-300 ease-lux group-hover:text-clay md:text-4xl">
+                    {lead.title}
+                  </h2>
+                  <p className="mt-5 max-w-md leading-relaxed text-ink/60">{lead.excerpt}</p>
+                  <span className="mt-7 inline-block border-b border-ink/30 pb-1 font-mono text-[0.58rem] uppercase tracking-[0.2em] text-ink transition-colors duration-300 ease-lux group-hover:border-clay group-hover:text-clay">
+                    Read the piece
+                  </span>
+                </div>
+              </Link>
+            </Reveal>
+          </section>
+        ) : null}
 
-                    {/* Title + read reveal on hover */}
-                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 via-ink/30 to-transparent p-4 opacity-0 transition-opacity duration-500 ease-lux group-hover:opacity-100">
-                      <p className="font-display text-base leading-snug text-ivory">{post.title}</p>
-                      <p className="mt-1.5 flex items-center justify-between font-mono text-[0.6rem] uppercase tracking-[0.18em] text-ivory/70">
-                        <span>{post.category}</span>
-                        <span>↗ Read</span>
-                      </p>
-                    </div>
+        {/* The rest of the archive */}
+        <section className="mx-auto max-w-7xl px-6 pt-20 pb-24 md:px-10 md:pt-28 md:pb-32">
+          <div className="grid gap-x-8 gap-y-14 border-t border-ink/10 pt-14 sm:grid-cols-2 lg:grid-cols-3">
+            {rest.map((post, i) => (
+              <Reveal key={post.id} delay={(i % 3) * 110}>
+                <Link href={post.href} className="group block">
+                  <div className="relative aspect-4/3 overflow-hidden rounded-2xl bg-ink/5">
+                    {post.image ? (
+                      <Image
+                        src={post.image}
+                        alt={post.alt}
+                        fill
+                        sizes="(min-width: 1024px) 32vw, (min-width: 640px) 46vw, 100vw"
+                        className="object-cover transition-transform duration-[1100ms] ease-lux group-hover:scale-[1.03] motion-reduce:transition-none"
+                      />
+                    ) : (
+                      <BlogPlaceholder id={post.id} />
+                    )}
                   </div>
+                  <p className="mt-5 font-mono text-[0.56rem] uppercase tracking-[0.2em] text-clay">
+                    {post.category}
+                    {post.date ? <span className="text-ink/60"> · {post.date}</span> : null}
+                  </p>
+                  <h3 className="mt-2 font-display text-xl leading-snug tracking-tight text-ink transition-colors duration-300 ease-lux group-hover:text-clay">
+                    {post.title}
+                  </h3>
+                  <p className="mt-2.5 line-clamp-2 text-sm leading-relaxed text-ink/60">
+                    {post.excerpt}
+                  </p>
                 </Link>
-              );
-            })}
+              </Reveal>
+            ))}
           </div>
-        </Reveal>
+        </section>
       </main>
       <SiteFooter />
     </>

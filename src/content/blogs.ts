@@ -29,8 +29,13 @@ export interface BlogPost {
   date: string;
   image: string | null;
   alt: string;
-  /** "#" until article pages ship with the blogs feature. */
   href: string;
+  /**
+   * The article itself, one paragraph per blank line. Written in the admin
+   * portal; the seed posts below carry only an excerpt, so a post without a
+   * body falls back to it on the article page.
+   */
+  body?: string;
 }
 
 /** Homepage journal masthead + link through to the full archive. */
