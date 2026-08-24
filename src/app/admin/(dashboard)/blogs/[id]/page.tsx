@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPostRow } from "@/lib/db/blogs";
 import { savePost } from "../actions";
+import ImageField from "@/components/admin/image-field";
 
 export const dynamic = "force-dynamic";
 
@@ -110,24 +111,16 @@ export default async function BlogEditorPage({
           />
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div>
-            <label htmlFor="image" className={label}>
-              Image path
-            </label>
-            <input
-              id="image"
-              name="image"
-              placeholder="/images/blogs/gsm.jpg"
-              defaultValue={post?.image ?? ""}
-              className={`mt-1.5 ${field}`}
-            />
-          </div>
+        <div className="grid gap-5 sm:grid-cols-2">
+          <ImageField name="image" folder="journal" defaultValue={post?.image ?? ""} />
           <div>
             <label htmlFor="alt" className={label}>
               Image alt text
             </label>
             <input id="alt" name="alt" defaultValue={post?.alt ?? ""} className={`mt-1.5 ${field}`} />
+            <p className="mt-2 text-xs text-neutral-500">
+              Describes the image for screen readers and search engines.
+            </p>
           </div>
         </div>
 
