@@ -25,6 +25,8 @@ export interface ThreadsMenuItem {
   name: string;
   description: string;
   properties: string[];
+  image: string | null;
+  alt: string;
 }
 
 export interface JournalMenuCategory {
@@ -93,6 +95,8 @@ function toThreadsItem(thread: Thread): ThreadsMenuItem {
     name: thread.name,
     description: thread.description,
     properties: thread.properties,
+    image: thread.image,
+    alt: thread.alt,
   };
 }
 

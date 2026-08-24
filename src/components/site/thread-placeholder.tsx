@@ -1,11 +1,14 @@
-import type { ThreadId } from "@/content/threads";
 
 /**
  * Branded stand-in artwork for a thread card without a photo yet — the same
  * woven wash as the category/blog placeholders, centred on a spool-of-thread
  * glyph. Swapped out by setting `image` in content/threads.ts.
  */
-export default function ThreadPlaceholder({ id }: { id: ThreadId }) {
+/**
+ * `id` is only a seed for the pattern, and threads come from Supabase now, so
+ * it is any slug rather than the union of the ones shipped in content.
+ */
+export default function ThreadPlaceholder({ id }: { id: string }) {
   const patternId = `weave-thread-${id}`;
   return (
     <div aria-hidden className="relative h-full w-full bg-gradient-to-br from-sand via-ivory to-sand">

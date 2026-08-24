@@ -64,8 +64,8 @@ export default async function ThreadsPage() {
 
         {/* ── The range — set exactly like the fabric library, because it is
                the same job: a wall of specimens judged by eye. Rounded frames,
-               a tall crop, and a caption cut to the name and what the thread
-               is for. ── */}
+               a tall crop, and the name alone underneath — the spec list ran
+               to seven clauses per thread and buried the picture. ── */}
         <section className="border-t border-ink/10 bg-ivory py-20 md:py-28">
           <div className="mx-auto max-w-7xl px-6 md:px-10">
             <Reveal>
@@ -105,21 +105,9 @@ export default async function ThreadsPage() {
                       )}
                     </div>
 
-                    <div className="mt-5 flex items-baseline justify-between gap-4">
-                      <h3 className="font-display text-2xl tracking-tight text-ink">
-                        {thread.name}
-                      </h3>
-                      {thread.properties[0] ? (
-                        <span className="font-mono text-[0.6rem] uppercase tracking-[0.2em] text-ink/60">
-                          {thread.properties[0]}
-                        </span>
-                      ) : null}
-                    </div>
-                    {thread.properties.length > 1 ? (
-                      <p className="mt-1.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-clay">
-                        {thread.properties.slice(1).join(" · ")}
-                      </p>
-                    ) : null}
+                    <h3 className="mt-5 font-display text-2xl tracking-tight text-ink">
+                      {thread.name}
+                    </h3>
                   </article>
                 </Reveal>
               ))}
