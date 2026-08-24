@@ -46,14 +46,13 @@ const STOPS = [
  * curve opens — verified by sampling the path rather than by eye.
  */
 const THREAD =
-  "M -60,96 C 30,150 96,190 168,196 " +
+  "M 168,196 " +
   "C 250,205 300,250 322,318 " +
   "C 352,404 300,470 232,452 " +
   "C 176,437 196,372 274,380 " +
   "C 352,389 398,424 452,430 " +
   "C 560,442 610,300 772,188 " +
-  "C 900,108 950,320 1010,452 " +
-  "C 1090,540 1170,578 1260,604";
+  "C 900,108 950,320 1010,452";
 
 /** Stop diameter in px — also the offset that centres it on the thread. */
 const DOT = 12;
