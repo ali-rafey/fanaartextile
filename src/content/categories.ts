@@ -1,21 +1,25 @@
 /**
- * Content for the homepage collection filmstrip — an editorial gallery of
- * fabric families, one enlarged in the centre with the rest bleeding off both
- * edges. Showcase placeholders until the real products & categories feature
- * ships from the admin portal. Wire images in like the process section:
- *   1. Drop the file into  public/images/categories/   (e.g. cotton.jpg)
- *   2. Set that family's `image` to "/images/categories/cotton.jpg"
- * Until then `image: null` renders the branded woven placeholder.
+ * Content for the homepage strip.
+ *
+ * These are not fabric families. They are the moments cloth is actually
+ * judged in — held to the light, worn through an afternoon, read by the hand
+ * before the eye. A fibre name tells a buyer nothing they can feel; a picture
+ * of the cloth in use tells them everything, which is the argument the strip
+ * is here to make.
+ *
+ * To swap one: drop the file into public/images/collection/ and point `image`
+ * at it. Setting `image` to null renders the branded woven placeholder.
  */
 
 export type CategoryId =
-  | "cotton"
-  | "linen"
-  | "modal"
-  | "bamboo"
-  | "polyester"
-  | "wool"
-  | "silk";
+  | "air"
+  | "stillness"
+  | "morning"
+  | "open-air"
+  | "afternoon"
+  | "touch"
+  | "movement"
+  | "drape";
 
 export interface Category {
   id: CategoryId;
@@ -23,112 +27,125 @@ export interface Category {
   /** One-line note shown beneath the active feature. */
   descriptor: string;
   /**
-   * The index slip above the strip: what the fibre actually is, in the terms
-   * a mill would use. Three lines, because a fourth stops being read.
+   * The index slip above the strip: three short observations about what this
+   * frame is showing. Three, because a fourth stops being read.
    */
-  science: string[];
+  notes: string[];
   image: string | null;
   alt: string;
-  /** "#" until category pages ship with the products feature. */
+  /** "#" until the products feature ships. */
   href: string;
 }
 
 export const CATEGORY_SECTION = {
-  eyebrow: "The collection",
+  eyebrow: "In wear",
   cta: "View fabrics",
   ctaHref: "/fabrics",
 };
 
 export const CATEGORIES: Category[] = [
   {
-    id: "cotton",
-    name: "Cotton",
-    descriptor: "Long-staple and endlessly breathable.",
-    science: [
-      "SEED FIBRE — NEAR-PURE CELLULOSE",
-      "STAPLE 28–35 MM — COMBED LONG-STAPLE",
-      "REGAIN 8.5% — GAINS STRENGTH WET",
+    id: "air",
+    name: "Air",
+    descriptor: "Cloth you can see the light through.",
+    notes: [
+      "HELD UP TO THE LIGHT",
+      "OPEN WEAVE — LOW COVER FACTOR",
+      "THE FIRST THING ANYONE TESTS",
     ],
-    image: "/images/collection/cotton.jpg",
-    alt: "Fanaar cotton lounge fabric",
+    image: "/images/collection/air.jpg",
+    alt: "Cloth held up against an open sky, light passing through the weave",
     href: "#",
   },
   {
-    id: "linen",
-    name: "Linen",
-    descriptor: "Cool, textured, better with every wash.",
-    science: [
-      "BAST FIBRE — DRAWN FROM THE FLAX STEM",
-      "HOLLOW LUMEN — WICKS, THEN DRIES FAST",
-      "HIGH TENACITY — LOW ELASTICITY, SO IT CREASES",
+    id: "stillness",
+    name: "Stillness",
+    descriptor: "The hour when nothing is asked of you.",
+    notes: [
+      "SLEEVES PAST THE WRIST",
+      "KNIT THAT KEEPS ITS SHAPE",
+      "WARMTH WITHOUT THE WEIGHT",
     ],
-    image: "/images/collection/linen.jpg",
-    alt: "Fanaar linen lounge fabric",
+    image: "/images/collection/stillness.jpg",
+    alt: "Hands folded inside long knitted sleeves",
     href: "#",
   },
   {
-    id: "modal",
-    name: "Modal",
-    descriptor: "A liquid drape with a quiet softness.",
-    science: [
-      "REGENERATED CELLULOSE — BEECH PULP",
-      "HIGH WET MODULUS — HOLDS SHAPE THROUGH THE WASH",
-      "REGAIN ~13% — TAKES MORE WATER THAN COTTON",
+    id: "morning",
+    name: "Morning",
+    descriptor: "A first cup, a cuff not yet fastened.",
+    notes: [
+      "LINEN, CREASED AND UNBOTHERED",
+      "COOL AGAINST A WARM ROOM",
+      "SOFTER WITH EVERY WASH",
     ],
-    image: "/images/collection/modal.jpg",
-    alt: "Fanaar modal lounge fabric",
+    image: "/images/collection/morning.jpg",
+    alt: "A linen shirt and an unfastened cuff around a warm cup",
     href: "#",
   },
   {
-    id: "bamboo",
-    name: "Bamboo",
-    descriptor: "Silky, temperature-smart, gentle on skin.",
-    science: [
-      "REGENERATED CELLULOSE — BAMBOO PULP",
-      "ROUND, SMOOTH SECTION — LOW FRICTION ON SKIN",
-      "HIGH REGAIN — MOVES HEAT AND MOISTURE OUT",
+    id: "open-air",
+    name: "Open air",
+    descriptor: "Cloth reads differently with weather in it.",
+    notes: [
+      "CUT LOOSE ENOUGH TO MOVE",
+      "WIND FINDS THE DRAPE",
+      "COLOUR HELD UNDER FULL SUN",
     ],
-    image: "/images/collection/bamboo.jpg",
-    alt: "Fanaar bamboo lounge fabric",
+    image: "/images/collection/open-air.jpg",
+    alt: "A shirt catching the wind in open country under a wide sky",
     href: "#",
   },
   {
-    id: "polyester",
-    name: "Polyester",
-    descriptor: "Resilient, colourfast, quietly technical.",
-    science: [
-      "SYNTHETIC — POLYETHYLENE TEREPHTHALATE",
-      "MELT-SPUN, HEAT-SET — SHAPE IS LOCKED IN",
-      "REGAIN 0.4% — DRIES FAST, HOLDS ITS COLOUR",
+    id: "afternoon",
+    name: "Afternoon",
+    descriptor: "Wide trousers, bare feet, dappled ground.",
+    notes: [
+      "WEIGHT THAT FALLS STRAIGHT",
+      "NO CLING IN THE HEAT",
+      "SHADOW READS THE SURFACE",
     ],
-    image: "/images/collection/polyester.jpg",
-    alt: "Fanaar polyester lounge fabric",
+    image: "/images/collection/afternoon.jpg",
+    alt: "Walking barefoot through tree shadow in wide-legged trousers",
     href: "#",
   },
   {
-    id: "wool",
-    name: "Wool",
-    descriptor: "Warm, resilient, naturally regulating.",
-    science: [
-      "PROTEIN FIBRE — KERATIN, UNDER A SCALED CUTICLE",
-      "NATURAL CRIMP — TRAPS AIR, SO IT INSULATES",
-      "ABSORBS TO 30% OF ITS WEIGHT — WARM WHEN DAMP",
+    id: "touch",
+    name: "Touch",
+    descriptor: "The hand decides before the eye does.",
+    notes: [
+      "HAND-FEEL, JUDGED IN A SECOND",
+      "A GRAIN YOU CAN FIND BLIND",
+      "THE TEST NO SPEC SHEET PASSES",
     ],
-    image: "/images/collection/wool.jpg",
-    alt: "Fanaar wool lounge fabric",
+    image: "/images/collection/touch.jpg",
+    alt: "A hand resting on folds of white linen",
     href: "#",
   },
   {
-    id: "silk",
-    name: "Silk",
-    descriptor: "A whisper of lustre in every metre.",
-    science: [
-      "PROTEIN FILAMENT — FIBROIN, SPUN CONTINUOUS",
-      "TRIANGULAR SECTION — REFRACTS LIGHT AS LUSTRE",
-      "FINEST NATURAL FILAMENT — STRONG FOR ITS WEIGHT",
+    id: "movement",
+    name: "Movement",
+    descriptor: "Fabric only tells the truth in motion.",
+    notes: [
+      "DRAPE MEASURED BY HOW IT FALLS",
+      "SHEER ENOUGH TO BLUR",
+      "RECOVERY AFTER EVERY STEP",
     ],
-    image: "/images/collection/silk.jpg",
-    alt: "Fanaar silk-blend lounge fabric",
+    image: "/images/collection/movement.jpg",
+    alt: "A figure moving behind a sheer length of cloth",
+    href: "#",
+  },
+  {
+    id: "drape",
+    name: "Drape",
+    descriptor: "How it hangs is the whole design.",
+    notes: [
+      "THE SHOULDER SETS THE LINE",
+      "FULLNESS WITHOUT BULK",
+      "SEAMS THAT DISAPPEAR",
+    ],
+    image: "/images/collection/drape.jpg",
+    alt: "The back of a white shirt and skirt, falling in soft folds",
     href: "#",
   },
 ];

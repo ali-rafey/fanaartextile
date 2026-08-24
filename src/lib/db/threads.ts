@@ -52,6 +52,12 @@ export async function listPublishedThreads(): Promise<Thread[]> {
   }
 }
 
+/** One published thread by slug — the detail page's only query. */
+export async function getPublishedThread(slug: string): Promise<Thread | undefined> {
+  const all = await listPublishedThreads();
+  return all.find((thread) => thread.id === slug);
+}
+
 export async function listAllThreads(): Promise<ThreadRow[]> {
   const { data, error } = await getSupabaseAdminClient()
     .from("threads")

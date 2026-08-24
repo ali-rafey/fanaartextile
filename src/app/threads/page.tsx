@@ -28,38 +28,26 @@ export default async function ThreadsPage() {
     <>
       <SiteHeader />
       <main>
-        {/* Masthead — same left-aligned treatment as the fabric library, so the
-            two catalogue pages open the same way. */}
-        <section className="mx-auto max-w-7xl px-6 pt-16 pb-4 md:px-10 md:pt-24">
+        {/* One masthead, not two. The page opened with "The thread in every
+            seam" and an intro, then said much the same thing again under
+            "Chosen for the seam, not just the spool" — the second was the
+            better argument, so it is the only one now. */}
+        <section className="mx-auto max-w-7xl px-6 pt-16 pb-20 md:px-10 md:pt-24 md:pb-24">
           <Reveal>
             <p className="font-mono text-[0.62rem] uppercase tracking-[0.3em] text-clay">
               {THREADS_HERO.eyebrow}
             </p>
-            <div className="mt-5 flex flex-col gap-8 md:flex-row md:items-end md:justify-between md:gap-12">
-              <h1 className="max-w-3xl font-display text-5xl leading-[0.96] tracking-tight text-ink sm:text-6xl md:text-7xl">
-                {THREADS_HERO.heading}
-              </h1>
-              <p className="max-w-sm leading-relaxed text-ink/60 md:pb-2">{THREADS_HERO.intro}</p>
-            </div>
-          </Reveal>
-        </section>
-
-        {/* Intro */}
-        <section className="bg-ivory py-20 md:py-28">
-          <div className="mx-auto grid max-w-6xl gap-12 px-6 md:grid-cols-[0.9fr_1.1fr] md:gap-16">
-            <Reveal>
-              <h2 className="font-display text-3xl leading-tight tracking-tight text-ink md:text-4xl">
+            <div className="mt-5 grid gap-10 md:grid-cols-[1.1fr_1fr] md:items-end md:gap-16">
+              <h1 className="max-w-2xl font-display text-5xl leading-[0.98] tracking-tight text-ink md:text-6xl">
                 {THREADS_INTRO.heading}
-              </h2>
-            </Reveal>
-            <Reveal delay={120}>
+              </h1>
               <div className="space-y-5 leading-relaxed text-ink/60">
-                {THREADS_INTRO.paragraphs.map((p) => (
-                  <p key={p.slice(0, 24)}>{p}</p>
+                {THREADS_INTRO.paragraphs.map((paragraph) => (
+                  <p key={paragraph.slice(0, 24)}>{paragraph}</p>
                 ))}
               </div>
-            </Reveal>
-          </div>
+            </div>
+          </Reveal>
         </section>
 
         {/* ── The range — set exactly like the fabric library, because it is
@@ -90,7 +78,7 @@ export default async function ThreadsPage() {
             <div className="mt-14 grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
               {threads.map((thread, i) => (
                 <Reveal key={thread.id} delay={(i % 3) * 110}>
-                  <article className="group block">
+                  <Link href={`/threads/${thread.id}`} className="group block">
                     <div className="relative aspect-3/4 overflow-hidden rounded-2xl bg-ink/5">
                       {thread.image ? (
                         <Image
@@ -105,10 +93,10 @@ export default async function ThreadsPage() {
                       )}
                     </div>
 
-                    <h3 className="mt-5 font-display text-2xl tracking-tight text-ink">
+                    <h3 className="mt-5 font-display text-2xl tracking-tight text-ink transition-colors duration-300 ease-lux group-hover:text-clay">
                       {thread.name}
                     </h3>
-                  </article>
+                  </Link>
                 </Reveal>
               ))}
             </div>

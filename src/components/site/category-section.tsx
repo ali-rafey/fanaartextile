@@ -89,7 +89,7 @@ export default function CategorySection() {
           actually is, in a mill's terms, rather than house boilerplate. */}
       <div className="mx-auto max-w-7xl px-6 md:px-10">
         <div className="font-mono text-[0.62rem] leading-[1.75] tracking-[0.16em] text-ink/70 uppercase">
-          {current.science.map((line) => (
+          {current.notes.map((line) => (
             <p key={line}>{line}</p>
           ))}
         </div>
