@@ -51,52 +51,6 @@ export const FABRICS_CATEGORIES = {
   heading: "Every construction, by name",
 };
 
-/**
- * Featured edits — curated, editorial spotlights shown as a labelled image row
- * at the top of /fabrics. Distinct from the plain category list below; each is
- * a themed entry point into a fabric. Swap images in
- * public/images/fabrics/featured/.
- */
-export interface FabricFeature {
-  label: string;
-  image: string;
-  alt: string;
-  href: string;
-}
-
-export const FABRICS_FEATURED: FabricFeature[] = [
-  {
-    label: "Tropical",
-    image: "/images/fabrics/featured/tropical.jpg",
-    alt: "Lightweight tropical-weight cloth, warm and airy",
-    href: "/fabrics/jersey",
-  },
-  {
-    label: "Indigo",
-    image: "/images/fabrics/featured/indigo.jpg",
-    alt: "Indigo-dyed twill in deep blue",
-    href: "/fabrics/twill",
-  },
-  {
-    label: "Terra",
-    image: "/images/fabrics/featured/terra.jpg",
-    alt: "Earth-toned brushed fleece",
-    href: "/fabrics/fleece",
-  },
-  {
-    label: "Nord",
-    image: "/images/fabrics/featured/nord.jpg",
-    alt: "Cool-toned French terry",
-    href: "/fabrics/french-terry",
-  },
-  {
-    label: "Ecru",
-    image: "/images/fabrics/featured/ecru.jpg",
-    alt: "Natural undyed interlock",
-    href: "/fabrics/interlock",
-  },
-];
-
 export const FABRICS: Fabric[] = [
   {
     slug: "twill",

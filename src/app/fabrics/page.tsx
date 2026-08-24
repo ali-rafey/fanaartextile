@@ -4,11 +4,7 @@ import Link from "next/link";
 import Reveal from "@/components/site/reveal";
 import SiteFooter from "@/components/site/site-footer";
 import SiteHeader from "@/components/site/site-header";
-import {
-  FABRICS_CATEGORIES,
-  FABRICS_FEATURED,
-  FABRICS_INDEX,
-} from "@/content/fabrics";
+import { FABRICS_CATEGORIES, FABRICS_INDEX } from "@/content/fabrics";
 import { listPublishedFabrics } from "@/lib/db/fabrics";
 import JsonLd from "@/components/seo/json-ld";
 import { absoluteUrl, breadcrumbJsonLd } from "@/lib/seo";
@@ -78,27 +74,30 @@ export default async function FabricsPage() {
             </Reveal>
           </div>
 
-          {/* Image row — static display, pinned to the foot of the viewport */}
-          <div className="mt-16 grid grid-cols-2 gap-x-3 gap-y-8 sm:grid-cols-3 md:mt-0 md:grid-cols-5 md:gap-x-4">
-            {FABRICS_FEATURED.map((feature, i) => (
-              <Reveal key={feature.label} delay={(i % 5) * 80}>
-                <figure>
-                  <figcaption className="mb-3 font-display text-sm text-ink/70">
-                    {feature.label}
-                  </figcaption>
-                  <div className="relative aspect-[3/4] overflow-hidden bg-ink/5 md:aspect-auto md:h-[28vh]">
-                    <Image
-                      src={feature.image}
-                      alt={feature.alt}
-                      fill
-                      sizes="(min-width: 768px) 19vw, (min-width: 640px) 33vw, 50vw"
-                      className="object-cover"
-                    />
-                  </div>
-                </figure>
-              </Reveal>
-            ))}
-          </div>
+          {/* One continuous shot behind a row of empty frames. The mask cuts
+              the windows, an overlay grid on the same column maths draws their
+              borders, and the figure crossing the clip passes out of one frame
+              and into the next while the footage underneath never breaks. */}
+          <Reveal className="relative mt-16 md:mt-0">
+            <video
+              src="/videos/fabric-frames.mp4"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              aria-hidden
+              className="aperture-row block h-[34vh] w-full object-cover md:h-[28vh]"
+            />
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 grid grid-cols-2 gap-4 md:grid-cols-4"
+            >
+              {Array.from({ length: 4 }, (_, i) => (
+                <span key={i} className={`border border-ink/20 ${i > 1 ? "hidden md:block" : ""}`} />
+              ))}
+            </div>
+          </Reveal>
         </section>
 
         {/* ── Categories: the full construction list ── */}

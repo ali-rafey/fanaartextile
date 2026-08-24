@@ -31,6 +31,36 @@
   border-radius: 2px;
 }
 
+/* ── The fabric library's opening frame ─────────────────────────────────────
+   One continuous video seen through a row of apertures: the mask punches
+   evenly spaced windows across the clip, so a subject crossing the frame
+   passes out of one window and into the next while the footage underneath
+   never breaks. The frames themselves are drawn as an overlay grid using the
+   same column maths, which is what keeps the two in register.
+
+   Two windows on a phone — four across a 375px screen would be too narrow to
+   read anything moving through them. */
+.aperture-row {
+  --aperture-gap: 1rem;
+  --aperture-window: calc((100% - var(--aperture-gap)) / 2);
+  -webkit-mask-image: repeating-linear-gradient(
+    to right,
+    #000 0 var(--aperture-window),
+    transparent var(--aperture-window) calc(var(--aperture-window) + var(--aperture-gap))
+  );
+  mask-image: repeating-linear-gradient(
+    to right,
+    #000 0 var(--aperture-window),
+    transparent var(--aperture-window) calc(var(--aperture-window) + var(--aperture-gap))
+  );
+}
+
+@media (min-width: 768px) {
+  .aperture-row {
+    --aperture-window: calc((100% - 3 * var(--aperture-gap)) / 4);
+  }
+}
+
 body {
   background-color: var(--color-ivory);
   color: var(--color-ink);
