@@ -126,7 +126,7 @@ export default async function FabricDetailPage({
             {/* Image */}
             <Reveal>
               <div className="md:sticky md:top-28">
-                <div className="relative aspect-[4/5] overflow-hidden bg-ink/5">
+                <div className="relative aspect-4/5 overflow-hidden rounded-2xl bg-ink/5">
                   <Image
                     src={fabric.image}
                     alt={fabric.alt}
@@ -266,7 +266,7 @@ export default async function FabricDetailPage({
               {related.map((f, i) => (
                 <Reveal key={f.slug} delay={i * 100}>
                   <Link href={`/fabrics/${f.slug}`} className="group block">
-                    <div className="relative aspect-[4/5] overflow-hidden bg-ink/5">
+                    <div className="relative aspect-4/5 overflow-hidden rounded-2xl bg-ink/5">
                       <Image
                         src={f.image}
                         alt={f.alt}
