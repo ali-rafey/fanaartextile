@@ -7,7 +7,6 @@ import BlogPlaceholder from "@/components/site/blog-placeholder";
 import Reveal from "@/components/site/reveal";
 import SiteFooter from "@/components/site/site-footer";
 import SiteHeader from "@/components/site/site-header";
-import { ABOUT_FOUNDER } from "@/content/about";
 import { getPublishedPost, listPublishedPosts } from "@/lib/db/blogs";
 import { SITE_NAME, absoluteUrl, breadcrumbJsonLd } from "@/lib/seo";
 
@@ -54,6 +53,16 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   const related = all.filter((other) => other.href !== post.href).slice(0, 2);
   const body = paragraphs(post.body?.trim() || post.excerpt);
 
+  // Archive counts, in the order the posts already come back in.
+  const months = new Map<string, number>();
+  for (const other of all) {
+    if (other.date) months.set(other.date, (months.get(other.date) ?? 0) + 1);
+  }
+  const archive = [...months.entries()];
+
+  const shareUrl = encodeURIComponent(absoluteUrl(post.href));
+  const shareText = encodeURIComponent(post.title);
+
   const articleJsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
@@ -98,40 +107,11 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           </Reveal>
         </header>
 
-        {/* Three columns: the house on the left, the piece in the middle, the
-            rest of the archive on the right — collapsing to one on a phone,
-            where the article is the only thing that matters. */}
-        <div className="mx-auto grid max-w-7xl gap-12 px-6 pb-24 md:px-10 md:pb-32 lg:grid-cols-[13rem_minmax(0,1fr)_13rem] lg:gap-14">
-          <aside className="order-2 lg:order-1">
-            <div className="lg:sticky lg:top-28">
-              <p className="font-mono text-[0.58rem] uppercase tracking-[0.28em] text-ink/60">
-                The house
-              </p>
-              {ABOUT_FOUNDER.portrait ? (
-                <div className="relative mt-5 aspect-4/5 w-full overflow-hidden rounded-xl bg-ink/5">
-                  <Image
-                    src={ABOUT_FOUNDER.portrait}
-                    alt={ABOUT_FOUNDER.portraitAlt}
-                    fill
-                    sizes="208px"
-                    className="object-cover"
-                  />
-                </div>
-              ) : null}
-              <p className="mt-5 text-[0.82rem] leading-relaxed text-ink/60">
-                Fanaar is a craft-led lounge fabric house — audited mills, lab-tested batches
-                and small-batch finishing.
-              </p>
-              <Link
-                href="/about"
-                className="mt-5 inline-block border-b border-ink/30 pb-1 font-mono text-[0.56rem] uppercase tracking-[0.2em] text-ink transition-colors duration-300 ease-lux hover:border-clay hover:text-clay"
-              >
-                About Fanaar
-              </Link>
-            </div>
-          </aside>
-
-          <article className="order-1 lg:order-2">
+        {/* The piece, and the archive beside it. There is no "about the
+            author" rail: Fanaar publishes as a house, not as a byline, so a
+            portrait and a potted biography there would be invented furniture. */}
+        <div className="mx-auto grid max-w-7xl gap-14 px-6 pb-24 md:px-10 md:pb-32 lg:grid-cols-[minmax(0,1fr)_14rem] lg:gap-20">
+          <article>
             <Reveal>
               <div className="relative aspect-16/10 w-full overflow-hidden rounded-2xl bg-ink/5">
                 {post.image ? (
@@ -139,7 +119,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                     src={post.image}
                     alt={post.alt}
                     fill
-                    sizes="(min-width: 1024px) 60vw, 100vw"
+                    sizes="(min-width: 1024px) 62vw, 100vw"
                     priority
                     className="object-cover"
                   />
@@ -156,6 +136,28 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                 ))}
               </div>
             </Reveal>
+
+            {/* Share */}
+            <div className="mx-auto mt-14 flex max-w-2xl flex-wrap items-center gap-x-7 gap-y-3 border-t border-ink/10 pt-6">
+              <span className="font-mono text-[0.56rem] uppercase tracking-[0.22em] text-ink/60">
+                Share
+              </span>
+              {[
+                { label: "X", href: `https://twitter.com/intent/tweet?url=${shareUrl}&text=${shareText}` },
+                { label: "Facebook", href: `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}` },
+                { label: "Pinterest", href: `https://pinterest.com/pin/create/button/?url=${shareUrl}&description=${shareText}` },
+              ].map((target) => (
+                <a
+                  key={target.label}
+                  href={target.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-mono text-[0.56rem] uppercase tracking-[0.2em] text-ink transition-colors duration-300 ease-lux hover:text-clay"
+                >
+                  {target.label}
+                </a>
+              ))}
+            </div>
 
             {related.length ? (
               <section className="mx-auto mt-20 max-w-2xl border-t border-ink/10 pt-10">
@@ -191,7 +193,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             ) : null}
           </article>
 
-          <aside className="order-3">
+          <aside>
             <div className="lg:sticky lg:top-28">
               <p className="font-mono text-[0.58rem] uppercase tracking-[0.28em] text-ink/60">
                 Recent
@@ -210,9 +212,25 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                   </li>
                 ))}
               </ul>
+
+              {archive.length ? (
+                <>
+                  <p className="mt-12 font-mono text-[0.58rem] uppercase tracking-[0.28em] text-ink/60">
+                    Archive
+                  </p>
+                  <ul className="mt-5 space-y-3">
+                    {archive.map(([month, count]) => (
+                      <li key={month} className="text-[0.9rem] text-ink/70">
+                        {month} <span className="text-ink/60">({count})</span>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              ) : null}
+
               <Link
                 href="/blogs"
-                className="mt-8 inline-block border-b border-ink/30 pb-1 font-mono text-[0.56rem] uppercase tracking-[0.2em] text-ink transition-colors duration-300 ease-lux hover:border-clay hover:text-clay"
+                className="mt-10 inline-block border-b border-ink/30 pb-1 font-mono text-[0.56rem] uppercase tracking-[0.2em] text-ink transition-colors duration-300 ease-lux hover:border-clay hover:text-clay"
               >
                 All articles
               </Link>
