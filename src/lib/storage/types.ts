@@ -77,6 +77,16 @@ export interface StoredImage {
   path: string;
 }
 
+/** Which hero the homepage renders, and the media the spread's plate uses. */
+export interface HeroLayout {
+  /** "video" = the full-bleed film; "spread" = the editorial plate + type. */
+  mode: "video" | "spread";
+  /** Left-hand plate for the spread. Null falls back to the shipped image. */
+  plate: { url: string; type: "image" | "video"; alt: string } | null;
+}
+
+export const DEFAULT_HERO_LAYOUT: HeroLayout = { mode: "spread", plate: null };
+
 export interface StorageDriver {
   getHeroVideo(): Promise<HeroVideoMeta | null>;
   saveHeroVideo(upload: HeroVideoUpload): Promise<HeroVideoMeta>;
@@ -91,6 +101,10 @@ export interface StorageDriver {
    */
   createHeroUploadTarget?(originalName: string): Promise<DirectUploadTarget>;
   commitHeroVideo?(commit: DirectUploadCommit): Promise<HeroVideoMeta>;
+
+  /** Which hero the homepage shows, and what the spread's plate is. */
+  getHeroLayout(): Promise<HeroLayout>;
+  saveHeroLayout(layout: HeroLayout): Promise<HeroLayout>;
 
   /** Catalogue imagery — fabric and thread photography uploaded from admin. */
   saveImage(upload: ImageUpload): Promise<StoredImage>;

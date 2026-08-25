@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isAdminRequest, unauthorized } from "@/lib/admin-guard";
-import { isAllowedImageFile } from "@/lib/constants";
+import { isAllowedImageFile, isAllowedVideoFile } from "@/lib/constants";
 import { getStorage } from "@/lib/storage";
 
 export const runtime = "nodejs";
@@ -24,9 +24,19 @@ export async function POST(request: NextRequest) {
   if (!originalName) {
     return NextResponse.json({ error: "Missing X-File-Name header." }, { status: 400 });
   }
-  if (!isAllowedImageFile(originalName, mimeType)) {
+  // The hero plate accepts a clip as well as a still; everywhere else is
+  // stills only, so the caller has to ask for video explicitly.
+  const allowVideo = request.headers.get("x-allow-video") === "1";
+  const ok =
+    isAllowedImageFile(originalName, mimeType) ||
+    (allowVideo && isAllowedVideoFile(originalName, mimeType));
+  if (!ok) {
     return NextResponse.json(
-      { error: "Unsupported file type. Upload a JPEG, PNG, WebP, AVIF or GIF." },
+      {
+        error: allowVideo
+          ? "Unsupported file type. Upload an image or an MP4/WebM video."
+          : "Unsupported file type. Upload a JPEG, PNG, WebP, AVIF or GIF.",
+      },
       { status: 415 }
     );
   }

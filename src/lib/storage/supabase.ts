@@ -1,7 +1,9 @@
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
+import { DEFAULT_HERO_LAYOUT } from "./types";
 import type {
   DirectUploadCommit,
   DirectUploadTarget,
+  HeroLayout,
   HeroVideoMeta,
   ImageUpload,
   StorageDriver,
@@ -22,6 +24,7 @@ import type {
  */
 export const SITE_ASSETS_BUCKET = "site-assets";
 const HERO_SETTINGS_KEY = "hero_video";
+const HERO_LAYOUT_KEY = "hero_layout";
 
 type StoredHeroValue = Omit<HeroVideoMeta, "url"> & {
   /** Object path inside the bucket, e.g. "hero/hero-1720000000000.mp4". */
@@ -178,6 +181,26 @@ export const supabaseDriver: StorageDriver = {
     }
 
     return toMeta(value);
+  },
+
+  async getHeroLayout(): Promise<HeroLayout> {
+    const supabase = getSupabaseAdminClient();
+    const { data, error } = await supabase
+      .from("site_settings")
+      .select("value")
+      .eq("key", HERO_LAYOUT_KEY)
+      .maybeSingle();
+    if (error || !data?.value) return DEFAULT_HERO_LAYOUT;
+    return { ...DEFAULT_HERO_LAYOUT, ...(data.value as Partial<HeroLayout>) };
+  },
+
+  async saveHeroLayout(layout: HeroLayout): Promise<HeroLayout> {
+    const supabase = getSupabaseAdminClient();
+    const { error } = await supabase
+      .from("site_settings")
+      .upsert({ key: HERO_LAYOUT_KEY, value: layout, updated_at: new Date().toISOString() });
+    if (error) throw new Error(`Failed to save hero layout: ${error.message}`);
+    return layout;
   },
 
   /**

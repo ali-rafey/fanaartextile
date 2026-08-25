@@ -1,7 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { HERO_COPY, HERO_DETAILS, HERO_PLATE } from "@/content/hero";
+import HeroVideo from "./hero-video";
 import SiteNavbar from "./site-navbar";
+import { getStorage } from "@/lib/storage";
 
 /**
  * Homepage hero — a spread, not a backdrop.
@@ -16,10 +18,37 @@ import SiteNavbar from "./site-navbar";
  * block. Everything the references share: one big image against generous
  * cream, small type placed with intent, and the photograph doing the talking.
  *
- * The admin's hero-video upload is untouched and still works; this page simply
- * no longer reads from it.
+ * Which of the two scenes runs is the admin's choice (/admin/hero): this
+ * spread, or the full-bleed video. The spread's plate is theirs to upload too
+ * and takes a still or a clip; with nothing uploaded it falls back to the
+ * frame the site ships with.
  */
-export default function Hero() {
+export default async function Hero() {
+  const storage = getStorage();
+  const [layout, video] = await Promise.all([
+    storage.getHeroLayout(),
+    storage.getHeroVideo(),
+  ]);
+
+  if (layout.mode === "video" && video) {
+    return (
+      <section className="relative h-svh w-full overflow-hidden bg-ink">
+        <h1 className="sr-only">
+          Fanaar Textile — premium lounge and loungewear fabric, woven and knitted to
+          one standard
+        </h1>
+        <SiteNavbar />
+        <HeroVideo src={video.url} />
+      </section>
+    );
+  }
+
+  // One shape for the plate whichever it came from, so the markup below does
+  // not have to care whether the admin uploaded anything.
+  const plate = layout.plate
+    ? { url: layout.plate.url, alt: layout.plate.alt || HERO_PLATE.alt, isVideo: layout.plate.type === "video" }
+    : { url: HERO_PLATE.src, alt: HERO_PLATE.alt, isVideo: false };
+
   return (
     <section className="relative flex min-h-svh w-full flex-col bg-ivory">
       <SiteNavbar tone="ink" />
@@ -27,14 +56,27 @@ export default function Hero() {
       <div className="grid flex-1 md:grid-cols-[1.02fr_1fr]">
         {/* The plate — bleeds off the left, top and bottom edges */}
         <div className="relative order-1 h-[46svh] w-full overflow-hidden bg-sand md:h-auto md:min-h-svh">
-          <Image
-            src={HERO_PLATE.src}
-            alt={HERO_PLATE.alt}
-            fill
-            sizes="(min-width: 768px) 52vw, 100vw"
-            priority
-            className="object-cover"
-          />
+          {plate.isVideo ? (
+            <video
+              src={plate.url}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
+              aria-hidden
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <Image
+              src={plate.url}
+              alt={plate.alt}
+              fill
+              sizes="(min-width: 768px) 52vw, 100vw"
+              priority
+              className="object-cover"
+            />
+          )}
         </div>
 
         {/* The page */}

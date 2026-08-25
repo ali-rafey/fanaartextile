@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isAdminRequest, unauthorized } from "@/lib/admin-guard";
-import { isAllowedImageFile } from "@/lib/constants";
+import { isAllowedImageFile, isAllowedVideoFile } from "@/lib/constants";
 import { getStorage } from "@/lib/storage";
 
 export const runtime = "nodejs";
@@ -17,18 +17,26 @@ export async function POST(request: NextRequest) {
   if (!(await isAdminRequest())) return unauthorized();
 
   try {
-    const { originalName, mimeType, folder } = (await request.json()) as {
+    const { originalName, mimeType, folder, allowVideo } = (await request.json()) as {
       originalName?: string;
       mimeType?: string;
       folder?: string;
+      allowVideo?: boolean;
     };
 
     if (!originalName) {
       return NextResponse.json({ error: "originalName is required." }, { status: 400 });
     }
-    if (!isAllowedImageFile(originalName, mimeType ?? "")) {
+    const ok =
+      isAllowedImageFile(originalName, mimeType ?? "") ||
+      (allowVideo === true && isAllowedVideoFile(originalName, mimeType ?? ""));
+    if (!ok) {
       return NextResponse.json(
-        { error: "Unsupported file type. Upload a JPEG, PNG, WebP, AVIF or GIF." },
+        {
+          error: allowVideo
+            ? "Unsupported file type. Upload an image or an MP4/WebM video."
+            : "Unsupported file type. Upload a JPEG, PNG, WebP, AVIF or GIF.",
+        },
         { status: 415 }
       );
     }

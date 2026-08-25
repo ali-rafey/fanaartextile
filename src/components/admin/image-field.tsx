@@ -2,7 +2,13 @@
 
 import Image from "next/image";
 import { useRef, useState } from "react";
-import { MAX_IMAGE_BYTES, MAX_IMAGE_MB, formatBytes, isAllowedImageFile } from "@/lib/constants";
+import {
+  MAX_IMAGE_BYTES,
+  MAX_IMAGE_MB,
+  formatBytes,
+  isAllowedImageFile,
+  isAllowedVideoFile,
+} from "@/lib/constants";
 
 /**
  * Pick an image from the machine and put it in storage.
@@ -22,12 +28,17 @@ export default function ImageField({
   folder,
   defaultValue = "",
   label = "Image",
+  allowVideo = false,
+  onChange,
 }: {
   name: string;
   /** Sub-folder in storage, e.g. "fabrics". */
   folder: string;
   defaultValue?: string;
   label?: string;
+  /** The hero plate takes a clip as well as a still. */
+  allowVideo?: boolean;
+  onChange?: (url: string) => void;
 }) {
   const [url, setUrl] = useState(defaultValue);
   const [busy, setBusy] = useState(false);
@@ -37,8 +48,15 @@ export default function ImageField({
   async function upload(file: File) {
     setError(null);
 
-    if (!isAllowedImageFile(file.name, file.type)) {
-      setError("Unsupported file type. Choose a JPEG, PNG, WebP, AVIF or GIF.");
+    const accepted =
+      isAllowedImageFile(file.name, file.type) ||
+      (allowVideo && isAllowedVideoFile(file.name, file.type));
+    if (!accepted) {
+      setError(
+        allowVideo
+          ? "Unsupported file type. Choose an image or an MP4/WebM video."
+          : "Unsupported file type. Choose a JPEG, PNG, WebP, AVIF or GIF."
+      );
       return;
     }
     if (file.size > MAX_IMAGE_BYTES) {
@@ -51,7 +69,12 @@ export default function ImageField({
       const targetRes = await fetch("/api/admin/media/upload-url", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ originalName: file.name, mimeType: file.type, folder }),
+        body: JSON.stringify({
+          originalName: file.name,
+          mimeType: file.type,
+          folder,
+          allowVideo,
+        }),
       });
       const target = await targetRes.json();
       if (!targetRes.ok) throw new Error(target.error ?? "Could not start the upload.");
@@ -81,6 +104,7 @@ export default function ImageField({
             "Content-Type": file.type || "application/octet-stream",
             "X-File-Name": file.name,
             "X-Folder": folder,
+            ...(allowVideo ? { "X-Allow-Video": "1" } : {}),
           },
           body: file,
         });
@@ -89,6 +113,7 @@ export default function ImageField({
       }
 
       setUrl(stored.url);
+      onChange?.(stored.url);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Upload failed.");
     } finally {
@@ -103,7 +128,9 @@ export default function ImageField({
 
       <div className="mt-2 flex items-start gap-4">
         <div className="relative h-24 w-20 shrink-0 overflow-hidden rounded-lg border border-neutral-200 bg-neutral-50">
-          {url ? (
+          {url && /\.(mp4|webm|ogv|mov|m4v)(\?|$)/i.test(url) ? (
+            <video src={url} muted playsInline className="h-full w-full object-cover" />
+          ) : url ? (
             <Image src={url} alt="" fill sizes="80px" className="object-cover" unoptimized />
           ) : (
             <span className="flex h-full w-full items-center justify-center text-[0.6rem] text-neutral-400">
@@ -137,7 +164,11 @@ export default function ImageField({
           <input
             ref={fileRef}
             type="file"
-            accept="image/jpeg,image/png,image/webp,image/avif,image/gif"
+            accept={
+              allowVideo
+                ? "image/jpeg,image/png,image/webp,image/avif,image/gif,video/mp4,video/webm"
+                : "image/jpeg,image/png,image/webp,image/avif,image/gif"
+            }
             className="sr-only"
             onChange={(event) => {
               const file = event.target.files?.[0];
@@ -151,7 +182,10 @@ export default function ImageField({
             type="text"
             name={name}
             value={url}
-            onChange={(event) => setUrl(event.target.value)}
+            onChange={(event) => {
+              setUrl(event.target.value);
+              onChange?.(event.target.value);
+            }}
             placeholder="/images/fabrics/jersey.jpg"
             className="mt-2 w-full rounded-xl border border-neutral-200 bg-white px-3.5 py-2.5 text-xs text-neutral-900 outline-none transition-colors placeholder:text-neutral-400 focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900"
           />

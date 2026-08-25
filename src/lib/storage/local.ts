@@ -2,7 +2,8 @@ import { createWriteStream } from "fs";
 import { mkdir, readFile, stat, unlink, writeFile } from "fs/promises";
 import path from "path";
 import { pipeline } from "stream/promises";
-import type { HeroVideoMeta, ImageUpload, StorageDriver, StoredImage } from "./types";
+import { DEFAULT_HERO_LAYOUT } from "./types";
+import type { HeroLayout, HeroVideoMeta, ImageUpload, StorageDriver, StoredImage } from "./types";
 
 /** Bridges a web ReadableStream to something Node's pipeline() accepts. */
 async function* toAsyncIterable(stream: ReadableStream<Uint8Array>) {
@@ -27,6 +28,8 @@ export const HERO_UPLOAD_DIR = path.join(VAR_ROOT, "uploads", "hero");
 //   /api/media/<folder>/<file> so it behaves like the Supabase public URL.
 export const IMAGE_UPLOAD_ROOT = path.join(VAR_ROOT, "uploads", "images");
 const HERO_MANIFEST_PATH = path.join(VAR_ROOT, "data", "hero-video.json");
+//   var/data/hero-layout.json — which hero the homepage shows
+const HERO_LAYOUT_PATH = path.join(VAR_ROOT, "data", "hero-layout.json");
 
 export type HeroManifest = Omit<HeroVideoMeta, "url">;
 
@@ -112,6 +115,21 @@ export const localFsDriver: StorageDriver = {
     }
 
     return toMeta(manifest);
+  },
+
+  async getHeroLayout(): Promise<HeroLayout> {
+    try {
+      const raw = await readFile(HERO_LAYOUT_PATH, "utf8");
+      return { ...DEFAULT_HERO_LAYOUT, ...(JSON.parse(raw) as Partial<HeroLayout>) };
+    } catch {
+      return DEFAULT_HERO_LAYOUT;
+    }
+  },
+
+  async saveHeroLayout(layout: HeroLayout): Promise<HeroLayout> {
+    await mkdir(path.dirname(HERO_LAYOUT_PATH), { recursive: true });
+    await writeFile(HERO_LAYOUT_PATH, JSON.stringify(layout, null, 2));
+    return layout;
   },
 
   /**
