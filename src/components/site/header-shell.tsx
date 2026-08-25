@@ -4,6 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import MobileMenu from "@/components/site/mobile-menu";
+import {
+  BAR_AT_TOP,
+  BAR_DESKTOP_RESET,
+  BAR_FLOATING,
+  BAR_MOTION,
+} from "@/components/site/nav-bar-skin";
+import { useScrolled } from "@/components/site/use-scrolled";
 import NavMenus, { MENU_FOR } from "@/components/site/menus/nav-menus";
 import { useHoverMenu } from "@/components/site/use-hover-menu";
 import { NAV_LEFT, NAV_RIGHT } from "@/content/navigation";
@@ -15,6 +22,7 @@ const link =
 export default function HeaderShell({ menus }: { menus: NavMenusData }) {
   const [open, setOpen] = useState(false);
   const menu = useHoverMenu();
+  const scrolled = useScrolled();
 
   const renderItem = (item: { label: string; href: string }) => {
     const key = MENU_FOR[item.label];
@@ -42,9 +50,11 @@ export default function HeaderShell({ menus }: { menus: NavMenusData }) {
 
   return (
     <>
-      <header className="sticky top-0 z-40 border-b border-ink/10 bg-ivory/85 backdrop-blur-md">
-        <nav aria-label="Primary" className="mx-auto max-w-6xl px-6 py-5">
-          <div className="grid grid-cols-[1fr_auto_1fr] items-center">
+      <header className="sticky top-0 z-40 xl:border-b xl:border-ink/10 xl:bg-ivory/85 xl:backdrop-blur-md">
+        <nav aria-label="Primary" className="mx-auto max-w-6xl">
+          <div
+            className={`grid grid-cols-[1fr_auto_1fr] items-center px-6 py-5 xl:px-6 ${BAR_MOTION} ${BAR_DESKTOP_RESET} ${scrolled ? BAR_FLOATING : BAR_AT_TOP}`}
+          >
             <ul className="hidden items-center gap-7 xl:flex">
               {NAV_LEFT.map(renderItem)}
             </ul>
@@ -112,11 +122,7 @@ export default function HeaderShell({ menus }: { menus: NavMenusData }) {
           containing block for fixed descendants, so `fixed inset-0` here
           resolved against the 72px bar instead of the viewport and the menu
           came up as an unreadable sliver. */}
-      <MobileMenu
-        open={open}
-        onClose={() => setOpen(false)}
-        categories={menus.journal.categories}
-      />
+      <MobileMenu open={open} onClose={() => setOpen(false)} />
     </>
   );
 }

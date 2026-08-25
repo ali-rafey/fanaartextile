@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect } from "react";
 import { NAV_LEFT, NAV_RIGHT } from "@/content/navigation";
-import type { NavMenus } from "@/lib/nav-menu";
 
 /**
  * The full-screen menu behind the burger, shared by both headers.
@@ -12,15 +11,17 @@ import type { NavMenus } from "@/lib/nav-menu";
  * It lived twice — once per shell — and the two copies had already drifted
  * apart once. One component means a change to the touch navigation cannot
  * reach only half the site.
+ *
+ * Deliberately spare: an ivory ground, the mark, seven destinations. The
+ * journal categories used to sit at the foot of it, which made a navigation
+ * menu look like a page of its own; they live on the journal itself.
  */
 export default function MobileMenu({
   open,
   onClose,
-  categories,
 }: {
   open: boolean;
   onClose: () => void;
-  categories: NavMenus["journal"]["categories"];
 }) {
   useEffect(() => {
     if (!open) return;
@@ -43,11 +44,11 @@ export default function MobileMenu({
       role="dialog"
       aria-modal="true"
       aria-label="Site menu"
-      className="fixed inset-0 z-50 flex flex-col overflow-y-auto bg-ink/95 px-8 py-7 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex flex-col overflow-y-auto bg-ivory px-8 py-7"
     >
       <div className="flex items-center justify-between">
         <Image
-          src="/images/brand/logo-ivory.png"
+          src="/images/brand/logo-ink.png"
           alt="Fanaar"
           width={1131}
           height={823}
@@ -58,13 +59,13 @@ export default function MobileMenu({
           type="button"
           onClick={onClose}
           aria-label="Close menu"
-          className="p-1 text-ivory/80 transition-colors hover:text-ivory"
+          className="-mr-1 p-1 text-ink/60 transition-colors duration-300 ease-lux hover:text-ink"
         >
           <svg
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            strokeWidth="1.5"
+            strokeWidth="1.25"
             strokeLinecap="round"
             aria-hidden
             className="h-6 w-6"
@@ -75,41 +76,23 @@ export default function MobileMenu({
         </button>
       </div>
 
-      {/* Home first — the mark in the header is the only other way back, and
-          on a phone it sits behind this dialog. */}
-      <ul className="mt-14 space-y-6">
-        {[{ label: "Home", href: "/" }, ...NAV_LEFT, ...NAV_RIGHT].map((item) => (
-          <li key={item.label}>
-            <Link
-              href={item.href}
-              onClick={onClose}
-              className="font-display text-3xl text-ivory/90 transition-colors hover:text-ivory"
-            >
-              {item.label}
-            </Link>
-          </li>
-        ))}
-      </ul>
-
-      {/* Journal categories, inline — the drop panels are pointer-only */}
-      <div className="mt-10 border-t border-ivory/15 pt-6">
-        <p className="font-mono text-[0.6rem] uppercase tracking-[0.28em] text-ivory/50">
-          Journal categories
-        </p>
-        <ul className="mt-4 flex flex-wrap gap-x-6 gap-y-3">
-          {categories.map((category) => (
-            <li key={category.label}>
+      {/* Home first — the mark in the bar is the only other way back, and on a
+          phone it sits behind this dialog. */}
+      <ul className="mt-16 space-y-7">
+        {[{ label: "Home", href: "/" }, ...NAV_LEFT, ...NAV_RIGHT].map(
+          (item) => (
+            <li key={item.label}>
               <Link
-                href={category.href}
+                href={item.href}
                 onClick={onClose}
-                className="text-sm text-ivory/70 transition-colors hover:text-ivory"
+                className="font-display text-[2rem] leading-none text-ink transition-opacity duration-300 ease-lux hover:opacity-60"
               >
-                {category.label}
+                {item.label}
               </Link>
             </li>
-          ))}
-        </ul>
-      </div>
+          ),
+        )}
+      </ul>
     </div>
   );
 }

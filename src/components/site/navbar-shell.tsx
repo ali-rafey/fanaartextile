@@ -4,6 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import MobileMenu from "@/components/site/mobile-menu";
+import {
+  BAR_AT_TOP,
+  BAR_DESKTOP_RESET,
+  BAR_FLOATING,
+  BAR_MOTION,
+} from "@/components/site/nav-bar-skin";
+import { useScrolled } from "@/components/site/use-scrolled";
 import NavMenus, { MENU_FOR } from "@/components/site/menus/nav-menus";
 import { useHoverMenu } from "@/components/site/use-hover-menu";
 import { NAV_LEFT, NAV_RIGHT } from "@/content/navigation";
@@ -49,6 +56,7 @@ export default function NavbarShell({
   const desktopLink = `text-xs whitespace-nowrap uppercase tracking-[0.18em] transition-colors duration-300 ease-lux ${skin.link}`;
   const [open, setOpen] = useState(false);
   const menu = useHoverMenu();
+  const scrolled = useScrolled();
 
   const renderItem = (item: { label: string; href: string }) => {
     const key = MENU_FOR[item.label];
@@ -82,9 +90,11 @@ export default function NavbarShell({
         // navigation does not scroll away and vanish on a phone — the homepage
         // was the only page in the site without one. From xl it goes back to
         // floating free over the hero at the brand's inset.
-        className={`fixed inset-x-0 top-0 z-30 border-b border-ink/10 bg-ivory/85 px-6 py-4 backdrop-blur-md xl:absolute xl:inset-x-[20%] xl:top-[7.5%] xl:border-0 xl:bg-transparent xl:px-0 xl:py-0 xl:backdrop-blur-none ${skin.shadow}`}
+        className={`fixed inset-x-0 top-0 z-30 xl:absolute xl:inset-x-[20%] xl:top-[7.5%] ${skin.shadow}`}
       >
-        <div className="grid grid-cols-[1fr_auto_1fr] items-center">
+        <div
+          className={`grid grid-cols-[1fr_auto_1fr] items-center px-6 py-4 xl:px-0 xl:py-0 ${BAR_MOTION} ${BAR_DESKTOP_RESET} ${scrolled ? BAR_FLOATING : BAR_AT_TOP}`}
+        >
           <ul className="hidden items-center gap-7 xl:flex">
             {NAV_LEFT.map(renderItem)}
           </ul>
@@ -159,11 +169,7 @@ export default function NavbarShell({
         </div>
       </nav>
 
-      <MobileMenu
-        open={open}
-        onClose={() => setOpen(false)}
-        categories={menus.journal.categories}
-      />
+      <MobileMenu open={open} onClose={() => setOpen(false)} />
     </>
   );
 }
