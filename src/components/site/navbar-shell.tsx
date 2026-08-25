@@ -16,15 +16,13 @@ import type { NavMenus as NavMenusData } from "@/lib/nav-menu";
 const TONES = {
   ivory: {
     link: "text-ivory/85 hover:text-ivory",
-    shadow: "[text-shadow:0_1px_14px_rgba(27,24,21,0.45)]",
+    shadow: "xl:[text-shadow:0_1px_14px_rgba(27,24,21,0.45)]",
     logo: "/images/brand/logo-ivory.png",
-    button: "text-ivory/90 hover:text-ivory",
   },
   ink: {
     link: "text-ink/70 hover:text-ink",
     shadow: "",
     logo: "/images/brand/logo-ink.png",
-    button: "text-ink/80 hover:text-ink",
   },
 } as const;
 
@@ -43,6 +41,11 @@ export default function NavbarShell({
   tone?: keyof typeof TONES;
 }) {
   const skin = TONES[tone];
+  // Below xl the bar has an ivory ground of its own, so the mark has to be the
+  // ink one there whatever tone the hero behind it asks for — the ivory mark
+  // on ivory is invisible.
+  const INK_MARK = "/images/brand/logo-ink.png";
+  const needsInkMark = skin.logo !== INK_MARK;
   const desktopLink = `text-xs whitespace-nowrap uppercase tracking-[0.18em] transition-colors duration-300 ease-lux ${skin.link}`;
   const [open, setOpen] = useState(false);
   const menu = useHoverMenu();
@@ -82,19 +85,35 @@ export default function NavbarShell({
         className={`fixed inset-x-0 top-0 z-30 border-b border-ink/10 bg-ivory/85 px-6 py-4 backdrop-blur-md xl:absolute xl:inset-x-[20%] xl:top-[7.5%] xl:border-0 xl:bg-transparent xl:px-0 xl:py-0 xl:backdrop-blur-none ${skin.shadow}`}
       >
         <div className="grid grid-cols-[1fr_auto_1fr] items-center">
-          <ul className="hidden items-center gap-7 xl:flex">{NAV_LEFT.map(renderItem)}</ul>
+          <ul className="hidden items-center gap-7 xl:flex">
+            {NAV_LEFT.map(renderItem)}
+          </ul>
           {/* keeps the mark centered while the links are collapsed */}
           <span aria-hidden className="xl:hidden" />
 
           {/* Brand mark — Fanaar calligraphy, ivory over the dark hero video */}
-          <Link href="/" className="group justify-self-center" aria-label="Fanaar — home">
+          <Link
+            href="/"
+            className="group justify-self-center"
+            aria-label="Fanaar — home"
+          >
+            {needsInkMark && (
+              <Image
+                src={INK_MARK}
+                alt=""
+                width={1131}
+                height={823}
+                priority
+                className="h-9 w-auto opacity-90 transition-opacity duration-500 ease-lux group-hover:opacity-100 xl:hidden"
+              />
+            )}
             <Image
               src={skin.logo}
-              alt="Fanaar"
+              alt=""
               width={1131}
               height={823}
               priority
-              className="h-9 w-auto opacity-90 transition-opacity duration-500 ease-lux group-hover:opacity-100 xl:h-11"
+              className={`h-9 w-auto opacity-90 transition-opacity duration-500 ease-lux group-hover:opacity-100 xl:h-11 ${needsInkMark ? "hidden xl:block" : ""}`}
             />
           </Link>
 
@@ -107,7 +126,7 @@ export default function NavbarShell({
             aria-expanded={open}
             aria-controls="site-menu"
             aria-label="Open menu"
-            className={`justify-self-end p-1 transition-colors xl:hidden ${skin.button}`}
+            className="justify-self-end p-1 text-ink/80 transition-colors hover:text-ink xl:hidden"
           >
             <svg
               viewBox="0 0 24 24"

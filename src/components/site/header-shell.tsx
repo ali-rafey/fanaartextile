@@ -41,66 +41,82 @@ export default function HeaderShell({ menus }: { menus: NavMenusData }) {
   };
 
   return (
-    <header className="sticky top-0 z-40 border-b border-ink/10 bg-ivory/85 backdrop-blur-md">
-      <nav aria-label="Primary" className="mx-auto max-w-6xl px-6 py-5">
-        <div className="grid grid-cols-[1fr_auto_1fr] items-center">
-          <ul className="hidden items-center gap-7 xl:flex">{NAV_LEFT.map(renderItem)}</ul>
-          <span aria-hidden className="xl:hidden" />
+    <>
+      <header className="sticky top-0 z-40 border-b border-ink/10 bg-ivory/85 backdrop-blur-md">
+        <nav aria-label="Primary" className="mx-auto max-w-6xl px-6 py-5">
+          <div className="grid grid-cols-[1fr_auto_1fr] items-center">
+            <ul className="hidden items-center gap-7 xl:flex">
+              {NAV_LEFT.map(renderItem)}
+            </ul>
+            <span aria-hidden className="xl:hidden" />
 
-          <Link href="/" className="group justify-self-center" aria-label="Fanaar — home">
-            <Image
-              src="/images/brand/logo-ink.png"
-              alt="Fanaar"
-              width={1131}
-              height={823}
-              priority
-              className="h-8 w-auto opacity-90 transition-opacity duration-500 ease-lux group-hover:opacity-100 xl:h-10"
-            />
-          </Link>
-
-          <ul className="hidden items-center gap-7 justify-self-end xl:flex">
-            {NAV_RIGHT.map(renderItem)}
-          </ul>
-          <button
-            type="button"
-            onClick={() => setOpen(true)}
-            aria-expanded={open}
-            aria-controls="site-menu"
-            aria-label="Open menu"
-            className="justify-self-end p-1 text-ink/80 transition-colors hover:text-ink xl:hidden"
-          >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              aria-hidden
-              className="h-6 w-6"
+            <Link
+              href="/"
+              className="group justify-self-center"
+              aria-label="Fanaar — home"
             >
-              <path d="M4 9h16" />
-              <path d="M4 15h16" />
-            </svg>
-          </button>
-        </div>
-      </nav>
+              <Image
+                src="/images/brand/logo-ink.png"
+                alt="Fanaar"
+                width={1131}
+                height={823}
+                priority
+                className="h-8 w-auto opacity-90 transition-opacity duration-500 ease-lux group-hover:opacity-100 xl:h-10"
+              />
+            </Link>
 
-      {/* Drop panels — desktop hover only. The wrapper carries no height of its
+            <ul className="hidden items-center gap-7 justify-self-end xl:flex">
+              {NAV_RIGHT.map(renderItem)}
+            </ul>
+            <button
+              type="button"
+              onClick={() => setOpen(true)}
+              aria-expanded={open}
+              aria-controls="site-menu"
+              aria-label="Open menu"
+              className="justify-self-end p-1 text-ink/80 transition-colors hover:text-ink xl:hidden"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                aria-hidden
+                className="h-6 w-6"
+              >
+                <path d="M4 9h16" />
+                <path d="M4 15h16" />
+              </svg>
+            </button>
+          </div>
+        </nav>
+
+        {/* Drop panels — desktop hover only. The wrapper carries no height of its
           own (every panel inside is absolutely positioned), so it cannot open
           a panel from anywhere but the nav label above it. */}
-      <div
-        className="pointer-events-none absolute inset-x-0 top-full hidden xl:block"
-        onMouseEnter={menu.hold}
-        onMouseLeave={menu.hide}
-      >
-        <NavMenus menus={menus} active={menu.active} onNavigate={menu.close} />
-      </div>
+        <div
+          className="pointer-events-none absolute inset-x-0 top-full hidden xl:block"
+          onMouseEnter={menu.hold}
+          onMouseLeave={menu.hide}
+        >
+          <NavMenus
+            menus={menus}
+            active={menu.active}
+            onNavigate={menu.close}
+          />
+        </div>
+      </header>
 
+      {/* Deliberately outside <header>: its backdrop-filter makes it the
+          containing block for fixed descendants, so `fixed inset-0` here
+          resolved against the 72px bar instead of the viewport and the menu
+          came up as an unreadable sliver. */}
       <MobileMenu
         open={open}
         onClose={() => setOpen(false)}
         categories={menus.journal.categories}
       />
-    </header>
+    </>
   );
 }
