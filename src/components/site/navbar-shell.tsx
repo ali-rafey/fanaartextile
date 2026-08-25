@@ -75,7 +75,11 @@ export default function NavbarShell({
     <>
       <nav
         aria-label="Primary"
-        className={`absolute inset-x-6 top-7 z-20 xl:inset-x-[20%] xl:top-[7.5%] ${skin.shadow}`}
+        // Below xl this is a fixed bar like every other page's header, so the
+        // navigation does not scroll away and vanish on a phone — the homepage
+        // was the only page in the site without one. From xl it goes back to
+        // floating free over the hero at the brand's inset.
+        className={`fixed inset-x-0 top-0 z-30 border-b border-ink/10 bg-ivory/85 px-6 py-4 backdrop-blur-md xl:absolute xl:inset-x-[20%] xl:top-[7.5%] xl:border-0 xl:bg-transparent xl:px-0 xl:py-0 xl:backdrop-blur-none ${skin.shadow}`}
       >
         <div className="grid grid-cols-[1fr_auto_1fr] items-center">
           <ul className="hidden items-center gap-7 xl:flex">{NAV_LEFT.map(renderItem)}</ul>

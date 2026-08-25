@@ -60,7 +60,7 @@ export default async function Hero() {
 
       <div className="relative grid min-h-svh md:grid-cols-[1.05fr_1fr]">
         {/* The plate, at its own framing, bleeding off the left edge */}
-        <div className="relative h-[44svh] w-full overflow-hidden bg-sand md:h-auto">
+        <div className="relative h-[62svh] w-full overflow-hidden bg-sand md:h-auto">
           {plate.isVideo ? (
             <video
               src={plate.url}

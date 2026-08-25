@@ -75,8 +75,10 @@ export default function MobileMenu({
         </button>
       </div>
 
+      {/* Home first — the mark in the header is the only other way back, and
+          on a phone it sits behind this dialog. */}
       <ul className="mt-14 space-y-6">
-        {[...NAV_LEFT, ...NAV_RIGHT].map((item) => (
+        {[{ label: "Home", href: "/" }, ...NAV_LEFT, ...NAV_RIGHT].map((item) => (
           <li key={item.label}>
             <Link
               href={item.href}
