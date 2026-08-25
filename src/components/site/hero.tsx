@@ -51,7 +51,7 @@ export default async function Hero() {
 
   return (
     <section className="relative flex min-h-svh w-full flex-col bg-ivory">
-      <SiteNavbar tone="ink" />
+      <SiteNavbar />
 
       <div className="grid flex-1 md:grid-cols-[1.02fr_1fr]">
         {/* The plate — bleeds off the left, top and bottom edges */}
