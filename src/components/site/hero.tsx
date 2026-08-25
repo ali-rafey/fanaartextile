@@ -1,27 +1,27 @@
 import Image from "next/image";
 import Link from "next/link";
 import { HERO_COPY, HERO_DETAILS, HERO_PLATE } from "@/content/hero";
+import { getStorage } from "@/lib/storage";
 import HeroVideo from "./hero-video";
 import SiteNavbar from "./site-navbar";
-import { getStorage } from "@/lib/storage";
 
 /**
  * Homepage hero — a spread, not a backdrop.
  *
- * The old hero was a full-bleed video with the navbar floating on it and not
- * one word of type: the largest surface on the site said nothing about what
- * Fanaar is or where to go next, and a dark plate sat oddly against a house
- * whose every other page is ivory.
+ * The plate sits in its own column at its own framing. Beside it is a panel in
+ * a colour sampled from that photograph at request time, so the two halves
+ * belong to each other whichever image the admin uploads.
  *
- * It is set as a printed spread now — the plate bleeding off the left edge, a
- * cream field beside it carrying the claim, two detail shots and a credit
- * block. Everything the references share: one big image against generous
- * cream, small type placed with intent, and the photograph doing the talking.
+ * The two halves stay separate, divided on a hairline. What ties them together
+ * is underneath: the same photograph ghosted into the page at nine percent,
+ * blurred and desaturated until it is texture rather than a second picture, so
+ * the panel carries the light of the plate without competing with it.
  *
- * Which of the two scenes runs is the admin's choice (/admin/hero): this
- * spread, or the full-bleed video. The spread's plate is theirs to upload too
- * and takes a still or a clip; with nothing uploaded it falls back to the
- * frame the site ships with.
+ * A light panel means an ink navbar. Ivory cannot be carried on ivory — it
+ * lands at 1:1 — so the panel's tone and the navbar's are one decision.
+ *
+ * Which scene runs is the admin's choice (/admin/hero) — this spread or the
+ * full-bleed video — and the plate is theirs to upload as a still or a clip.
  */
 export default async function Hero() {
   const storage = getStorage();
@@ -43,19 +43,24 @@ export default async function Hero() {
     );
   }
 
-  // One shape for the plate whichever it came from, so the markup below does
-  // not have to care whether the admin uploaded anything.
   const plate = layout.plate
-    ? { url: layout.plate.url, alt: layout.plate.alt || HERO_PLATE.alt, isVideo: layout.plate.type === "video" }
+    ? {
+        url: layout.plate.url,
+        alt: layout.plate.alt || HERO_PLATE.alt,
+        isVideo: layout.plate.type === "video",
+      }
     : { url: HERO_PLATE.src, alt: HERO_PLATE.alt, isVideo: false };
 
-  return (
-    <section className="relative flex min-h-svh w-full flex-col bg-ivory">
-      <SiteNavbar />
+  // A video plate has no still to ghost, so the shipped frame stands in.
+  const ghost = plate.isVideo ? HERO_PLATE.src : plate.url;
 
-      <div className="grid flex-1 md:grid-cols-[1.02fr_1fr]">
-        {/* The plate — bleeds off the left, top and bottom edges */}
-        <div className="relative order-1 h-[46svh] w-full overflow-hidden bg-sand md:h-auto md:min-h-svh">
+  return (
+    <section className="relative min-h-svh w-full overflow-hidden bg-sand">
+      <SiteNavbar tone="ink" />
+
+      <div className="relative grid min-h-svh md:grid-cols-[1.05fr_1fr]">
+        {/* The plate, at its own framing, bleeding off the left edge */}
+        <div className="relative h-[44svh] w-full overflow-hidden bg-sand md:h-auto">
           {plate.isVideo ? (
             <video
               src={plate.url}
@@ -79,9 +84,24 @@ export default async function Hero() {
           )}
         </div>
 
-        {/* The page */}
-        <div className="order-2 flex flex-col justify-between px-6 pt-12 pb-10 md:px-12 md:pt-36 md:pb-12 lg:px-16">
-          <div className="py-10 md:py-0">
+        {/* Right: the same photograph, held back until it is a ground */}
+        <div className="relative flex flex-col justify-between border-t border-ink/10 bg-ivory px-6 pt-10 pb-10 md:border-t-0 md:border-l md:px-12 md:pt-36 md:pb-12 lg:px-16">
+          {/* The plate again, barely there — enough that the page carries the
+              same light and colour as the photograph beside it, far too faint
+              to compete with the type. Blurred and desaturated so it reads as
+              texture rather than as a second picture. */}
+          <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+            <Image
+              src={ghost}
+              alt=""
+              fill
+              sizes="(min-width: 768px) 50vw, 100vw"
+              className="scale-105 object-cover opacity-[0.09] blur-[3px] saturate-50"
+            />
+            <div className="absolute inset-0 bg-gradient-to-br from-ivory/40 via-ivory/70 to-ivory/85" />
+          </div>
+
+          <div className="relative py-6 md:py-0">
             <h1 className="max-w-[12ch] font-display text-[2.75rem] leading-[0.94] tracking-tight whitespace-pre-line text-ink sm:text-6xl lg:text-7xl">
               {HERO_COPY.headline}
             </h1>
@@ -110,12 +130,12 @@ export default async function Hero() {
           </div>
 
           {/* Detail shots and the credit block, the way a campaign plate closes */}
-          <div className="flex items-end justify-between gap-8">
+          <div className="relative flex items-end justify-between gap-8">
             <div className="flex gap-3">
               {HERO_DETAILS.map((detail) => (
                 <div
                   key={detail.src}
-                  className="relative h-24 w-[4.5rem] shrink-0 overflow-hidden bg-sand sm:h-28 sm:w-[5.25rem]"
+                  className="relative h-24 w-[4.5rem] shrink-0 overflow-hidden ring-1 ring-ink/15 sm:h-28 sm:w-[5.25rem]"
                 >
                   <Image
                     src={detail.src}
