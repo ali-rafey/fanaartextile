@@ -3,12 +3,17 @@
 import Image from "next/image";
 import { useRef, useState } from "react";
 import {
+  MAX_HERO_VIDEO_BYTES,
+  MAX_HERO_VIDEO_MB,
   MAX_IMAGE_BYTES,
   MAX_IMAGE_MB,
   formatBytes,
   isAllowedImageFile,
   isAllowedVideoFile,
 } from "@/lib/constants";
+
+const IMAGE_TYPES = "image/jpeg,image/png,image/webp,image/avif,image/gif";
+const VIDEO_TYPES = "video/mp4,video/webm,video/ogg,video/quicktime";
 
 /**
  * Pick an image from the machine and put it in storage.
@@ -45,22 +50,34 @@ export default function ImageField({
   const [error, setError] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
+  /** Open the picker filtered to one kind, so the choice is made up front. */
+  function pick(kind: "image" | "video") {
+    const input = fileRef.current;
+    if (!input) return;
+    input.accept = kind === "video" ? VIDEO_TYPES : IMAGE_TYPES;
+    input.click();
+  }
+
   async function upload(file: File) {
     setError(null);
 
-    const accepted =
-      isAllowedImageFile(file.name, file.type) ||
-      (allowVideo && isAllowedVideoFile(file.name, file.type));
-    if (!accepted) {
+    const isVideo = allowVideo && isAllowedVideoFile(file.name, file.type);
+    if (!isVideo && !isAllowedImageFile(file.name, file.type)) {
       setError(
         allowVideo
-          ? "Unsupported file type. Choose an image or an MP4/WebM video."
+          ? "Unsupported file type. Choose an image, or an MP4, WebM or MOV video."
           : "Unsupported file type. Choose a JPEG, PNG, WebP, AVIF or GIF."
       );
       return;
     }
-    if (file.size > MAX_IMAGE_BYTES) {
-      setError(`That file is ${formatBytes(file.size)}. The limit is ${MAX_IMAGE_MB} MB.`);
+
+    // A clip is judged against the video ceiling, not the image one — the
+    // two differ by a factor of thirty, and charging a video the image limit
+    // rejected perfectly good footage with a nonsensical message.
+    const ceiling = isVideo ? MAX_HERO_VIDEO_BYTES : MAX_IMAGE_BYTES;
+    const ceilingMb = isVideo ? MAX_HERO_VIDEO_MB : MAX_IMAGE_MB;
+    if (file.size > ceiling) {
+      setError(`That file is ${formatBytes(file.size)}. The limit is ${ceilingMb} MB.`);
       return;
     }
 
@@ -143,12 +160,22 @@ export default function ImageField({
           <div className="flex flex-wrap items-center gap-2">
             <button
               type="button"
-              onClick={() => fileRef.current?.click()}
+              onClick={() => pick("image")}
               disabled={busy}
               className="rounded-full bg-neutral-900 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-neutral-700 disabled:opacity-50"
             >
               {busy ? "Uploading…" : url ? "Replace image" : "Upload image"}
             </button>
+            {allowVideo ? (
+              <button
+                type="button"
+                onClick={() => pick("video")}
+                disabled={busy}
+                className="rounded-full border border-neutral-300 px-4 py-2 text-xs font-semibold text-neutral-800 transition-colors hover:bg-neutral-50 disabled:opacity-50"
+              >
+                {busy ? "Uploading…" : url ? "Replace with video" : "Upload video"}
+              </button>
+            ) : null}
             {url ? (
               <button
                 type="button"
@@ -164,11 +191,7 @@ export default function ImageField({
           <input
             ref={fileRef}
             type="file"
-            accept={
-              allowVideo
-                ? "image/jpeg,image/png,image/webp,image/avif,image/gif,video/mp4,video/webm"
-                : "image/jpeg,image/png,image/webp,image/avif,image/gif"
-            }
+            accept={IMAGE_TYPES}
             className="sr-only"
             onChange={(event) => {
               const file = event.target.files?.[0];

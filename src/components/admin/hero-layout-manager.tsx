@@ -51,7 +51,7 @@ export default function HeroLayoutManager({ layout }: { layout: HeroLayout }) {
         {option(
           "spread",
           "Editorial spread",
-          "A plate down the left with the headline, detail shots and credits beside it. Upload the plate below."
+          "A plate down the left — image or video, your choice — with the headline, detail shots and credits beside it."
         )}
         {option(
           "video",
@@ -65,7 +65,7 @@ export default function HeroLayoutManager({ layout }: { layout: HeroLayout }) {
           <ImageField
             name="plateUrl"
             folder="hero"
-            label="Plate — image or video"
+            label="Plate — upload an image or a video"
             allowVideo
             defaultValue={layout.plate?.url ?? ""}
             onChange={setPlateUrl}
@@ -83,7 +83,8 @@ export default function HeroLayoutManager({ layout }: { layout: HeroLayout }) {
             />
             <p className="mt-2 text-xs text-neutral-500">
               Describes the plate for screen readers. Leave the upload empty to use the
-              image the site ships with.
+              image the site ships with. A video plate plays muted and on a loop, and
+              is stored exactly as uploaded — never compressed or resized.
             </p>
           </div>
         </div>
