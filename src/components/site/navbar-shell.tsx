@@ -9,8 +9,24 @@ import { useHoverMenu } from "@/components/site/use-hover-menu";
 import { NAV_LEFT, NAV_RIGHT } from "@/content/navigation";
 import type { NavMenus as NavMenusData } from "@/lib/nav-menu";
 
-const desktopLink =
-  "text-xs whitespace-nowrap uppercase tracking-[0.18em] text-ivory/85 transition-colors duration-300 ease-lux hover:text-ivory";
+/**
+ * The navbar floats over whatever the hero is, so it takes its colour from
+ * the plate beneath it rather than assuming a dark one.
+ */
+const TONES = {
+  ivory: {
+    link: "text-ivory/85 hover:text-ivory",
+    shadow: "[text-shadow:0_1px_14px_rgba(27,24,21,0.45)]",
+    logo: "/images/brand/logo-ivory.png",
+    button: "text-ivory/90 hover:text-ivory",
+  },
+  ink: {
+    link: "text-ink/70 hover:text-ink",
+    shadow: "",
+    logo: "/images/brand/logo-ink.png",
+    button: "text-ink/80 hover:text-ink",
+  },
+} as const;
 
 /**
  * Transparent primary navbar floating over the hero video: three links left
@@ -19,7 +35,15 @@ const desktopLink =
  * each side and ~7.5% from the top per the brand spec; below that it
  * collapses to a centered mark with a menu button opening a full overlay.
  */
-export default function NavbarShell({ menus }: { menus: NavMenusData }) {
+export default function NavbarShell({
+  menus,
+  tone = "ivory",
+}: {
+  menus: NavMenusData;
+  tone?: keyof typeof TONES;
+}) {
+  const skin = TONES[tone];
+  const desktopLink = `text-xs whitespace-nowrap uppercase tracking-[0.18em] transition-colors duration-300 ease-lux ${skin.link}`;
   const [open, setOpen] = useState(false);
   const menu = useHoverMenu();
 
@@ -51,7 +75,7 @@ export default function NavbarShell({ menus }: { menus: NavMenusData }) {
     <>
       <nav
         aria-label="Primary"
-        className="absolute inset-x-6 top-7 z-20 [text-shadow:0_1px_14px_rgba(27,24,21,0.45)] xl:inset-x-[20%] xl:top-[7.5%]"
+        className={`absolute inset-x-6 top-7 z-20 xl:inset-x-[20%] xl:top-[7.5%] ${skin.shadow}`}
       >
         <div className="grid grid-cols-[1fr_auto_1fr] items-center">
           <ul className="hidden items-center gap-7 xl:flex">{NAV_LEFT.map(renderItem)}</ul>
@@ -61,7 +85,7 @@ export default function NavbarShell({ menus }: { menus: NavMenusData }) {
           {/* Brand mark — Fanaar calligraphy, ivory over the dark hero video */}
           <Link href="/" className="group justify-self-center" aria-label="Fanaar — home">
             <Image
-              src="/images/brand/logo-ivory.png"
+              src={skin.logo}
               alt="Fanaar"
               width={1131}
               height={823}
@@ -79,7 +103,7 @@ export default function NavbarShell({ menus }: { menus: NavMenusData }) {
             aria-expanded={open}
             aria-controls="site-menu"
             aria-label="Open menu"
-            className="justify-self-end p-1 text-ivory/90 transition-colors hover:text-ivory xl:hidden"
+            className={`justify-self-end p-1 transition-colors xl:hidden ${skin.button}`}
           >
             <svg
               viewBox="0 0 24 24"
